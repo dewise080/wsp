@@ -1,0 +1,85 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Create Menu</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Menus</li>
+                  <li class="breadcrumb-item active">Create New</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}                   
+               <div class="row mb-2">
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.order.id_for_label }}" class="form-label">Name<span class="text-danger">*</span></label>
+                           {{ form.name }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.url.id_for_label }}" class="form-label">Url</label>
+                           {{ form.url }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row mb-1">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.order.id_for_label }}" class="form-label">Order<span class="text-danger">*</span></label>
+                           <br>
+                           {{ form.order }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <button class="btn btn-primary mb-3" type="submit">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

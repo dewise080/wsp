@@ -1,0 +1,164 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{project.title}} - {{seo_settings.meta_title}} {% endblock title %}
+{% block title1 %} {{project.title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{project.title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>{{ project.title }}</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Project<i class="bi bi-arrow-right"></i>{{ project.title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="project-details sec-mar-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="project-details-content">
+                            {% if project.title %}
+                            <h3>{{ project.title }}</h3>
+                            {% endif %}
+                            <div id="project-desc-{{ project.id }}" data-inline-rich="true" data-inline-field="description" data-inline-api="/api/projects/" data-inline-id="{{ project.id }}">
+                                {{ project.description|safe }}
+                            </div>
+                            <div class="project-thumb mt-4">
+                                <img src="{{ project.getProjectImage }}" style="width:400px;  border-radius:10px;" alt="project">
+                                {% if project.category %}
+                                <div class="tag">
+                                    <a href="">{{ project.category }}</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar-widget">
+                            {% if project.category %}
+                            <div class="client-box">
+                                <span>Category:</span>
+                                <h5>{{ project.category }}</h5>
+                            </div>
+                            {% endif %}
+                            {% if project.client %}
+                            <div class="client-box">
+                                <span>Client:</span>
+                                <h5>{{ project.client }}</h5>
+                            </div>
+                            {% endif %}
+                            {% if project.company %}
+                            <div class="client-box">
+                                <span>Company:</span>
+                                <h5>{{ project.company }}</h5>
+                            </div>
+                            {% endif %}
+                            {% if project.duration %}
+                            <div class="client-box">
+                                <span>Duration:</span>
+                                <h5>{{ project.duration }}</h5>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="sidebar-widget">
+                            <div class="contact-info">
+                                <h3>Need help?</h3>
+                                <p>Please feel free to contact with us. We are here to help you.</p>
+                                <div class="cmpy-info">
+                                    <div class="icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="cnt">
+                                        <h5>Location</h5>
+                                        <p>{{settings.address}}, {{settings.city}}-{{settings.postal}}, {{settings.state}}, {{settings.country}}</p>
+                                    </div>
+                                </div>
+                                <div class="cmpy-info">
+                                    <div class="icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div class="cnt">
+                                        <h5>Phone</h5>
+                                        <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
+                                    </div>
+                                </div>
+                                <div class="cmpy-info">
+                                    <div class="icon">
+                                        <i class="far fa-envelope"></i>
+                                    </div>
+                                    <div class="cnt">
+                                        <h5>Email</h5>
+                                        <a href="mailto:{{ settings.email_address }}"><span class="__cf_email__"
+                                            data-cfemail="630a0d050c23061b020e130f064d000c0e">{{ settings.email_address }}</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if settings.show_call_now_widget %}
+                            <div class="sidebar-banner">
+                                <img src="{% static 'front/assets/img/widget-banner-bg.jpg' %}" alt>
+                                <div class="banner-inner">
+                                    <h3>Any Project <span>Call Now.</span>
+                                        <img class="angle" src="{% static 'front/assets/img/arrow-angle.png' %}" alt>
+                                    </h3>
+                                    <a href="tel:{{settings.phone}}">{{settings.phone}}</a>
+                                </div>
+                            </div>
+                    {% endif %}
+                    </div>
+                    <div class="project-slider">
+                        <h4>Other Projects</h4>
+                        <div class="arrow">
+                            <div class="swiper-button-next-c"><i class="bi bi-arrow-right"></i></div>
+                            <div class="swiper-button-prev-c"><i class="bi bi-arrow-left"></i></div>
+                        </div>
+                        <div class="swiper project-slide">
+                            <div class="swiper-wrapper">
+                                {% for project in projects|slice:":3" %}
+                                    <div class="swiper-slide">
+                                        <div class="single-item">
+                                            <div class="item-img">
+                                                <a href="{% url "projectDetails" project.slug %}"><img src="{{ project.getProjectImage }}"
+                                                        alt></a>
+                                            </div>
+                                            <div class="item-inner-cnt">
+                                                <span>{{ project.category }}</span>
+                                                <h4>{{ project.title }}</h4>
+                                                <div class="view-btn">
+                                                    <a href="{% url "projectDetails" project.slug %}">view details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock %}
+
+{% block inline_edit_toolbar %}
+  {% include 'front/inline_edit_toolbar.html' %}
+{% endblock inline_edit_toolbar %}

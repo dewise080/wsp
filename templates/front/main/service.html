@@ -1,0 +1,180 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+    .premium-pricing h3{
+        color:white;
+    }
+    .premium-pricing span{
+        color:white;
+    }
+    .premium-pricing strong{
+        color:white;
+    }
+</style>
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Service</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Service</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% if services %}
+        <section class="services-grid sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Our Solutions</span>
+                        <h2>Services</h2>
+                    </div>
+                </div>
+                <div class="row g-4">
+                {% for service in services %}
+                    <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms"
+                        data-wow-duration="1500ms">
+                        <div class="single-service">
+                            <span>0{{forloop.counter}}</span>
+                            {% if service.fontawesome_icon_class %}
+                                <div class="icon">
+                                    <i class="{{ service.fontawesome_icon_class }} service-ico"></i>
+                                </div>
+                            {% endif %}
+                            {% if service.name %}
+                            <h4>{{ service.name }}</h4>
+                            {% endif %}
+                            {% if service.short_description %}
+                            <p>{{ service.short_description }}</p>
+                            {% endif %}
+                            <div class="read-btn">
+                                <a href="{% url "serviceDetail" service.slug %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+       <!--====================== Testimoials Section ======================-->
+{% if testimonials %}
+        <section class="testimonial-area">
+            <div class="container-fluid p-0">
+                <div class="title-wrap">
+                    <div class="sec-title white">
+                        <span>Testimonial</span>
+                        <h2>Client Say About Us</h2>
+                    </div>
+                </div>
+                <div class="swiper testimonial-slider">
+                    <div class="swiper-wrapper">
+                        {% for testimonial in testimonials %}
+                            <div class="swiper-slide">
+                                <div class="single-testimonial">
+                                    <div class="quote">
+                                        <i class="fas fa-quote-right"></i>
+                                    </div>
+                                    <h5>{{ testimonial.name }}</h5>
+                                    <span>{{ testimonial.position }}</span>
+                                    
+                                    {% if testimonial.star %}
+                                    <div class="stars">
+                                        {% for i in "x"|rjust:testimonial.star %}
+                                            <a href="#"><i class="fas fa-star"></i></a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    <p>{{ testimonial.description }}</p>
+                                    {% if testimonial.image %}
+                                    <div class="reviewer">
+                                        <img src="{{ testimonial.image.url }}" alt>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination d-md-none d-md-block"></div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+        {% endif %}
+        <!--====================== Pricing Section ======================-->
+{% if pricings %}
+        <section class="priceing-plan sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Getting Start</span>
+                        <h2>Pricing Plan</h2>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div class="row g-4">
+                            {% for pricing in pricings %}
+                                <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                                    <div class="price-box {% if pricing.is_featured %}tcg-price-box premium-pricing{% endif %}">
+                                        <!-- Featured Badge -->
+                                        {% if pricing.is_featured %}
+                                        <div class="plan-ribbon-wrapper">
+                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                        </div>
+                                        {% endif %}
+                                        {% if pricing.title %}
+                                        <h3>{{ pricing.title }}</h3>
+                                        {% endif %}
+                                        {% if pricing.subtitle %}
+                                        <span>{{ pricing.subtitle }}</span>
+                                        {% endif %}
+                                        {% if pricing.price %}
+                                        <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                        {% endif %}
+                                        {% if pricing.description %}
+                                        <div class="item-list">
+                                            {{ pricing.description|safe }}
+                                        </div>
+                                        {% endif %}
+                                        <div class="price-btn">
+                                            <div class="line-1"></div>
+                                            <div class="line-2"></div>
+                                            <a href="{{ pricing.button_url }}">{{ pricing.button_text }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,553 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load customtag %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+   @media screen and (max-width: 1400px) {
+   .lghide1 {
+   display: none;
+   }
+   }
+   @media screen and (min-width: 1400px) {
+   .lghide2 {
+   display: none;
+   }
+   }
+   #ww_7b6924a9addc2 {
+   background-color: #9E9E9E;
+   background-image: url(https://app1.weatherwidget.org/skin/img/bg/rainy_day.jpg);
+   height: 337px !important;
+   background-size: cover;
+   background-repeat: no-repeat;
+   }
+   .ww-box {
+   margin-top: 14% !important;
+   }
+   .ww_source {
+   display: none !important;
+   }
+   #ww_7b6924a9addc2 {
+   border-radius: 10px !important;
+   background-color: #262932 !important;
+   }
+</style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Dashboard</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="index.html">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Dashboard</li>
+                  <li class="breadcrumb-item active">Home</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row widget-grid">
+         <div class="col-xxl-4 col-sm-6 box-col-6">
+            <div class="card profile-box">
+               <div class="card-body">
+                  <div class="media">
+                     <div class="media-body">
+                        <div class="greeting-user">
+                           <h4 class="f-w-600">
+                              Welcome {% if request.user.is_authenticated %}{{request.user.userprofile.name}}{% if request.user.is_verified %}
+                              <svg xmlns="http://www.w3.org/2000/svg" class="verify-ico" width="18" height="18" fill="#fff" viewBox="0 0 512 512">
+                                 <title>ionicons-v5-e</title>
+                                 <path d="M256,48C141.31,48,48,141.31,48,256s93.31,208,208,208,208-93.31,208-208S370.69,48,256,48ZM218,360.38,137.4,270.81l23.79-21.41,56,62.22L350,153.46,374.54,174Z"/>
+                              </svg>
+                              {% endif %} {% else %}there {% endif %}
+                           </h4>
+                           <p>Here whats happing in your account today</p>
+                           <div class="whatsnew-btn"><a class="btn btn-outline-white" href="{% url "adminBlogCreate" %}">Write Blog !</a></div>
+                        </div>
+                     </div>
+                     <div>
+                        <div class="clockbox">
+                           <svg id="clock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+                              <g id="face">
+                                 <circle class="circle" cx="300" cy="300" r="253.9"></circle>
+                                 <path class="hour-marks" d="M300.5 94V61M506 300.5h32M300.5 506v33M94 300.5H60M411.3 107.8l7.9-13.8M493 190.2l13-7.4M492.1 411.4l16.5 9.5M411 492.3l8.9 15.3M189 492.3l-9.2 15.9M107.7 411L93 419.5M107.5 189.3l-17.1-9.9M188.1 108.2l-9-15.6"></path>
+                                 <circle class="mid-circle" cx="300" cy="300" r="16.2"></circle>
+                              </g>
+                              <g id="hour">
+                                 <path class="hour-hand" d="M300.5 298V142"></path>
+                                 <circle class="sizing-box" cx="300" cy="300" r="253.9"></circle>
+                              </g>
+                              <g id="minute">
+                                 <path class="minute-hand" d="M300.5 298V67"></path>
+                                 <circle class="sizing-box" cx="300" cy="300" r="253.9"></circle>
+                              </g>
+                              <g id="second">
+                                 <path class="second-hand" d="M300.5 350V55"></path>
+                                 <circle class="sizing-box" cx="300" cy="300" r="253.9">   </circle>
+                              </g>
+                           </svg>
+                        </div>
+                        <div class="badge f-10 p-0" id="txt"></div>
+                     </div>
+                  </div>
+                  <div class="cartoon"><img class="img-fluid" src="{% static 'admin/assets/images/dashboard/cartoon.svg' %}" alt="vector women with leptop"></div>
+               </div>
+            </div>
+         </div>
+         <div class="col-xxl-auto col-xl-3 col-sm-6 box-col-6">
+            <div class="row">
+               <div class="col-xl-12">
+                  <div class="card widget-1">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round pest">
+                              <div class="bg-round">
+                                 <i class="fa fa-book" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{blogs.count}}</h4>
+                              <span class="f-light">Blogs</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-12">
+                     <div class="card widget-1">
+                        <div class="card-body">
+                           <div class="widget-content">
+                              <div class="widget-round primary">
+                                 <div class="bg-round">
+                                    <i class="fa fa-laptop" aria-hidden="true"></i>
+                                    <svg class="half-circle svg-fill">
+                                       <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                    </svg>
+                                 </div>
+                              </div>
+                              <div>
+                                 <h4>{{ services.count }}</h4>
+                                 <span class="f-light">Services</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-xxl-auto col-xl-3 col-sm-6 box-col-6">
+            <div class="row">
+               <div class="col-xl-12">
+                  <div class="card widget-1">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round purp">
+                              <div class="bg-round">
+                                 <i class="fa fa-comment-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ testimonials.count }}</h4>
+                              <span class="f-light">Testimonials</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-12">
+                     <div class="card widget-1">
+                        <div class="card-body">
+                           <div class="widget-content">
+                              <div class="widget-round warning">
+                                 <div class="bg-round">
+                                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                    <svg class="half-circle svg-fill">
+                                       <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                    </svg>
+                                 </div>
+                              </div>
+                              <div>
+                                 <h4>{{ projects.count }}</h4>
+                                 <span class="f-light">Projects</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% if request.user.role == 'Admin' %}
+                  <div class="col-xl-12 dnone">
+                     <div class="card widget-1">
+                        <div class="card-body">
+                           <div class="widget-content">
+                              <div class="widget-round secondary">
+                                 <div class="bg-round">
+                                    <i class="fa fa-bell-o" aria-hidden="true"></i>
+                                    <svg class="half-circle svg-fill">
+                                       <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                    </svg>
+                                 </div>
+                              </div>
+                              <div>
+                                 <h4>{{ subscribers.count }}</h4>
+                                 <span class="f-light">Subscribers</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+         {% if request.user.role == 'Admin' %}
+         <div class="col-xxl-auto col-xl-12 col-sm-6 box-col-6">
+            <div class="row">
+               <div class="col-xxl-12 col-xl-3 box-col-12">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round info">
+                              <div class="bg-round">
+                                 <i class="fa fa-users" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ teams.count }}</h4>
+                              <span class="f-light">Team Members</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-xxl-12 col-xl-3 box-col-12">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round warning">
+                              <div class="bg-round">
+                                 <i class="fa fa-user-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ clients.count }}</h4>
+                              <span class="f-light">Clients</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-xxl-12 col-xl-3 box-col-12 lghide2">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round success">
+                              <div class="bg-round">
+                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ contacts.count }}</h4>
+                              <span class="f-light">Contacts</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-xxl-12 col-xl-3 box-col-12 dnone2 lghide2">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round secondary">
+                              <div class="bg-round">
+                                 <i class="fa fa-bell-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ subscribers.count }}</h4>
+                              <span class="f-light">Subscribers</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-xxl-12 col-xl-12 col-sm-12 box-col-12 lghide1">
+            <div class="row">
+               <div class="col-xxl-6 col-xl-6 box-col-12">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round success">
+                              <div class="bg-round">
+                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ contacts.count }}</h4>
+                              <span class="f-light">Contacts</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-xxl-6 col-xl-6 box-col-12">
+                  <div class="card widget-1 widget-with-chart">
+                     <div class="card-body">
+                        <div class="widget-content">
+                           <div class="widget-round secondary">
+                              <div class="bg-round">
+                                 <i class="fa fa-bell-o" aria-hidden="true"></i>
+                                 <svg class="half-circle svg-fill">
+                                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#halfcircle"></use>
+                                 </svg>
+                              </div>
+                           </div>
+                           <div>
+                              <h4>{{ subscribers.count }}</h4>
+                              <span class="f-light">Subscribers</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+         <div class="col-xxl-4 col-xl-5 col-md-6 col-sm-5 box-col-6">
+            <div class="card height-equal">
+               <div class="card-header card-no-border">
+                  <div class="header-top">
+                     <h5>Weather Forcast</h5>
+                     <div class="card-header-right-icon">
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body pt-0">
+                  <div id="ww_7b6924a9addc2" v='1.3' loc='auto' a='{"t":"horizontal","lang":"en","sl_lpl":1,"ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>More forecasts: <a href="https://oneweather.org/johannesburg/14_days/" id="ww_7b6924a9addc2_u" target="_blank">oneweather.org</a></div>
+                  <script async src="https://app1.weatherwidget.org/js/?id=ww_7b6924a9addc2"></script>
+               </div>
+            </div>
+         </div>
+         {% if request.user.role == 'Admin' %}
+         <div class="col-xxl-8 col-xl-7 col-md-6 col-sm-7 notification box-col-6">
+            <div class="card height-equal">
+               <div class="card-header card-no-border">
+                  <div class="header-top">
+                     <h5 class="m-0">Recent Contacts</h5>
+                     <div class="card-header-right-icon">
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body pt-0">
+                  {% if contacts %}
+                  <ul>
+                     {% for contact in contacts|slice:":3" %}
+                     <li class="d-flex">
+                        <div class="activity-dot-{{ contact|random_class }}"></div>
+                        <div class="w-100 ms-3">
+                           <p class="d-flex justify-content-between mb-2"><span class="date-content light-background">{{ contact.created_at }} </span>
+                           </p>
+                           <h6><a href="#" data-bs-toggle="modal" data-bs-target="#editcontactModal{{ contact.id }}">{{ contact.name }}</a></h6>
+                           <!-- Bootstrap 4 Modal -->
+                           <div class="modal fade" id="editcontactModal{{ contact.id }}" tabindex="-1" role="dialog" aria-labelledby="editcontactModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title" id="editcontactModalLabel">{{contact.name}}'s Submission</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                       <!-- Include your edit form here -->
+                                       <p><strong>Name:</strong> {{ contact.name }}</p>
+                                       <p><strong>Email:</strong> <a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+                                       <p><strong>Phone:</strong> {{ contact.phone }}</p>
+                                       <p><strong>Subject:</strong> {{ contact.subject }}</p>
+                                       <p><strong>Message:</strong> {{ contact.message }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                       <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <span class="f-light">{{ contact.message|truncatewords:'12' }}</span>
+                        </div>
+                     </li>
+                     {% endfor %}
+                  </ul>
+                  {% else %}
+                  <ul>
+                     <li class="">
+                        <div class="w-100">
+                           <h6>You don't have any contacts.</h6>
+                        </div>
+                     </li>
+                  </ul>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+         <!-- Subscribers -->
+         <div class="col-xxl-6 col-xl-6 col-md-6 col-sm-12 notification box-col-6">
+            <div class="card height-equal">
+               <div class="card-header card-no-border">
+                  <div class="header-top">
+                     <h5 class="m-0">Recent Subscribers</h5>
+                     <div class="card-header-right-icon">
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body pt-0">
+                  {% if subscribers %}
+                  <ul>
+                     {% for subscriber in subscribers|slice:":3" %}
+                     <li class="d-flex">
+                        <div class="activity-dot-{{ subscriber|random_class }}"></div>
+                        <div class="w-100 ms-3">
+                           <p class="d-flex justify-content-between mb-2"><span class="date-content light-background">{{ subscriber.created_at }} </span>
+                           </p>
+                           <h6><a href="{% url "emailMarketing" %}">{{ subscriber.email }}</a></h6>
+                           <span class="f-light">Subscribed at {{ subscriber.created_at }} {{subscriber.time}}</span>
+                        </div>
+                     </li>
+                     {% endfor %}
+                  </ul>
+                  {% else %}
+                  <ul>
+                     <li class="">
+                        <div class="w-100">
+                           <h6>You don't have any subscriber.</h6>
+                        </div>
+                     </li>
+                  </ul>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+         {% endif %}
+         <!-- Blogs -->
+         <div class="col-xxl-6 {% if request.user.role == 'Admin' %}col-xl-6 {% else %}col-xl-7{% endif %} col-md-6 col-sm-12 notification box-col-6">
+            <div class="card height-equal">
+               <div class="card-header card-no-border">
+                  <div class="header-top">
+                     <h5 class="m-0">Recent Blogs</h5>
+                     <div class="card-header-right-icon">
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body pt-0">
+                  {% if blogs %}
+                  <ul>
+                     {% for blog in blogs|slice:":3" %}
+                     <li class="d-flex">
+                        <div><a href="{% url "adminBlogEdit" blog.slug %}"><img src="{{ blog.getTHumb}}" style="border-radius:7px; width:115px;" alt="" srcset=""></a></div>
+                        <div class="w-100 ms-3">
+                           <p class="d-flex justify-content-between mb-2"><span class="date-content light-background">{{ blog.created_at }} </span>
+                           </p>
+                           <h6><a href="{% url "adminBlogEdit" blog.slug %}">{{ blog.title|truncatewords:'12' }}</a></h6>
+                        </div>
+                     </li>
+                     {% endfor %}
+                  </ul>
+                  {% else %}
+                  <ul>
+                     <li class="">
+                        <div class="w-100">
+                           <h6>You don't have any blogs.</h6>
+                        </div>
+                     </li>
+                  </ul>
+                  {% endif %}
+               </div>
+            </div>
+         </div>
+
+         <!-- Os Chart -->
+          <div class="col-xxl-6 {% if request.user.role == 'Admin' %}col-xl-6 {% else %}col-xl-7{% endif %} col-md-6 col-sm-12 notification box-col-6">
+              <div class="card height-equal">
+                <div class="card-header card-no-border">
+                    <div class="header-top">
+                      <h5 class="m-0">Visitor By OS</h5>
+                      
+                      <div class="card-header-right-icon">
+                      </div>
+                    </div>
+                    {% if analytics.total_visitors%}
+                        <p>Out of {{analytics.total_visitors}} Visitors</p>
+                    {% endif %}
+                </div>
+                <div class="card-body pt-0">
+                  {% if analytics.total_visitors%}
+                  <canvas id="osVisitorChart"></canvas>
+                  {% else %}
+                  <li>No data available</li>
+                  {% endif %}
+                </div>
+              </div>
+          </div>
+
+          <div class="col-xxl-6 {% if request.user.role == 'Admin' %}col-xl-6 {% else %}col-xl-7{% endif %} col-md-6 col-sm-12 notification box-col-6">
+              <div class="card height-equal">
+                <div class="card-header card-no-border">
+                    <div class="header-top">
+                      <h5 class="m-0">Visitor By Browser</h5>
+                      
+                      <div class="card-header-right-icon">
+                      </div>
+                    </div>
+                    {% if analytics.total_visitors%}
+                        <p>Out of {{analytics.total_visitors}} Visitors</p>
+                    {% endif %}
+                </div>
+                <div class="card-body pt-0">
+                  {% if analytics.total_visitors%}
+                  <canvas id="browserVisitorChart"></canvas>
+                  {% else %}
+                  <li>No data available</li>
+                  {% endif %}
+                </div>
+              </div>
+          </div>
+
+      </div>
+   </div>
+   <!-- Container-fluid Ends-->
+</div>
+<script>
+   var osDataPercentages = {{ analytics.os_percentages|safe }};
+</script>
+<script>
+   var browserDataPercentages = {{ analytics.browser_percentages|safe }};
+</script>
+{% endblock content %}

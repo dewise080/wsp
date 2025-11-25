@@ -1,0 +1,226 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load customtag %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+    label.switch {
+        margin-top: -35px;
+    }
+    @media only screen and (max-width: 600px) {
+      #ver-pills-tab {
+         display: -webkit-box;
+         margin-bottom: 18px;
+     }
+    }
+    
+</style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Header Footer Settings</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Settings</li>
+                  <li class="breadcrumb-item active">Header Footer</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %} 
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}
+               <div class="row mb-2">
+                  <div class="col-sm-12 col-xxl-12">
+                     <div class=" height-equal">
+                       <div class="">
+                       </div>
+                       <div class="">
+                         <div class="row">    
+                           <div class="col-md-2 col-xs-12">
+                              <div class="nav flex-column nav-pills nav-primary" id="ver-pills-tab" role="tablist" aria-orientation="vertical">
+                                 <a class="nav-link active" id="ver-pills-social-tab" data-bs-toggle="pill" href="#ver-pills-social" role="tab" aria-controls="ver-pills-social" aria-selected="true">Social Links</a>
+
+                                 <a class="nav-link" id="ver-pills-header-tab" data-bs-toggle="pill" href="#ver-pills-header" role="tab" aria-controls="ver-pills-header" aria-selected="true">Header</a>
+                                 
+                                 <a class="nav-link" id="ver-pills-footer-tab" data-bs-toggle="pill" href="#ver-pills-footer" role="tab" aria-controls="ver-pills-footer" aria-selected="false">Footer</a>
+                                 
+                              </div>
+                           </div>
+                           <div class="col-md-10 col-xs-12">
+
+                              <div class="tab-content" id="ver-pills-tabContent">
+                                 <div class="tab-pane fade show active" id="ver-pills-social" role="tabpanel" aria-labelledby="ver-pills-social-tab">
+                                   <div class="row mb-2">
+                                      <div class="col-md-6">
+                                         <div class="card">
+                                            <div class="card-body">
+                                               <label for="{{ form.social1_icon.id_for_label }}" class="form-label">Social 01 Icon Class ( <a href="https://fontawesome.com/v5/search?m=free" target="_blank">Get from here</a> )</label>
+                                               {{ form.social1_icon|attr:'placeholder=eg. fab fa-facebook-f' }}
+                                            </div>
+                                         </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.social1_link.id_for_label }}" class="form-label">Social 01 Link</label>
+                                              {{ form.social1_link|attr:'placeholder=eg. https://facebook.com/username' }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                   </div>
+
+                                   <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.social2_icon.id_for_label }}" class="form-label">Social 02 Icon Class ( <a href="https://fontawesome.com/v5/search?m=free" target="_blank">Get from here</a> )</label>
+                                             {{ form.social2_icon|attr:'placeholder=eg. fab fa-instagram' }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.social2_link.id_for_label }}" class="form-label">Social 02 Link</label>
+                                            {{ form.social2_link|attr:'placeholder=eg. https://instagram.com/username' }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+                                 
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.social3_icon.id_for_label }}" class="form-label">Social 03 Icon Class ( <a href="https://fontawesome.com/v5/search?m=free" target="_blank">Get from here</a> )</label>
+                                             {{ form.social3_icon|attr:'placeholder=eg. fab fa-linkedin-in' }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.social3_link.id_for_label }}" class="form-label">Social 03 Link</label>
+                                            {{ form.social3_link|attr:'placeholder=eg. https://linkedin.com/username' }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.social4_icon.id_for_label }}" class="form-label">Social 04 Icon Class ( <a href="https://fontawesome.com/v5/search?m=free" target="_blank">Get from here</a> )</label>
+                                             {{ form.social4_icon|attr:'placeholder=eg. fab fa-youtube' }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.social4_link.id_for_label }}" class="form-label">Social 04 Link</label>
+                                            {{ form.social4_link|attr:'placeholder=eg. https://youtube.com/username' }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+                              </div>
+
+                              <div class="tab-pane fade " id="ver-pills-header" role="tabpanel" aria-labelledby="ver-pills-header-tab">
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.header_button_text.id_for_label }}" class="form-label">Header Button Text</label>
+                                             {{ form.header_button_text }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.header_button_url.id_for_label }}" class="form-label">Header Button URL</label>
+                                            {{ form.header_button_url }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+
+                               </div>
+                               <div class="tab-pane fade " id="ver-pills-footer" role="tabpanel" aria-labelledby="ver-pills-footer-tab">
+                                 <div class="row mb-1">
+                                    <div class="col-md-12">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.footer_col1_description.id_for_label }}" class="form-label">Footer Column 1 Description</label>
+                                             {{ form.footer_col1_description }}
+                                          </div>
+                                       </div>
+                                    </div>
+                               <div class="col-md-12">
+                                <div class="card">
+                                   <div class="card-body">
+                                      <label for="{{ form.footer_copyright.id_for_label }}" class="form-label">Footer Copyright</label>
+                                      {{ form.footer_copyright }}
+                                   </div>
+                                </div>
+                             </div>
+
+                                 </div>
+                               </div>
+                               <button class="btn btn-primary mb-5" type="submit">Save</button>
+
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+               </div>                
+               
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

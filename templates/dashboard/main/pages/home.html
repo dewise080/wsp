@@ -1,0 +1,305 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Home Page</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Pages</li>
+                  <li class="breadcrumb-item active">Home Page</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong>
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %} 
+                {% if SeoForm.errors %}
+                <div class="alert alert-danger">
+                    <strong>Error:</strong>
+                    <ul>
+                        {% for field, errors in SeoForm.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}  
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}  
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Slider Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminSliderElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminSliderElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Service Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminServiceList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminServiceCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">About Section</h6>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <form method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}  
+                                            {{form.media}}  
+                                            <div class="row mb-2">
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ form.image.id_for_label }}">Image</label>
+                                                    <br>
+                                                    {{ form.image }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ form.video_thumbnail.id_for_label }}">Video Thumbnail</label><br>
+                                                    {{ form.video_thumbnail }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ form.subtitle.id_for_label }}">Sub Title </label>
+                                                    {{ form.subtitle }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ form.title.id_for_label }}">Title</label>
+                                                    {{ form.title }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ form.short_description.id_for_label }}">Short Description</label>
+                                                    {{ form.short_description }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ form.tag_line.id_for_label }}">Tag Line</label>
+                                                    {{ form.tag_line }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ form.ranking_number.id_for_label }}">Ranking</label>
+                                                    {{ form.ranking_number }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ form.experience.id_for_label }}">Experience</label>
+                                                    {{ form.experience }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 col-sm-12 mb-2">
+                                                    <label for="{{ form.video_url.id_for_label }}">Video URL</label>
+                                                    {{ form.video_url }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 col-sm-12 mb-2">
+                                                    <label for="{{ form.long_description.id_for_label }}">Long Description</label>
+                                                    {{ form.long_description }}
+                                                </div>
+                                            </div>
+                                            <!-- Ensure proper indentation for the closing </form> tag -->
+                                            <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Fun Fact Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminFunFactElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminFunFactElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Project Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminProjectList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminProjectCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Client Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminClientElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminClientElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Pricing Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminPricingElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminPricingElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Testimonial Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminTestimonialsElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminTestimonialsElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Team Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminTeamElementList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminTeamElementCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Blog Section</h6>
+                                <div class="d-flex justify-content-start">
+                                    <a href="{% url 'adminBlogList' %}" class="btn btn-primary" style='margin-right:5px;'><i class="fa fa-eye"></i> View</a>
+                                    <a href="{% url 'adminBlogCreate' %}" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-1">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">SEO</h6>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <form method="post">
+                                            {% csrf_token %}  
+                                            <div class="row">
+                                                <div class="col-md-6 col-sm-12 mb-2">
+                                                    <label for="{{ SeoForm.meta_title.id_for_label }}">Meta Title </label>
+                                                    {{ SeoForm.meta_title }}
+                                                </div>
+                                                <div class="col-md-6 col-sm-12">
+                                                    <label for="{{ SeoForm.meta_description.id_for_label }}">Meta Description </label>
+                                                    {{ SeoForm.meta_description }}
+                                                </div>
+                                            </div>
+                                            <!-- Ensure proper indentation for the closing </form> tag -->
+                                            <button type="submit" class="btn btn-primary mt-3 w-100">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

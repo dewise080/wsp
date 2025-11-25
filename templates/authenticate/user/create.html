@@ -1,0 +1,165 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% load customtag %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+
+    /* Media query for mobile devices */
+    @media (max-width: 768px) {
+      #cke_id_description {
+        width: 309px !important;
+      }
+    }
+  
+    /* Media query for desktop devices */
+    @media (min-width: 769px) {
+      #cke_id_description {
+        width: 980px !important;
+        position: relative;
+      }
+    }
+    /* CSS to style the password input container */
+    .password-input {
+        position: relative;
+    }
+
+    /* CSS to position the "Show" and "Hide" text on the right side */
+    .toggle-password {
+        position: absolute;
+        top: 74px;
+        right: 38px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+  </style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>{{ title }}</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Users</li>
+                  <li class="breadcrumb-item active">Create User</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}                   
+               <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Name <span class="text-danger">*</span></label>
+                            {{ form.name|add_class:'form-control' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email <span class="text-danger">*</span></label>
+                            {{ form.email|add_class:'form-control' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username <span class="text-danger">*</span></label>
+                            {{ form.username|add_class:'form-control'  }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                      <div class="card-body">
+                          <label for="{{ form.role.id_for_label }}" class="form-label">Role <span class="text-danger">*</span></label>
+                          {{ form.role|add_class:'form-select'  }}
+                      </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="row mb-1">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" id="{{ form.password1.id_for_label }}" class="form-control" name="password1" />
+                            <span class="toggle-password" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}')"><i class="fa fa-eye"></i></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" id="{{ form.password2.id_for_label }}" class="form-control" name="password2" />
+                            <span class="toggle-password" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}')"><i class="fa fa-eye"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                // JavaScript to toggle password visibility
+                function togglePasswordVisibility(inputId) {
+                    var input = document.getElementById(inputId);
+                    var toggle = document.querySelector('[id="' + inputId + '"] + .toggle-password');
+                
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        toggle.innerHTML = '<i class="fa fa-eye-slash"></i>';
+                    } else {
+                        input.type = 'password';
+                        toggle.innerHTML = '<i class="fa fa-eye"></i>';
+                    }
+                }
+            </script>
+            
+              <!-- Add more form fields as needed -->
+              
+              <button class="btn btn-primary mb-5" type="submit">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

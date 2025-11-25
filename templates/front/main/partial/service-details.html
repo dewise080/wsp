@@ -1,0 +1,86 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{service.name}} - {{seo_settings.meta_title}} {% endblock title %}
+{% block title1 %} {{service.name}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{service.name}} - {{seo_settings.meta_title}}{% endblock title2 %}
+{% block content %}
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>{{ service.name }}</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Service<i class="bi bi-arrow-right"></i>{{ service.name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="service-details sec-mar-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="service-details-content">
+                            {% if service.detail_page_image %}
+                                <img src="{{ service.detail_page_image.url }}" style="border-radius:10px;" alt="service">
+                            {% endif %}
+                            <h3>
+                                <i class="{{ service.fontawesome_icon_class }}"
+                                   data-inline-field="fontawesome_icon_class"
+                                   data-inline-api="/api/services/"
+                                   data-inline-id="{{ service.id }}"></i>
+                                <span>{{ service.name }}</span>
+                            </h3>
+                            <div id="service-desc-{{ service.id }}" data-inline-rich="true" data-inline-field="detail_page_description" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">
+                                {{ service.detail_page_description|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar-widget">
+                            <h4>Other Services</h4>
+                            <ul class="category">
+                                {% for service in services %}
+                                    <li><a href="{% url "serviceDetail" service.slug %}">{{ service.name }}<i class="bi bi-arrow-right"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% if settings.show_call_now_widget %}
+                            {% if service.show_call_now_widget %}
+                                <div class="sidebar-banner">
+                                    <img src="{% static 'front/assets/img/widget-banner-bg.jpg' %}" alt>
+                                    <div class="banner-inner">
+                                        <h3>Any Project <span>Call Now.</span>
+                                            <img class="angle" src="{% static 'front/assets/img/arrow-angle.png' %}" alt>
+                                        </h3>
+                                        <a href="tel:{{settings.phone}}">{{settings.phone}}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </section>
+{% endblock %}
+
+{% block inline_edit_toolbar %}
+  {% include 'front/inline_edit_toolbar.html' %}
+{% endblock inline_edit_toolbar %}

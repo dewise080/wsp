@@ -1,0 +1,152 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+   .card.selected {
+     border: 2px solid blue; 
+   }
+   .card-img-top {
+     height: 200px; 
+     overflow: hidden; 
+     background-size: cover;
+     background-position: center top; 
+     transition: background-position 5s ease-in-out; 
+     border-radius: 15px 15px 0px 0px; 
+   }
+   .card:hover .card-img-top {
+     background-position: center bottom;
+   }
+ </style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Template Settings</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Settings</li>
+                  <li class="breadcrumb-item active">Template</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %} 
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}
+            <form id="templateForm" method="post">
+               {% csrf_token %}
+               <div class="row">
+                  <div class="col-md-6">
+                    <div class="card mb-3" onclick="handleRadioSelection('option1', this)" style="cursor:pointer;">
+                      <div class="card-img-top position-relative" style="background-image: url('{% static "admin/assets/images/template1.jpeg" %}')">
+                        {% if ts.template1 %}
+                        <span class="badge badge-danger mb-2 position-absolute top-0 start-0">Current</span>
+                        {% endif %}
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title">Template 1</h5>
+                        <p class="card-text">Dark theme with slider and particle animation. Click to select.</p>
+                        <input type="radio" id="option1" name="option1" class="d-none">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card mb-3" onclick="handleRadioSelection('option2', this)" style="cursor:pointer;">
+                      <div class="card-img-top position-relative" style="background-image: url('{% static "admin/assets/images/template2.jpeg" %}')">
+                        {% if ts.template2 %}
+                        <span class="badge badge-danger mb-2 position-absolute top-0 start-0">Current</span>
+                        {% endif %}
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title">Template 2</h5>
+                        <p class="card-text">Semi light theme without slider and particle. Click to select.</p>
+                        <input type="radio" id="option2" name="option2" class="d-none">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+
+                <button class="btn btn-primary mb-3" type="button" onclick="submitForm()">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+
+<script>
+   var selectedOption = null;
+
+   function handleRadioSelection(optionId, card) {
+     // Check the selected radio button
+     document.getElementById(optionId).checked = true;
+ 
+     // Uncheck the other radio button
+     var otherOptionId = (optionId === 'option1') ? 'option2' : 'option1';
+     document.getElementById(otherOptionId).checked = false;
+
+     // Toggle border directly on the clicked card
+     var selectedCards = document.querySelectorAll('.card.selected');
+     selectedCards.forEach(function(c) {
+       c.classList.remove('selected');
+       c.style.border = 'none'; // Remove border from previously selected card
+     });
+     card.classList.add('selected');
+     card.style.border = '2px solid blue'; // Add border to the selected card
+
+     // Update the selected option
+     selectedOption = optionId;
+   }
+
+   function submitForm() {
+     if (selectedOption) {
+       // Disable the unselected radio buttons before submitting the form
+       var radioButtons = document.querySelectorAll('input[name="' + selectedOption + '"]');
+       radioButtons.forEach(function(radioButton) {
+         if (!radioButton.checked) {
+           radioButton.disabled = true;
+         }
+       });
+       document.getElementById('templateForm').submit();
+     } else {
+       alert("Please select a template before submitting.");
+     }
+   }
+ </script>
+
+{% endblock %}

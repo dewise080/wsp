@@ -1,0 +1,122 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Create Testimonial</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Elements</li>
+                  <li class="breadcrumb-item active">Create Testimonial</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}                   
+               <div class="row mb-3">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <div class="card-body">
+                            {% if testimonial.image %}
+                                <img class="mb-2" style="border-radius:5px;" src="{{ testimonial.image.url }}" width="100" alt="Current Image">
+                            {% endif %}
+                            <br>
+                           <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                           <br>
+                           {{ form.image }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="row mb-3">
+                  <div class="col-md-4">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                           {{ form.name }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.position.id_for_label }}" class="form-label">Position</label>
+                           {{ form.position }}
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="card">
+                       <div class="card-body">
+                          <label for="{{ form.star.id_for_label }}" class="form-label">Star ( 1 - 5 )</label>
+                          {{ form.star }}
+                       </div>
+                    </div>
+                 </div>
+               </div>
+               <div class="row mb-1">
+                  <div class="col-md-12">
+                     <div class="card">
+                        <div class="card-body">
+                           <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                           <br>
+                           {{ form.description }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <button class="btn btn-primary mb-3" type="submit">Save</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressInput = document.querySelector('#id_star');
+        
+        progressInput.addEventListener('input', function() {
+            const value = parseInt(progressInput.value);
+            if (isNaN(value)) {
+                progressInput.value = '';
+            } else {
+                progressInput.value = Math.min(value, 5);
+            }
+        });
+    });
+</script>
+{% endblock %}

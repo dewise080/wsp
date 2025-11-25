@@ -1,0 +1,508 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{meta.meta_title}} - {{meta.meta_description}} {% endblock title %}
+{% block title1 %} {{meta.meta_title}} - {{seo_settings.tag_line}} {% endblock title1 %}
+{% block title2 %} {{meta.meta_title}} - {{seo_settings.tag_line}} {% endblock title2 %}
+{% block content %}
+
+<main class="creasoft-wrap layout2">
+
+    <div class="line_wrap layout2">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+<!--====================== Hero Section======================-->
+<section class="hero-area">
+    <div class="hero-slide">
+        <div class="swiper-wrapper">
+            {% for slider in sliders %}
+            <div class="swiper-slide">
+                <section class="hero-area">
+                    {% if settings.slider_particle_is_active %}
+                    <div id="particles-js-{{ forloop.counter }}" class="particles-cls"></div>
+                    {% endif %}
+
+                    <div class="hero-wrapper">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6">
+                                    <div class="hero-content layout2">
+                                        
+                                        <h1>{% if slider.title %}{{ slider.title }}{% endif %}
+                                            <span>{% if slider.subtitle %}{{ slider.subtitle }}{% endif %}</span>
+                                        </h1>
+                                        <p>{% if slider.description %}{{ slider.description|safe }}{% endif %}</p>
+                                        <div class="buttons">
+                                            {% if slider.button1_url or slider.button1_text %}
+                                            <div class="cmn-btn">
+                                                <div class="line-1"></div>
+                                                <div class="line-2"></div>
+                                                <a href="{{ slider.button1_url }}">{{ slider.button1_text }}</a>
+                                            </div>
+                                            {% endif %}
+                                            {% if slider.button2_url or slider.button2_text %}
+                                            <div class="cmn-btn layout-two">
+                                                <div class="line-1"></div>
+                                                <div class="line-2"></div>
+                                                <a href="{{ slider.button2_url }}">{{ slider.button2_text }}</a>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    {% if slider.image %}
+                                    <div class="hero-img">
+                                        <img src="{{ slider.image.url }}" class="slider_img"
+                                            alt>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            {% endfor %}
+
+        </div>
+        <div class="swiper-button-next" id="slider_btn"></div>
+        <div class="swiper-button-prev" id="slider_btn"></div>
+    </div>
+</section>
+
+<!--====================== Service Section======================-->
+{% if services %}
+<section class="services-area layout2 sec-mar">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>Our Solutions</span>
+                <h2>Services</h2>
+
+            </div>
+        </div>
+        <div class="swiper services-slider">
+            <div class="swiper-wrapper">
+                {% for service in services %}
+                    <div class="swiper-slide wow animate fadeInUp" data-wow-delay="400ms" data-wow-duration="1500ms">
+                        <div class="single-service layout2">
+                            <span>0{{ forloop.counter }}</span>
+                            {% if service.fontawesome_icon_class %}
+                                <div class="icon">
+                                    <i class="{{ service.fontawesome_icon_class }} service-ico"></i>
+                                </div>
+                            {% endif %}
+                            {% if service.name %}
+                                <h4>{{ service.name }}</h4>
+                            {% endif %}
+                            {% if service.short_description %}
+                                <p>{{ service.short_description }}</p>
+                            {% endif %}
+                            <div class="read-btn">
+                                <a href="{% url "serviceDetail" service.slug %}">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination d-md-none d-md-block"></div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</section>
+{% endif %}
+
+<!--====================== About Section ======================-->
+{% if about %}
+<section class="about-area sec-mar-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 or-2 wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
+                <div class="sec-title white layout2">
+                    {% if about.subtitle %}
+                        <span>{{ about.subtitle }}</span>
+                    {% endif %}
+                    {% if about.title %}
+                        <h2>{{ about.title }}</h2>
+                    {% endif %}
+                </div>
+                <div class="about-left layout2">
+                    {% if about.short_description %}
+                        <h3>{{ about.short_description }}</h3>
+                    {% endif %}
+                    {% if about.long_description %}
+                        <p>{{ about.long_description|safe }}</p>
+                    {% endif %}
+                    <div class="company-since layout2">
+                        {% if settings.logo_light %}
+                            <div class="company-logo">
+                                <img src="{{ settings.getLogoLight}}" width="300" alt>
+                            </div>
+                        {% endif %}
+                        {% if about.ranking_number %}
+                            <strong>#{{ about.ranking_number }}</strong>
+                        {% endif %}
+                        <h4>{% if about.tag_line %}{{ about.tag_line }}{% endif %} <span>{% if about.experience %}{{ about.experience }}{% endif %}</span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 or-1 wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
+                <div class="about-right layout2">
+                    {% if about.image %}
+                        <div class="banner-1">
+                            <img src="{{ about.image.url }}" alt>
+                        </div>
+                    {% endif %}
+                    {% if about.video_thumbnail %}
+                    <div class="banner-2">
+                        <img src="{{ about.video_thumbnail.url }}" alt>
+                        <div class="banner2-inner">
+                            {% if about.video_url %}
+                            <div class="play">
+                                <a class="video-popup" href="{{ about.video_url }}"><i
+                                        class="fas fa-play"></i></a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Funfact Section======================-->
+{% if funfacts %}
+<section class="features-area">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>Care Study</span>
+                <h2>Fun Facts</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for funfact in funfacts %}
+                <div class="col-md-6 col-lg-3 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="single-feature">
+                        <div class="feature-inner">
+                            {% if funfact.fontawesome_icon_class %}
+                                <div class="icon">
+                                    <i class="{{ funfact.fontawesome_icon_class }} service-ico"></i>
+                                </div>
+                            {% endif %}
+                            {% if funfact.count %}
+                                <span class="counter" data-target="{{ funfact.count }}">0</span>
+                            {% endif %}
+                            {% if funfact.count_after %}
+                                <sup>{{ funfact.count_after }}</sup>
+                            {% endif %}
+                            {% if funfact.title %}
+                                <h4>{{ funfact.title }}</h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Project Section ======================-->
+{% if projects %}
+<section class="project-area sec-mar">
+    <div class="container">
+        <div class="title-wrap">
+            <div class="sec-title white">
+                <span>Most Popular</span>
+                <h2>Projects</h2>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <ul class="isotope-menu layout2">
+                    <li class="active" data-filter="*">All</li>
+                    {% for category in project_categories  %}
+                    <li data-filter=".{{category.slug}}">{% if category.name %}{{category.name}}{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row g-4 project-items">
+            {% for project in projects|slice:":6" %}
+                <div class="col-md-6 col-lg-4 single-item {{ project.category.slug }}">
+                        <div class="item-img">
+                            <a href="{% url "projectDetails" project.slug %}">
+                                <img src="{{ project.getProjectImage }}" alt="Project image">
+                            </a>
+                        </div>
+                    <div class="item-inner-cnt">
+                        {% if project.category %}
+                            <span>{{ project.category }}</span>
+                        {% endif %}
+                        {% if project.title %}
+                            <h4>{{ project.title }}</h4>
+                        {% endif %}
+                        <div class="view-btn">
+                            <a href="{% url "projectDetails" project.slug %}">view details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Clients Section ======================-->
+{% if clients %}
+<section class="our-partner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <div class="sec-title white layout2">
+                    <span>Satisfied Client</span>
+                    <h2>Our Partner</h2>
+                    <div class="-partnerslider-navigator">
+                        <div class="swiper-button-prev-c"><i class="bi bi-chevron-left"></i></div>
+                        <div class="swiper-button-next-c"><i class="bi bi-chevron-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="swiper partner-slider">
+                    <div class="swiper-wrapper">
+                        {% for client in clients %}
+                            {% if client.image %}
+                                <div class="swiper-slide">
+                                        <div class="single-partner">
+                                                <img src="{{ client.image.url }}" alt="{{ client.name }}">
+                                        </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Pricing Section ======================-->
+{% if pricings %}
+<section class="priceing-plan sec-mar">
+    <div class="container">
+        <div class="title-wrap">
+            <div class="sec-title white">
+                <span>Getting Start</span>
+                <h2>Pricing Plan</h2>
+            </div>
+        </div>
+
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="row g-4">
+                    {% for pricing in pricings %}
+                        <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="price-box layout2 {% if pricing.is_featured %}tcg-price-box premium-pricing{% endif %}">
+                                <!-- Featured Badge -->
+                                {% if pricing.is_featured %}
+                                    {% if pricing.featured_text %}
+                                        <div class="plan-ribbon-wrapper">
+                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                                {% if pricing.title %}
+                                    <h3>{{ pricing.title }}</h3>
+                                {% endif %}
+                                {% if pricing.subtitle %}
+                                    <span>{{ pricing.subtitle }}</span>
+                                {% endif %}
+                                {% if pricing.price %}
+                                    <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                {% endif %}
+                                {% if pricing.description %}
+                                    <div class="item-list">
+                                        {{ pricing.description|safe }}
+                                    </div>
+                                {% endif %}
+                                {% if pricing.button_text or pricing.button_url %}
+                                    <div class="price-btn">
+                                        <div class="line-1"></div>
+                                        <div class="line-2"></div>
+                                        <a href="{% if pricing.button_url %}{{ pricing.button_url }}{% endif %}">{% if pricing.button_text %}{{ pricing.button_text }}{% endif %}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Testimoials Section ======================-->
+{% if testimonials %}
+<section class="testimonial-area">
+    <div class="container-fluid p-0">
+        <div class="title-wrap">
+            <div class="sec-title white">
+                <span>Testimonial</span>
+                <h2>Client Say About Us</h2>
+            </div>
+        </div>
+        <div class="swiper testimonial-slider">
+            <div class="swiper-wrapper">
+                {% for testimonial in testimonials %}
+                    <div class="swiper-slide">
+                        <div class="single-testimonial">
+                            <div class="quote">
+                                <i class="fas fa-quote-right"></i>
+                            </div>
+                            {% if testimonial.name %}
+                                <h5>{{ testimonial.name }}</h5>
+                            {% endif %}
+                            {% if testimonial.position %}
+                                <span>{{ testimonial.position }}</span>
+                            {% endif %}
+                            {% if testimonial.star %}
+                                <div class="stars">
+                                    {% for i in "x"|rjust:testimonial.star %}
+                                        <a href="#"><i class="fas fa-star"></i></a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if testimonial.description %}
+                                <p>{{ testimonial.description }}</p>
+                            {% endif %}
+                            {% if testimonial.image %}
+                                <div class="reviewer">
+                                    <img src="{{ testimonial.image.url }}" alt>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination d-md-none d-md-block"></div>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Team Section ======================-->
+{% if teams %}
+<section class="our-team sec-mar">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>Our Team</span>
+                <h2>Meet Our Team</h2>
+            </div>
+        </div>
+        <div class="swiper team-slider">
+            <div class="swiper-wrapper">
+                {% for team in teams %}
+                    <div class="swiper-slide wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="single-team layout2">
+                            <div class="member-img">
+                                {% if team.image %}
+                                <img src="{{ team.image.url }}" alt>
+                                {% endif %}
+                                <svg width="185" height="299" viewBox="0 0 167 269" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M4.25412 0.814453C1.68125 2.62384 0 5.61553 0 8.99991V269H167C167 269 47 269 66.5 112.171C75.5581 39.3209 20.2679 8.22409 4.25412 0.814453Z"
+                                        fill="#191A1C" />
+                                </svg>
+                                <ul class="team-social">
+                                    {% if team.instagram %}
+                                        <li><a href="{{ team.instagram }}"><i class="fab fa-instagram"></i></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if team.facebook %}
+                                        <li><a href="{{ team.facebook }}"><i class="fab fa-facebook-f"></i></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if team.linkedin %}
+                                        <li><a href="{{ team.linkedin }}"><i class="fab fa-linkedin"></i></a></li>
+                                    {% endif %}
+                                    {% if team.whatsapp %}
+                                        <li><a href="https://wa.me/{{ team.whatsapp }}"><i class="fab fa-whatsapp"></i></a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="team-inner">
+                                {% if team.name %}
+                                    <h4>{{ team.name }}</h4>
+                                {% endif %}
+                                {% if team.position %}
+                                    <span>{{ team.position }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<!--====================== Blog Section ======================-->
+{% if blogs %}
+<section class="blog-area">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>All Blog</span>
+                <h2>Latest Post</h2>
+            </div>
+        </div>
+        <div class="row gy-4">
+            {% for blog in blogs|slice:":3" %}
+                <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="single-blog layout2">
+                        {% if blog.thumbnail %}
+                            <div class="blog-thumb">
+                                <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
+                                <div class="tag">
+                                    <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="blog-inner">
+                            <div class="author-date">
+                                {% if blog.author %}
+                                    <a href="#">By, {{ blog.author }}</a>
+                                {% endif %}
+                                <a href="#">{{ blog.created_at }}</a>
+                            </div>
+                            {% if blog.title %}
+                                <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+    const sliderCounting = {{sliders.count}}
+</script>
+
+{% endblock content %}

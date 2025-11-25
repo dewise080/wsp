@@ -1,0 +1,50 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{title}} - {{seo_settings.meta_title}} {% endblock title %}
+{% block title1 %} {{title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Terms & Conditions</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Terms & Conditions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="back-to-home sec-pad">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-xl-12">
+                        <div class="">
+                            {{ term.term_texts|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+ {% endblock %}

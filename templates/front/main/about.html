@@ -1,0 +1,328 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+
+<main class="creasoft-wrap">
+
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>About us</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>About us</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% if aboutpage %}
+        <section class="why-choose sec-mar wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="why-choose-left">
+                            {% if aboutpage.image1 %}
+                                <div class="choose-banner1">
+                                    <img src="{{ aboutpage.image1.url }}" alt>
+                                </div>
+                            {% endif %}
+                            <div class="choose-banner2">
+                                {% if aboutpage.image2 %}
+                                    <img src="{{ aboutpage.image2.url }}" alt>
+                                {% endif %}
+                                {% if aboutpage.image3 %}
+                                    <img src="{{ aboutpage.image3.url }}" alt>
+                                {% endif %}
+                            </div>
+                            {% if aboutpage.years_of_experience %}
+                                <div class="years">
+                                    <h5>{{ aboutpage.years_of_experience }}</h5>
+                                    <span>Years</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="why-choose-right">
+                            <div class="sec-title layout2">
+                                {% if aboutpage.subtitle %}
+                                    <span>{{ aboutpage.subtitle }}</span>
+                                {% endif %}
+                                {% if aboutpage.title %}
+                                    <h2>{{ aboutpage.title }}</h2>
+                                {% endif %}
+                            </div>
+                            <div class="counter-boxes">
+                                {% for fact in funfact|slice:":3" %}
+                                    <div class="count-box">
+                                        <span class="">{% if fact.count %}{{ fact.count }}{% endif %}</span><sup>{% if fact.count_after %}{{ fact.count_after }}{% endif %}</sup>
+                                        {% if fact.title %}
+                                            <h5>{{ fact.title }}</h5>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if aboutpage.description %}
+                                <p>{{ aboutpage.description|safe }}</p>
+                            {% endif %}
+                            <div class="buttons-group">
+                                {% if aboutpage.feature1 %}
+                                    <span>{{ aboutpage.feature1 }}</span>
+                                {% endif %}
+                                {% if aboutpage.feature2 %}
+                                    <span>{{ aboutpage.feature2 }}</span>
+                                {% endif %}
+                                {% if aboutpage.feature3 %}
+                                    <span>{{ aboutpage.feature3 }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        <!--====================== About Section ======================-->
+        {% if about %}
+        <section class="about-area sec-mar-bottom wow animate slideInUp" data-wow-delay="200ms"
+            data-wow-duration="1500ms">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 or-2 wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="sec-title layout2">
+                            {% if about.subtitle %}
+                                <span>{{ about.subtitle }}</span>
+                            {% endif %}
+                            {% if about.title %}
+                                <h2>{{ about.title }}</h2>
+                            {% endif %}
+                        </div>
+                        <div class="about-left">
+                            {% if about.short_description %}
+                            <h3>{{ about.short_description }}</h3>
+                            {% endif %}
+                            {% if about.long_description %}
+                            <p>{{ about.long_description|safe }}</p>
+                            {% endif %}
+                            <div class="company-since">
+                                {% if settings.logo_dark %}
+                                <div class="company-logo">
+                                    <img src="{{ settings.logo_dark.url }}" width="300" alt>
+                                </div>
+                                {% endif %}
+                                {% if about.ranking_number %}
+                                <strong>#{{ about.ranking_number }}</strong>
+                                {% endif %}
+                                
+                                <h4>{% if about.tag_line %}{{ about.tag_line }}{% endif %} {% if about.experience %}<span>{{ about.experience }}</span>{% endif %}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 or-1 wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
+                        <div class="about-right">
+                            {% if about.image %}
+                            <div class="banner-1">
+                                <img src="{{ about.image.url }}" alt>
+                            </div>
+                            {% endif %}
+                            {% if about.video_thumbnail %}
+                            <div class="banner-2">
+                                <img src="{{ about.video_thumbnail.url }}" alt>
+                                <div class="banner2-inner">
+                                    <div class="play">
+                                        <a class="video-popup" href="{{ about.video_url }}"><i
+                                                class="fas fa-play"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+
+        <!--====================== Funfact Section ======================-->
+{% if funfact %}x
+        <section class="features-area">
+            <div class="container">
+                <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="sec-title white">
+                        <span>Care Study</span>
+                        <h2>Fun Facts</h2>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    {% for fact in funfact %}
+                        <div class="col-md-6 col-lg-3 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="single-feature">
+                                <div class="feature-inner">
+                                    {% if fact.fontawesome_icon_class %}
+                                    <div class="icon">
+                                        <i class="{{ fact.fontawesome_icon_class }} service-ico"></i>
+                                    </div>
+                                    {% endif %}
+                                    <span class="counter" data-target="{{ fact.count }}">0</span><sup>{{ fact.count_after }}</sup>
+                                    <h4>{{ fact.title }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        <!--====================== Team Section ======================-->
+        {% if teams %}
+        <section class="our-team sec-mar">
+            <div class="container">
+                <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="sec-title">
+                        <span>Our Team</span>
+                        <h2>Meet Our Team</h2>
+                    </div>
+                </div>
+                <div class="swiper team-slider">
+                    <div class="swiper-wrapper">
+                        {% for team in teams %}
+                            <div class="swiper-slide wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                                <div class="single-team layout2">
+                                    <div class="member-img">
+                                        {% if team.image %}
+                                        <img src="{{ team.image.url }}" alt>
+                                        {% endif %}
+                                        <svg width="185" height="299" viewBox="0 0 167 269" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                d="M4.25412 0.814453C1.68125 2.62384 0 5.61553 0 8.99991V269H167C167 269 47 269 66.5 112.171C75.5581 39.3209 20.2679 8.22409 4.25412 0.814453Z"
+                                                fill="#191A1C" />
+                                        </svg>
+                                        <ul class="team-social">
+                                            {% if team.instagram %}
+                                            <li><a href="{{ team.instagram }}"><i class="fab fa-instagram"></i></a>
+                                            </li>
+                                            {% endif %}
+                                            {% if team.facebook %}
+                                            <li><a href="{{ team.facebook }}"><i class="fab fa-facebook-f"></i></a>
+                                            </li>
+                                            {% endif %}
+                                            {% if team.linkedin %}
+                                            <li><a href="{{ team.linkedin }}"><i class="fab fa-linkedin"></i></a></li>
+                                            {% endif %}
+                                            {% if team.whatsapp %}
+                                            <li><a href="https://wa.me/{{ team.whatsapp }}"><i class="fab fa-whatsapp"></i></a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <div class="team-inner">
+                                        <h4>{{ team.name }}</h4>
+                                        <span class="text-light">{{ team.position }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!--====================== Testimoials Section ======================-->
+{% if testimonials %}
+        <section class="testimonial-area">
+            <div class="container-fluid p-0">
+                <div class="title-wrap">
+                    <div class="sec-title white">
+                        <span>Testimonial</span>
+                        <h2>Client Say About Us</h2>
+                    </div>
+                </div>
+                <div class="swiper testimonial-slider">
+                    <div class="swiper-wrapper">
+                        {% for testimonial in testimonials %}
+                            <div class="swiper-slide">
+                                <div class="single-testimonial">
+                                    <div class="quote">
+                                        <i class="fas fa-quote-right"></i>
+                                    </div>
+                                    <h5>{{ testimonial.name }}</h5>
+                                    <span>{{ testimonial.position }}</span>
+                                    
+                                    {% if testimonial.star %}
+                                        <div class="stars">
+                                            {% for i in "x"|rjust:testimonial.star %}
+                                                <a href="#"><i class="fas fa-star"></i></a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <p>{{ testimonial.description }}</p>
+                                    {% if testimonial.image %}
+                                        <div class="reviewer">
+                                            <img src="{{ testimonial.image.url }}" alt>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination d-md-none d-md-block"></div>
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+        {% endif %}
+        <!--====================== Blog Section ======================-->
+
+        {% if blogs %}
+        <section class="blog-area mt-5">
+            <div class="container">
+                <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="sec-title">
+                        <span>All Blog</span>
+                        <h2>Latest Post</h2>
+                    </div>
+                </div>
+                <div class="row gy-4">
+                    {% for blog in blogs|slice:":3" %}
+                        <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="single-blog">
+                                <div class="blog-thumb">
+                                    <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
+                                    <div class="tag">
+                                        <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                    </div>
+                                </div>
+                                <div class="blog-inner">
+                                    <div class="author-date">
+                                        <a href="#">By, {{ blog.author }}</a>
+                                        <a href="#">{{ blog.created_at }}</a>
+                                    </div>
+                                    <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+</section>
+{% endif %}
+
+{% endblock %}

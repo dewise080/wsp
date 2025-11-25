@@ -1,0 +1,470 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="{{seo_settings.meta_description}}">
+    {% if request.is_secure %}
+      <link rel="canonical" href="https://{{ request.get_host }}">
+    {% else %}
+      <link rel="canonical" href="http://{{ request.get_host }}">
+    {% endif %}
+      <meta name="keywords" content="{{seo_settings.seo_keywords}}" />
+    {% if request.is_secure %}
+      <meta name="publisher" content="https://{{ request.get_host }}">
+    {% else %}
+      <meta name="publisher" content="http://{{ request.get_host }}">
+    {% endif %}
+      <meta name="copyright" content="{{header_footer.footer_copyright}}" />
+      <meta name="author" content="{{settings.author}}" />
+      <meta name="contact" content="{{settings.email_address}}" />
+  
+      <meta name="robots" content="index, follow" />
+      <meta name="googlebot" content="index, follow" />
+      <meta name="subjects" content="{{settings.name}}" />
+      <meta name="classification" content="{{settings.name}}" />
+  
+      <meta itemprop="name" content="{% block title1 %}{% endblock title1 %}">
+      <meta itemprop="description" content="{{seo_settings.meta_description}}">
+      {% if seo_settings.meta_image %}
+      <meta itemprop="image" content="{% if request.is_secure %}https://{{ request.get_host }}{{seo_settings.meta_image.url}}{% else %}http://{{ request.get_host }}{{seo_settings.meta_image.url}}{% endif %}">
+      {% endif %}
+      
+      <meta property="og:title" content="{% block title2 %}{% endblock title2 %}" />
+      <meta property="og:type" content="{{seo_settings.seo_keywords}}" />
+    {% if request.is_secure %}
+      <meta property="og:url" content="https://{{ request.get_host }}" />
+    {% else %}
+      <meta property="og:url" content="http://{{ request.get_host }}" />
+    {% endif %}
+    {% if seo_settings.meta_image %}
+      <meta property="og:image" content="{% if request.is_secure %}https://{{ request.get_host }}{{seo_settings.meta_image.url}}{% else %}http://{{ request.get_host }}{{seo_settings.meta_image.url}}{% endif %}" />
+      {% endif %}
+      <meta property="og:site_name" content="{{settings.name}}" />
+      <meta property="og:description" content="{{seo_settings.meta_description}}" />
+    <!-- Favicon -->
+   
+    <link rel="shortcut icon" href="{{settings.getFavicon}}" type="image/x-icon">
+    <link rel="icon" href="{{settings.getFavicon}}" type="image/x-icon">
+
+    <link href="{% static 'front/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'front/assets/css/bootstrap-icons.css' %}" rel="stylesheet">
+
+    <link href="{% static 'front/assets/css/all.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'front/assets/css/fontawesome.min.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'front/assets/css/swiper-bundle.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'front/assets/css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'front/assets/css/animate.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'front/assets/css/style.css' %}">
+
+    <title>{% block title %}{% endblock title %}</title>
+    <style>
+        .service-ico {
+            font-size: 70px !important;
+            color: #5da78b;
+        }
+    </style>
+
+    {% if settings.facebook_chat_is_active %}
+        {{settings.facebook_chat_code|safe}}
+    {% endif %}
+
+    {% if settings.facebook_pixel_code %}
+        {{settings.facebook_pixel_code|safe}}
+    {% endif %}
+
+    {% if settings.analytics_code %}
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{settings.analytics_code}}"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{settings.analytics_code}}');
+        </script>
+    {% endif %}
+
+    {% if settings.custom_css %}
+        <style>
+            {{ settings.custom_css }}
+        </style>
+    {% endif %}
+
+</head>
+
+<body>
+
+    <header class="header-area position_top">
+        <div class="site-logo">
+            <div class="logo">
+                {% if settings.logo_light %}
+                <a href="{% url "homePageFront" %}"><img src="{{ settings.getLogoLight}}" alt="image"></a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="main-menu">
+            <nav class="main-nav">
+                <div class="mobile-menu-logo">
+                    {% if settings.logo_dark %}
+                    <a href="{% url "homePageFront" %}"><img src="{{ settings.getLogoDark}}" alt></a>
+                    {% endif %}
+                    <div class="remove">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                </div>
+                {% if settings.default_menu_is_active %}
+                    <ul>
+                        <li class="has-child {% if request.path == '/' %}active{% endif %}">
+                            <a href="{% url "homePageFront" %}">Home</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
+                            <a href="{% url "aboutPageFront" %}">About Us</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/services/' %}active{% endif %}">
+                            <a href="{% url "serviceFrontPage" %}">Services</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/projects/' %}active{% endif %}">
+                            <a href="{% url "projectPageFront" %}">Projects</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/pricing/' %}active{% endif %}">
+                            <a href="{% url "pricingPageFront" %}">Pricing</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/blogs/' %}active{% endif %}">
+                            <a href="{% url "blogPageFront" %}">Blogs</a>
+                        </li>
+                        <li class="has-child {% if request.path == '/contact-us/' %}active{% endif %}">
+                            <a href="{% url "contactPageFront" %}">Contact Us</a>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul>
+                        {% for primary_menu in primary_menus %}
+                        <li class="has-child {% if primary_menu.name == 'Home' %}active{% endif %}">
+                                <a href="{{ primary_menu.url }}">{{ primary_menu.name }}</a>
+                                
+                                {% if primary_menu.submenu_set.all %}
+                                    <i class="bi bi-chevron-down"></i>
+                                    <ul class="sub-menu">
+                                        {% for sub_menu in sub_menus %}
+                                            {% if sub_menu.parent_menu == primary_menu %}
+                                                <li><a href="{{ sub_menu.url }}">{{ sub_menu.name }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <div class="get-qoute d-flex justify-content-center d-lg-none d-block pt-50">
+                    <div class="cmn-btn">
+                        <div class="line-1"></div>
+                        <div class="line-2"></div>
+                        <a href="{{ header_footer.header_button_url }}">{{ header_footer.header_button_text }}</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="nav-right">
+            <div class="get-qoute">
+                <div class="cmn-btn">
+                    <div class="line-1"></div>
+                    <div class="line-2"></div>
+                    <a href="{{ header_footer.header_button_url }}">{{ header_footer.header_button_text }}</a>
+                </div>
+            </div>
+            <div class="mobile-menu">
+                <a href="javascript:void(0)" class="cross-btn">
+                    <span class="cross-top"></span>
+                    <span class="cross-middle"></span>
+                    <span class="cross-bottom"></span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+        {% block content %}{% endblock content %}
+
+
+        <!--====================== Subscribe Section======================-->
+
+        <section class="subscribe-newsletter sec-mar-top">
+            <div class="container">
+                <div class="news-letter-content">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 wow animate fadeInLeft" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="subscribe-cnt">
+                                <span>Get In Touch</span>
+                                <h3>Subscribe Our</h3>
+                                <strong>Newsletter</strong>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 wow animate fadeInRight" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="subscribe-form">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="email" name="email" class="emailfield" placeholder="Type Your Email">
+                                    <input type="submit" class="subscribe-btn" value="Subscribe">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--====================== Footer Section ======================--> 
+
+        <footer>
+            <div class="container">
+                <div class="footer-top">
+                    <div class="row">
+                        <div class="col-md-3 col-lg-3 col-xl-3">
+                            <div class="footer-widget">
+                                <div class="footer-logo">
+                                    {% if settings.logo_light %}
+                                    <a href="index.html"><img src="{{ settings.getLogoLight}}" alt></a>
+                                    {% endif %}
+                                </div>
+                                <p>{{ header_footer.footer_col1_description }}</p>
+                                <ul class="social-media-icons">
+                                    {% if header_footer.social1_icon %}
+                                        <li><a href="{{ header_footer.social1_link }}"><i class="{{ header_footer.social1_icon }}"></i></a></li>
+                                    {% endif %}
+                                    {% if header_footer.social2_icon %}
+                                        <li><a href="{{ header_footer.social2_link }}"><i class="{{ header_footer.social2_icon }}"></i></a></li>
+                                    {% endif %}
+                                    {% if header_footer.social3_icon %}
+                                        <li><a href="{{ header_footer.social3_link }}"><i class="{{ header_footer.social3_icon }}"></i></a></li>
+                                    {% endif %}
+                                    {% if header_footer.social4_icon %}
+                                        <li><a href="{{ header_footer.social4_link }}"><i class="{{ header_footer.social4_icon }}"></i></a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 col-xl-3">
+                            <div class="footer-widget">
+                                <h4>Our Services</h4>
+                                <ul class="footer-menu">
+                                    {% for service in fservices|slice:":6" %}
+                                        <li><a href="{% url "serviceDetail" service.slug %}">{{ service.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 col-xl-3">
+                            <div class="footer-widget">
+                                <h4>Recent Projects</h4>
+                                <ul class="footer-menu">
+                                    {% for project in fprojects|slice:":6" %}
+                                        <li><a href="{% url "projectDetails" project.slug %}">{{ project.title }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 col-xl-3">
+                            <div class="footer-widget">
+                                <h4>Contacts</h4>
+                                <div class="number">
+                                    <div class="num-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div class="phone">
+                                        <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
+                                    </div>
+                                </div>
+                                <div class="office-mail">
+                                    <div class="mail-icon">
+                                        <i class="far fa-envelope"></i>
+                                    </div>
+                                    <div class="email">
+                                        <a href="mailto:{{ settings.email_address }}"><span class="__cf_email__"
+                                                data-cfemail="630a0d050c23061b020e130f064d000c0e">{{ settings.email_address }}</span></a>
+                                    </div>
+                                </div>
+                                <div class="address">
+                                    <div class="address-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <p>{{settings.address}}, {{settings.city}}-{{settings.postal}}, {{settings.state}}, {{settings.country}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-4 col-lg-4 col-xl-5">
+                            <div class="copy-txt">
+                                <span>{{ header_footer.footer_copyright|safe }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-lg-8 col-xl-7">
+                            <ul class="footer-bottom-menu">
+                                <li><a href="{% url "policyPageFront" %}">Privacy Policy</a></li>
+                                <li><a href="{% url "termsPageFront" %}">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    {% if settings.magic_cursor_is_active %}
+        <div class="cursor"></div>
+    {% endif %}
+
+    <div id="progress">
+        <span id="progress-value"><i class="fas fa-arrow-up"></i></span>
+      </div>
+
+    {% if settings.whatsapp_is_active %}
+    <a target="_blank" class="codeless-add-purchase-button" href="https://wa.me/{{ settings.phone }}">
+        <i class="icon">
+            <svg height="682pt" viewBox="-23 -21 682 682.66669" width="682pt" xmlns="http://www.w3.org/2000/svg">
+                <path d="m544.386719 93.007812c-59.875-59.945312-139.503907-92.9726558-224.335938-93.007812-174.804687 0-317.070312 142.261719-317.140625 317.113281-.023437 55.894531 14.578125 110.457031 42.332032 158.550781l-44.992188 164.335938 168.121094-44.101562c46.324218 25.269531 98.476562 38.585937 151.550781 38.601562h.132813c174.785156 0 317.066406-142.273438 317.132812-317.132812.035156-84.742188-32.921875-164.417969-92.800781-224.359376zm-224.335938 487.933594h-.109375c-47.296875-.019531-93.683594-12.730468-134.160156-36.742187l-9.621094-5.714844-99.765625 26.171875 26.628907-97.269531-6.269532-9.972657c-26.386718-41.96875-40.320312-90.476562-40.296875-140.28125.054688-145.332031 118.304688-263.570312 263.699219-263.570312 70.40625.023438 136.589844 27.476562 186.355469 77.300781s77.15625 116.050781 77.132812 186.484375c-.0625 145.34375-118.304687 263.59375-263.59375 263.59375zm144.585938-197.417968c-7.921875-3.96875-46.882813-23.132813-54.148438-25.78125-7.257812-2.644532-12.546875-3.960938-17.824219 3.96875-5.285156 7.929687-20.46875 25.78125-25.09375 31.066406-4.625 5.289062-9.242187 5.953125-17.167968 1.984375-7.925782-3.964844-33.457032-12.335938-63.726563-39.332031-23.554687-21.011719-39.457031-46.960938-44.082031-54.890626-4.617188-7.9375-.039062-11.8125 3.476562-16.171874 8.578126-10.652344 17.167969-21.820313 19.808594-27.105469 2.644532-5.289063 1.320313-9.917969-.664062-13.882813-1.976563-3.964844-17.824219-42.96875-24.425782-58.839844-6.4375-15.445312-12.964843-13.359374-17.832031-13.601562-4.617187-.230469-9.902343-.277344-15.1875-.277344-5.28125 0-13.867187 1.980469-21.132812 9.917969-7.261719 7.933594-27.730469 27.101563-27.730469 66.105469s28.394531 76.683594 32.355469 81.972656c3.960937 5.289062 55.878906 85.328125 135.367187 119.648438 18.90625 8.171874 33.664063 13.042968 45.175782 16.695312 18.984374 6.03125 36.253906 5.179688 49.910156 3.140625 15.226562-2.277344 46.878906-19.171875 53.488281-37.679687 6.601563-18.511719 6.601563-34.375 4.617187-37.683594-1.976562-3.304688-7.261718-5.285156-15.183593-9.253906zm0 0" fill-rule="evenodd"/>
+            </svg>
+        </i>
+    </a>
+    {% endif %}
+
+    <script src="{% static 'front/assets/js/jquery-3.6.0.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/swiper-bundle.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/waypoints.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/jquery.counterup.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/isotope.pkgd.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/jquery.magnific-popup.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/wow.min.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/particles.min.js' %}"></script>
+    <script src="{% static 'front/assets/js/app.js' %}"></script>
+
+    <script src="{% static 'front/assets/js/custom.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.subscribe-btn').on('click', function(e) {
+                e.preventDefault();
+                let email = $(this).prev().val();
+    
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'SubscriberSubmit' %}",
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.status === 'success') {
+                            toastr.success(data.message);
+                            $('.emailfield').val('');
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }                
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Hide the alert initially
+            $('#custom-alert').hide();
+    
+            $('#contact-form').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                
+                // Get values from the form inputs
+                let name = $('input[name="name"]').val();
+                let email = $('input[name="email"]').val();
+                let phone = $('input[name="phone"]').val();
+                let subject = $('input[name="subject"]').val();
+                let message = $('textarea[name="message"]').val();
+    
+                // Prepare the data to be sent via AJAX
+                let formData = {
+                    'name': name,
+                    'email': email,
+                    'phone': phone,
+                    'subject': subject,
+                    'message': message,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                };
+    
+                // Send an AJAX POST request
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'ContactSubmit' %}",
+                    data: formData,
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            // Show the Bootstrap success alert
+                            $('#custom-alert').removeClass('alert-danger').addClass('alert-success');
+                            $('#custom-alert').html('<strong>Success!</strong> Your message has been sent successfully! We will get back to you soon.');
+                            $('#custom-alert').show();
+    
+                            // Manually trigger the alert dismissal after a delay (e.g., 5 seconds)
+                            setTimeout(function() {
+                                $('#custom-alert').alert('close');
+                            }, 5000); // 5000 milliseconds = 5 seconds
+    
+                            // Show the toastr success notification
+                            toastr.success(data.message);
+    
+                            // Clear the form fields after successful submission
+                            $('.cntform input[type="text"], .cntform input[type="email"], .cntform input[type="number"], .cntform textarea[name="message"]').val('');
+                        } else {
+                            // Show the Bootstrap error alert
+                            $('#custom-alert').removeClass('alert-success').addClass('alert-danger');
+                            $('#custom-alert').html('<strong>Error:</strong> ' + data.message);
+                            $('#custom-alert').show();
+    
+                            // Show the toastr error notification
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('An error occurred while submitting the form.');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    {% if settings.custom_js %}
+        <script>
+            {{ settings.custom_js }}
+        </script>
+    {% endif %}
+    {% block inline_edit_toolbar %}{% endblock inline_edit_toolbar %}
+</body>
+
+</html>

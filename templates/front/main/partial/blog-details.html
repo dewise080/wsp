@@ -1,0 +1,99 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{blog.title}} - {{seo_settings.meta_title}} {% endblock title %}
+{% block title1 %} {{blog.title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{blog.title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+    .breadcrumb-cnt h3{
+        color:#75dab4;
+    }
+</style>
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h3>{{ blog.title }}</h3>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Blog<i class="bi bi-arrow-right"></i>{{ blog.title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="blog-details-area sec-mar-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="blog-details-content">
+                            <h3>{{ blog.title }}</h3>
+                            <div class="author-date layout2">
+                                {% if blog.author %}
+                                <a href="#">By, {{ blog.author }}</a>
+                                {% endif %}
+                                <a href="#">{{ blog.created_at }}</a>
+                            </div>
+                            <div class="details-thumb">
+                                <img src="{{ blog.getTHumb }}" style="border-radius:10px;" alt="thumbnail">
+                            </div>
+                            <div id="blog-desc-{{ blog.id }}" data-inline-rich="true" data-inline-field="description" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">
+                                {{ blog.description|safe }}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar-widget">
+                            <div class="widget-search">
+                                <form action="{% url "blogPageFront" %}" method="GET">
+                                    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search Here">
+                                    <button type="submit"><i class="bi bi-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="sidebar-widget">
+                            <h4>Categories</h4>
+                            <ul class="category">
+                                {% for category in categories %}
+                                    <li><a href="{% url "blogsByCategory" category.slug %}">{{ category.title }}<i class="bi bi-arrow-right"></i></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="sidebar-widget">
+                            <h4>Newest Post</h4>
+                            {% for blog in blogs|slice:":10" %}
+                                <div class="recent-post">
+                                    <div class="recent-thumb">
+                                        <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" style="border-radius:5px;" alt="thumbnail"></a>
+                                    </div>
+                                    <div class="recent-post-cnt">
+                                        <span>{{ blog.created_at }}</span>
+                                        <h5><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h5>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}
+
+{% block inline_edit_toolbar %}
+  {% include 'front/inline_edit_toolbar.html' %}
+{% endblock inline_edit_toolbar %}

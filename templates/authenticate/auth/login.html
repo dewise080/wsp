@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="icon" href="{{ settings.getFavicon }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ settings.getFavicon }}" type="image/x-icon">
+    
+    <title>{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}</title>
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/font-awesome.css' %}">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/icofont.css' %}">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/themify.css' %}">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/flag-icon.css' %}">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/feather-icon.css' %}">
+    <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/sweetalert2.css' %}">
+    <!-- Plugins css Ends-->
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/vendors/bootstrap.css' %}">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/style.css' %}">
+    <link id="color" rel="stylesheet" href="{% static 'admin/assets/css/color-1.css' %}" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/responsive.css' %}">
+  </head>
+  <body>
+    <!-- login page start-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 p-0">
+          <div class="login-card">
+            <div>
+              <div class="login-main"> 
+                <form class="theme-form" method="post">
+                {% csrf_token %}
+                <h4 class="text-light">Login in to account</h4>
+                <p class="text-light">Enter your username & password to login</p>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                            <strong>Error:</strong>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %} 
+                <div class="form-group">
+                    <label class="col-form-label text-light">Username<span class="text-danger">*</span></label>
+                    <input class="form-control" type="text" required="" name="username" placeholder="eg. rakib">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label text-light">Password<span class="text-danger">*</span></label>
+                    <div class="form-input position-relative">
+                        <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                        <div class="show-hide"><span class="show">                         </span></div>
+                    </div>
+                </div>
+                <div class="form-group mb-0">
+                    <div class="checkbox p-0">
+                        <input id="checkbox1" type="checkbox">
+                        <label class="text-muted" for="checkbox1">Remember password</label>
+                    </div>
+                    <a class="link" href="{% url "initiate_password_reset" %}">Forgot password?</a>
+                    <div class="text-end mt-3">
+                        <button class="btn btn-primary btn-block w-100" type="submit">Sign in</button>
+                    </div>
+                </div>
+            
+                <!-- Buttons for Admin and Editor -->
+                {% if demo_mode %}
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary" type="button" onclick="fillAdminCredentials()">Admin</button>
+                    <button class="btn btn-primary" type="button" onclick="fillEditorCredentials()">Editor</button>
+                </div>
+                {% endif %}
+            </form>
+            
+            {% if demo_mode %}
+            <script>
+                // JavaScript functions to fill in username and password fields for Admin and Editor
+                function fillAdminCredentials() {
+                    document.querySelector('input[name="username"]').value = "admin";
+                    document.querySelector('input[name="login[password]"]').value = "123456";
+                }
+            
+                function fillEditorCredentials() {
+                    document.querySelector('input[name="username"]').value = "editor";
+                    document.querySelector('input[name="login[password]"]').value = "123456";
+                }
+            </script>
+            {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- latest jquery-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <!-- Bootstrap js-->
+      <script src="{% static 'admin/assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+      <!-- feather icon js-->
+      <script src="{% static 'admin/assets/js/icons/feather-icon/feather.min.js' %}"></script>
+      <script src="{% static 'admin/assets/js/icons/feather-icon/feather-icon.js' %}"></script>
+      <!-- scrollbar js-->
+      <!-- Sidebar jquery-->
+      <script src="{% static 'admin/assets/js/config.js' %}"></script>
+      <!-- Plugins JS start-->
+      <script src="{% static 'admin/assets/js/sweet-alert/sweetalert.min.js' %}"></script>
+      <!-- Plugins JS Ends-->
+      <!-- Theme js-->
+      <script src="{% static 'admin/assets/js/script.js' %}"></script>
+      <!-- Plugin used-->
+      <script>
+        $(document).on('click', '#error', function(e) {
+          if($('.email').val() == '' || $('.pwd').val() == ''){
+          swal(
+            "Error!", "Sorry, looks like some data are not filled, please try again !", "error"           
+          )
+          }
+        });
+      </script>
+    </div>
+  </body>
+</html>

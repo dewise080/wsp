@@ -1,0 +1,125 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Projects</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Projects</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% if projects %}
+        <section class="project-area sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Case Study</span>
+                        <h2>Project</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="isotope-menu">
+                            <li class="active" data-filter="*">All</li>
+                            {% for category in project_categories  %}
+                                <li data-filter=".{{category.slug}}">{{category.name}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="row g-4 project-items">
+
+                    {% for project in projects %}
+                        <div class="col-md-6 col-lg-4 single-item {{ project.category.slug }}">
+                            <div class="item-img">
+                                <a href="{% url "projectDetails" project.slug %}"><img src="{{ project.getProjectImage }}" alt></a>
+                            </div>
+                            <div class="item-inner-cnt">
+                                {% if project.category %}
+                                    <span>{{ project.category }}</span>
+                                {% endif %}
+                                <h4>{{ project.title }}</h4>
+                                <div class="view-btn">
+                                    <a href="{% url "projectDetails" project.slug %}">view details</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+            <div class="load-more">
+                <ul class="paginations">
+                    {% if projects.previous_page_number > 0 %}
+                    <li><a href="?page={{projects.previous_page_number}}"><i class="fas fa-long-arrow-alt-left"></i></a></li>
+                    {% endif %}
+                    {% for page in projects.paginator.page_range %}
+                        <li{% if page == projects.number %} class="active"{% endif %}><a href="?page={{ page }}">{{ page }}</a></li>
+                    {% endfor %}
+                    {% if projects.next_page_number > 0 %}
+                    <li><a href="?page={{ projects.next_page_number }}"><i class="fas fa-long-arrow-alt-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </section>
+{% endif %}
+
+        <!--====================== Blog Section ======================-->
+{% if blogs %}
+        <section class="blog-area">
+            <div class="container">
+                <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="sec-title">
+                        <span>All Blog</span>
+                        <h2>Latest Post</h2>
+                    </div>
+                </div>
+                <div class="row gy-4">
+                    {% for blog in blogs|slice:":3" %}
+                        <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="single-blog">
+                                <div class="blog-thumb">
+                                    <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
+                                    <div class="tag">
+                                        <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                    </div>
+                                </div>
+                                <div class="blog-inner">
+                                    <div class="author-date">
+                                        <a href="#">By, {{ blog.author }}</a>
+                                        <a href="#">{{ blog.created_at }}</a>
+                                    </div>
+                                    <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,459 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+{% block content %}
+<style>
+    label.switch {
+        margin-top: -35px;
+    }
+    @media only screen and (max-width: 600px) {
+      #ver-pills-tab {
+         display: -webkit-box;
+         margin-bottom: 18px;
+     }
+    }
+    
+</style>
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Website Settings</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item">Settings</li>
+                  <li class="breadcrumb-item active">Website Settings</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Container-fluid starts-->
+   <div class="container-fluid">
+      <div class="row project-cards">
+         <div class="col-md-12 project-list">
+         </div>
+         <div class="container">
+            <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{form.media}}   
+               {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %} 
+               {% if form.errors %}
+               <div class="alert alert-danger">
+                  <strong>Error:</strong>
+                  <ul>
+                     {% for field, errors in form.errors.items %}
+                     {% for error in errors %}
+                     <li>{{ field }}: {{ error }}</li>
+                     {% endfor %}
+                     {% endfor %}
+                  </ul>
+               </div>
+               {% endif %}
+               <div class="row mb-2">
+                  <div class="col-sm-12 col-xxl-12">
+                     <div class=" height-equal">
+                       <div class="">
+                       </div>
+                       <div class="">
+                         <div class="row">    
+                           <div class="col-md-2 col-xs-12">
+                              <div class="nav flex-column nav-pills nav-primary" id="ver-pills-tab" role="tablist" aria-orientation="vertical">
+                              
+                                 <a class="nav-link active" id="ver-pills-home-tab" data-bs-toggle="pill" href="#ver-pills-home" role="tab" aria-controls="ver-pills-home" aria-selected="true">General</a>
+                                 
+                                 <a class="nav-link" id="ver-pills-logo-tab" data-bs-toggle="pill" href="#ver-pills-logo" role="tab" aria-controls="ver-pills-logo" aria-selected="false">Logo</a>
+                                 
+                                 <a class="nav-link" id="ver-pills-contact-tab" data-bs-toggle="pill" href="#ver-pills-contact" role="tab" aria-controls="ver-pills-contact" aria-selected="false">Contact</a>
+
+                                 <a class="nav-link" id="ver-pills-sms-tab" data-bs-toggle="pill" href="#ver-pills-sms" role="tab" aria-controls="ver-pills-sms" aria-selected="false">SMS</a>
+                                 
+                                 <a class="nav-link" id="ver-pills-analytics-tab" data-bs-toggle="pill" href="#ver-pills-analytics" role="tab" aria-controls="ver-pills-analytics" aria-selected="false">Social</a>
+
+                                 <a class="nav-link" id="ver-pills-others-tab" data-bs-toggle="pill" href="#ver-pills-others" role="tab" aria-controls="ver-pills-others" aria-selected="false">Others</a>
+                              </div>
+                           </div>
+                           <div class="col-md-10 col-xs-12">
+                             <div class="tab-content" id="ver-pills-tabContent">
+                               <div class="tab-pane fade show active" id="ver-pills-home" role="tabpanel" aria-labelledby="ver-pills-home-tab">
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.name.id_for_label }}" class="form-label">Application Name</label>
+                                             {{ form.name }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.author.id_for_label }}" class="form-label">Author</label>
+                                            {{ form.author }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.currency_name.id_for_label }}" class="form-label">Currency Name</label>
+                                              {{ form.currency_name }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.currency_symbol.id_for_label }}" class="form-label">Currency Symbol</label>
+                                             {{ form.currency_symbol }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.slider_particle_is_active.id_for_label }}" class="form-label">Slider Particle Animation</label>
+                                              <div class="media-body text-end icon-state">
+                                                <label class="switch">
+                                                  {{ form.slider_particle_is_active }}<span class="switch-state"></span>
+                                                </label>
+                                              </div>
+                                              <p>After turning it off your website's slider particle animation will be disappear. If you want the animation keep it on.</p>
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.default_menu_is_active.id_for_label }}" class="form-label">Default Menu</label>
+                                             <div class="media-body text-end icon-state">
+                                               <label class="switch">
+                                                 {{ form.default_menu_is_active }}<span class="switch-state"></span>
+                                               </label>
+                                             </div>
+                                             <p>After turning it off your website's default navigation menu will be disappear then you can add your custom menu from <a href="{% url "AdminPrimaryMenuList" %}">here.</a></p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.magic_cursor_is_active.id_for_label }}" class="form-label">Magic Cursor</label>
+                                             <div class="media-body text-end icon-state">
+                                               <label class="switch">
+                                                 {{ form.magic_cursor_is_active }}<span class="switch-state"></span>
+                                               </label>
+                                             </div>
+                                             <p>This will show a cursor effect on the website. Keep turn on to enable the effect.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.show_call_now_widget.id_for_label }}" class="form-label">Call now widget</label>
+                                             <div class="media-body text-end icon-state">
+                                               <label class="switch">
+                                                 {{ form.show_call_now_widget }}<span class="switch-state"></span>
+                                               </label>
+                                             </div>
+                                             <p>This will show a call now widget in service & project details page.</p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+
+                               </div>
+                               <div class="tab-pane fade " id="ver-pills-logo" role="tabpanel" aria-labelledby="ver-pills-logo-tab">
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.logo_light.id_for_label }}" class="form-label">Logo Light</label>
+                                             <br>
+                                             {% if settings.logo_light %}
+                                                    <img class="mb-2" src="{{ settings.getLogoLight}}" width="160" alt="Current Image">
+                                            {% endif %}
+                                            <br>
+                                             {{ form.logo_light }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.logo_dark.id_for_label }}" class="form-label">Logo Dark</label>
+                                            <br>
+                                             {% if settings.logo_dark %}
+                                                    <img class="mb-2" src="{{ settings.getLogoDark}}" width="160" alt="Current Image">
+                                            {% endif %}
+                                            <br>
+                                            {{ form.logo_dark }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                   <div class="col-md-12">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.logo_dark.id_for_label }}" class="form-label">Favicon</label>
+                                          <br>
+                                             {% if settings.favicon %}
+                                                    <img class="mb-2" src="{{ settings.favicon.url }}" width="30" alt="Current Image">
+                                            {% endif %}
+                                            <br>
+                                          {{ form.favicon }}
+                                       </div>
+                                    </div>
+                                 </div>
+                                 </div>
+                               </div>
+                               <div class="tab-pane fade" id="ver-pills-contact" role="tabpanel" aria-labelledby="ver-pills-contact-tab">
+                                 <div class="row mb-2">
+                                    <div class="col-md-4">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.email_address.id_for_label }}" class="form-label">Email</label>
+                                             {{ form.email_address }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.phone.id_for_label }}" class="form-label">Phone ( What's App )</label>
+                                             {{ form.phone }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.price_ragne.id_for_label }}" class="form-label">Price Range</label>
+                                            {{ form.price_ragne }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+                  
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                                             {{ form.address }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                                             {{ form.city }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                  
+                                 <div class="row mb-1">
+                                  <div class="col-md-4">
+                                     <div class="card">
+                                        <div class="card-body">
+                                           <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                                           {{ form.state }}
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                     <div class="card">
+                                        <div class="card-body">
+                                           <label for="{{ form.postal.id_for_label }}" class="form-label">Postal</label>
+                                           {{ form.postal }}
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+                                            {{ form.country }}
+                                         </div>
+                                      </div>
+                                   </div>
+                               </div>
+                               
+                               <div class="row mb-1">
+                                 <div class="col-md-12">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.address.id_for_label }}" class="form-label">Map Iframe Code</label>
+                                          {{ form.map_iframe }}
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div class="row mb-1">
+                                 <div class="col-md-12">
+                                    <div class="card">
+                                       <div class="card-body">
+                                          <label for="{{ form.contact_form_image.id_for_label }}" class="form-label">Contact Form Image</label>
+                                          {% if settings.contact_form_image %}
+                                          <br>
+                                          <img src="{{ settings.contact_form_image.url }}" width="50" alt="formimg" srcset="">
+                                          <br>
+                                          {% endif %}
+                                          {{ form.contact_form_image }}
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                               </div>
+
+                               <div class="tab-pane fade" id="ver-pills-sms" role="tabpanel" aria-labelledby="ver-pills-sms-tab">
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.twilio_sid.id_for_label }}" class="form-label">Twilio SID</label>
+                                             {{ form.twilio_sid }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.twilio_auth_token.id_for_label }}" class="form-label">Auth Token</label>
+                                             {{ form.twilio_auth_token }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                      <div class="card">
+                                         <div class="card-body">
+                                            <label for="{{ form.twilio_from_number.id_for_label }}" class="form-label">Twilio Number</label>
+                                            {{ form.twilio_from_number }}
+                                         </div>
+                                      </div>
+                                   </div>
+                                 </div>
+                              </div>
+
+                               <div class="tab-pane fade" id="ver-pills-analytics" role="tabpanel" aria-labelledby="ver-pills-analytics-tab">
+                                 <div class="row mb-2">
+                                    <div class="col-md-12">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.analytics_code.id_for_label }}" class="form-label">Google Analytics Measurement Code</label>
+                                             {{ form.analytics_code }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                    
+                                 <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.facebook_pixel_code.id_for_label }}" class="form-label">Facebook Pixel Code</label>
+                                              {{ form.facebook_pixel_code }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.facebook_chat_code.id_for_label }}" class="form-label">Facebook Chat Code</label>
+                                             {{ form.facebook_chat_code }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.whatsapp_is_active.id_for_label }}" class="form-label">Whats App Button</label>
+                                              <div class="media-body text-end icon-state">
+                                                <label class="switch">
+                                                  {{ form.whatsapp_is_active }}<span class="switch-state"></span>
+                                                </label>
+                                              </div>
+                                           </div>
+                                        </div>
+                                     </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.facebook_chat_is_active.id_for_label }}" class="form-label">Facebook Chat Button</label>
+                                             <div class="media-body text-end icon-state">
+                                                <label class="switch">
+                                                  {{ form.facebook_chat_is_active }}<span class="switch-state"></span>
+                                                </label>
+                                              </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                               </div>
+
+                               <div class="tab-pane fade " id="ver-pills-others" role="tabpanel" aria-labelledby="ver-pills-others-tab">
+                                 
+                                 <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                           <div class="card-body">
+                                              <label for="{{ form.custom_css.id_for_label }}" class="form-label">Custom CSS</label>
+                                              {{ form.custom_css }}
+                                           </div>
+                                        </div>
+                                     </div>
+                                    <div class="col-md-6">
+                                       <div class="card">
+                                          <div class="card-body">
+                                             <label for="{{ form.custom_css.id_for_label }}" class="form-label">Custom JS</label>
+                                             {{ form.custom_js }}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 
+                               </div>
+                               <button class="btn btn-primary mb-5" type="submit">Save</button>
+
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+               </div>                
+               
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Container-fluid Ends-->
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'front/base.html' %}
+{% load static %}
+{% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
+{% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
+{% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
+{% block content %}
+<style>
+    .premium-pricing h3{
+        color:white;
+    }
+    .premium-pricing span{
+        color:white;
+    }
+
+    .premium-pricing strong{
+        color:white;
+    }
+</style>
+    <main class="creasoft-wrap">
+
+        <div class="line_wrap">
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+            <div class="line_item"></div>
+        </div>
+
+
+        <section class="breadcrumbs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1>Pricing Plan</h1>
+                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Pricing</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!--====================== Pricing Section ======================-->
+{% if pricings %}
+        <section class="priceing-plan sec-mar">
+            <div class="container">
+                <div class="title-wrap">
+                    <div class="sec-title">
+                        <span>Getting Start</span>
+                        <h2>Pricing Plan</h2>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div class="row g-4">
+                            {% for pricing in pricings %}
+                                <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                                    <div class="price-box {% if pricing.is_featured %}tcg-price-box premium-pricing{% endif %}">
+                                        <!-- Featured Badge -->
+                                        {% if pricing.is_featured %}
+                                        <div class="plan-ribbon-wrapper">
+                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                        </div>
+                                        {% endif %}
+                                        <h3>{{ pricing.title }}</h3>
+                                        <span>{{ pricing.subtitle }}</span>
+                                        <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                        <div class="item-list">
+                                            {{ pricing.description|safe }}
+                                        </div>
+                                        <div class="price-btn">
+                                            <div class="line-1"></div>
+                                            <div class="line-2"></div>
+                                            <a href="{{ pricing.button_url }}">{{ pricing.button_text }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        <!--====================== Blog Section ======================-->
+        {% if blogs %}
+        <section class="blog-area">
+            <div class="container">
+                <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                    <div class="sec-title">
+                        <span>All Blog</span>
+                        <h2>Latest Post</h2>
+                    </div>
+                </div>
+                <div class="row gy-4">
+                    {% for blog in blogs|slice:":3" %}
+                        <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="single-blog">
+                                <div class="blog-thumb">
+                                    <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
+                                    <div class="tag">
+                                        <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                    </div>
+                                </div>
+                                <div class="blog-inner">
+                                    <div class="author-date">
+                                        <a href="#">By, {{ blog.author }}</a>
+                                        <a href="#">{{ blog.created_at }}</a>
+                                    </div>
+                                    <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+{% endblock %}

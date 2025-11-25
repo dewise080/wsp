@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flow Modifier</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/client": "https://esm.sh/react-dom@18/client",
+          "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+          "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime",
+          "@xyflow/react": "https://esm.sh/@xyflow/react@12.8.4?external=react,react-dom"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12.8.4/dist/style.css" />
+    <link rel="stylesheet" href="../assets/react-hero-flow.css" />
+    <style>
+      body { background:#0b1220; color:#e5e7eb; font-family: system-ui, sans-serif }
+      .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px }
+      .panel { display:flex; gap:16px; align-items:center; margin-bottom: 12px }
+      .panel input, .panel select, .panel button, .panel textarea { border:1px solid #334155; background:#111827; color:#e5e7eb; padding:6px 10px; border-radius:8px }
+      .panel button { cursor:pointer }
+      .grid { display:grid; grid-template-columns: 1fr 320px; gap:16px }
+      #rf-canvas-modifier { height: 600px; border:1px solid #334155; border-radius:12px; overflow:hidden }
+      .sidebar { padding:12px; border:1px solid #334155; border-radius:12px; background:#0f172a }
+      .sidebar h3 { margin: 0 0 8px 0; font-size: 14px; color:#cbd5e1 }
+      .row { display:flex; gap:8px; margin-bottom:8px }
+      .row label { width:110px; font-size:12px; color:#94a3b8 }
+      .row input, .row select { flex:1 }
+      .row textarea { width:100%; height:90px }
+      .muted { color:#94a3b8; font-size:12px }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Flow Modifier</h1>
+      <p class="muted">Edit nodes, connections, and metadata. Save to CSV/JSON, then refresh the landing page.</p>
+      <div class="panel">
+        <button id="btn-add">Add Node</button>
+        <button id="btn-del">Delete Selected</button>
+        <button id="btn-save-csv">Save CSV (3 files)</button>
+        <button id="btn-save-json">Save JSON</button>
+      </div>
+      <div class="grid">
+        <div id="rf-embed-hero">
+          <div class="p-3 border-b border-slate-700/50 bg-slate-900/85 backdrop-blur-sm text-center">
+            <p class="text-slate-300 text-base font-semibold">Flow Editor Preview</p>
+          </div>
+          <div id="rf-canvas-modifier"></div>
+        </div>
+        <div class="sidebar" id="inspector">
+          <h3>Inspector</h3>
+          <div class="row"><label>ID</label><input id="f-id" readonly /></div>
+          <div class="row"><label>Mode</label>
+            <select id="f-mode">
+              <option value="desktop">Desktop layout</option>
+              <option value="mobile">Mobile layout</option>
+            </select>
+          </div>
+          <div class="row"><label>Type</label>
+            <select id="f-type">
+              <option>eventNode</option>
+              <option>agentNode</option>
+              <option>connectorNode</option>
+              <option>logicNode</option>
+              <option>actionNode</option>
+            </select>
+          </div>
+          <div class="row"><label>Label</label><input id="f-label" /></div>
+          <div class="row"><label>Description</label><input id="f-desc" /></div>
+          <div class="row"><label>Icon Slug</label><input id="f-islug" placeholder="e.g. whatsapp" /></div>
+          <div class="row"><label>Icon Color</label><input id="f-icolor" placeholder="hex like 25D366" /></div>
+          <div class="row"><label>Icon Alt</label><input id="f-ialt" /></div>
+          <div class="row"><label>Items (slug,name,color per line)</label></div>
+          <div class="row"><textarea id="f-items" placeholder="googlecalendar,Google Calendar,1A73E8"></textarea></div>
+          <div class="muted">Select a node to edit its properties. Drag to reposition.</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="../assets/flow-modifier.js"></script>
+  </body>
+  </html>

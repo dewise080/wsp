@@ -36,6 +36,7 @@
     <link id="color" rel="stylesheet" href="{% static 'admin/assets/css/color-1.css' %}" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{% static 'admin/assets/css/responsive.css' %}">
+    {% block extra_css %}{% endblock extra_css %}
     <style>
       svg.verify-ico {
         margin-bottom: -2px;
@@ -293,13 +294,25 @@
                   </svg><span>Elements</span></a>
                 <ul class="sidebar-submenu">
                   <li><a href="{% url 'adminSliderElementList' %}">Sliders</a></li>
-                  <li><a href="{% url 'adminFunFactElementList' %}">Fun Facts</a></li>
+                <li><a href="{% url 'adminFunFactElementList' %}">Fun Facts</a></li>
                   <li><a href="{% url 'adminClientElementList' %}">Clients</a></li>
                   <li><a href="{% url 'adminTestimonialsElementList' %}">Testimonials</a></li>
                   <li><a href="{% url 'adminTeamElementList' %}">Team Members</a></li>
                   <li><a href="{% url 'adminPricingElementList' %}">Pricing</a></li>
                 </ul>
               </li>
+              <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+                <svg class="stroke-icon">
+                  <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-layout"></use>
+                </svg>
+                <svg class="fill-icon">
+                  <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#fill-layout"></use>
+                </svg><span>Workflows</span></a>
+              <ul class="sidebar-submenu">
+                <li><a href="{% url 'adminWorkflowList' %}">Workflow List</a></li>
+                <li><a href="{% url 'adminWorkflowCreate' %}">Create Workflow</a></li>
+              </ul>
+            </li>
               <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <svg class="stroke-icon">
                   <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-user"></use>
@@ -447,6 +460,7 @@
     <!-- Theme js-->
     <script src="{% static 'admin/assets/js/script.js' %}"></script>
     <script src="{% static 'admin/assets/js/theme-customizer/customizer.js' %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
 
     {% include "error/demo_mode.html" %}
     <!-- Plugin used-->

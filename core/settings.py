@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'marketing',
     'custompage',
     'analytics',
+    'workflows',
     'ckeditor',
     'debug_toolbar',
     "ninja",
@@ -205,3 +206,7 @@ if os.getenv('WHITENOISE_CONFIG') == 'True':
     }
 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://automate.beyondclinic.online",
+    "https://www.automate.beyondclinic.online",
+]

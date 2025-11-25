@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Pengaa — Smart WhatsApp Agents</title>
+        <link rel="manifest" href="/manifest.json"/>
+        <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/client": "https://esm.sh/react-dom@18/client",
+          "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+          "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime",
+          "@xyflow/react": "https://esm.sh/@xyflow/react@12.8.4?external=react,react-dom"
+        }
+      }
+    </script>
+        <!-- Base styles -->
+        <link rel="stylesheet" href="/assets/styles.css"/>
+        <link rel="stylesheet" href="/assets/animations.css"/>
+        <link rel="stylesheet" href="/assets/flow.css"/>
+        <link rel="stylesheet" href="/assets/react-hero-flow.css"/>
+        <link rel="stylesheet" href="/assets/react-playbooks-flow.css"/>
+        <!-- React Flow base CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12.8.4/dist/style.css"/>
+        <link rel="stylesheet" href="/assets/carousel.css"/>
+        <meta name="description" content="Smart WhatsApp agents for lead gen, follow‑ups and instant automations."/>
+        <script>document.documentElement.classList.add('page-fade')</script>
+        <script defer src="/assets/animations.js"></script>
+        <script defer src="/assets/carousel.js"></script>
+        <style>.container { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; } .section { padding: 5rem 0; } .btn { height: 42px; border-radius: 20px; padding: 0 1rem; font-weight: 600; }</style>
+    </head>
+    <body class="bg-gray-900_01 text-white-a700">
+        <header class="bg-gray-900_01 sticky top-0 z-50 border-b border-gray-800">
+            <div class="container flex items-center justify-between py-4 gap-4">
+                <img class="h-10 w-auto" src="/images/img_header_logo.svg" alt="Pengaa"/>
+                <nav class="hidden md:flex items-center gap-6" aria-label="Primary"><a href="#" class="hover:text-teal-a400">Blog</a><a href="#" class="hover:text-teal-a400">Dedicated Support</a>
+                    <select aria-label="Language" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-sm hover:bg-gray-600">
+                        <option value="en">🇺🇸 English</option>
+                    </select>
+                </nav>
+                <button id="menu-toggle" aria-controls="mobile-nav" aria-expanded="false" class="md:hidden">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M3 6h18M3 12h18M3 18h18"/>
+                    </svg>
+                </button><a href="https://app.evoapicloud.com/register" target="_blank" rel="noopener noreferrer" class="btn bg-teal-a400 text-gray-900_01 hidden md:inline-flex items-center">Get Started</a>
+            </div>
+            <nav id="mobile-nav" class="hidden md:hidden border-t border-gray-800" aria-label="Mobile">
+                <div class="container py-3 flex flex-col gap-3"><a href="#" class="hover:text-teal-a400">Blog</a><a href="#" class="hover:text-teal-a400">Dedicated Support</a>
+                    <select aria-label="Language" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-sm hover:bg-gray-600">
+                        <option value="en">🇺🇸 English</option>
+                    </select><a href="https://app.evoapicloud.com/register" target="_blank" rel="noopener noreferrer" class="btn bg-teal-a400 text-gray-900_01 inline-flex items-center">Get Started</a>
+                </div>
+            </nav>
+        </header>
+        <!-- Hero -->
+        <section class="section relative overflow-hidden">
+            <img data-parallax="0.35" class="absolute left-[5%] top-[2%] opacity-30 md:opacity-10" src="/images/img_bg.svg" alt="Decorative graphic (left)"/>
+            <img data-parallax="0.2" class="absolute right-[5%] bottom-0 opacity-30 md:opacity-10" src="/images/img_bg_gray_900.svg" alt="Decorative graphic (right)"/>
+            <div class="container relative z-10 flex flex-col items-center gap-6 text-center">
+                <h1 class="font-montserrat text-[44px] sm:text-[38px] font-bold"> <span>Smart WhatsApp agents that turn chats into </span><span class="text-teal-a400">sales & actions</span> </h1>
+                <p class="max-w-2xl text-[18px]">Ready‑to‑use agents for lead gen, follow‑ups and instant actions — no code, just results.</p>
+                <div class="flex gap-3 sm:flex-col w-full sm:max-w-md justify-center"><a href="https://app.evoapicloud.com/register" target="_blank" rel="noopener noreferrer" class="btn bg-teal-a400 text-gray-900_01 inline-flex items-center justify-center">Get WhatsApp Demo</a><a href="#use-cases" class="btn border border-gray-700 bg-gray-900 inline-flex items-center justify-center">See Use Cases</a>
+                </div>
+                <div id="rf-embed-hero" class="w-full mt-8">
+                    <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                        <div class="p-4 border-b border-slate-700/50 bg-slate-900/85 text-center">
+                            <p class="text-slate-300 text-lg font-semibold">Build, Deploy & Scale AI Agents Visually</p>
+                        </div>
+                        <div id="rf-canvas-hero" style="height: clamp(360px, 70vh, 640px)"></div>
+                    </div>
+                    <script type="module" src="/assets/react-hero-flow.js"></script>
+                </div>
+            </div>
+        </section>
+        <!-- Landing Flow Preview -->
+        <section class="section">
+            <div class="container">
+                <div class="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                    <div id="rf-canvas-landing" style="height: clamp(360px, 70vh, 640px)"></div>
+                </div>
+                <script type="module" src="/assets/landing-react-flow.js"></script>
+            </div>
+        </section>
+    <!-- Playbooks -->
+    <section class="section">
+      <div class="container grid md:grid-cols-2 gap-10 items-start">
+        <div class="flex flex-col gap-4">
+          <h2 id="use-cases" class="font-montserrat text-3xl font-bold">Use Cases <span class="block text-teal-a400">E‑commerce • SaaS • Education</span></h2>
+          <p>Sync contacts and deals with your CRM to keep pipelines up to date.</p>
+          <p>Queueing and retries ensure message delivery — even during peak loads.</p>
+          <p>Built‑in opt‑in/out and template workflows to stay compliant.</p>
+        </div>
+        <div id="rf-embed-playbooks" class="w-full">
+          <div class="relative w-full rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            <div class="p-3 border-b border-slate-700/50 bg-slate-900/85 text-center">
+              <p class="text-slate-300 text-base font-semibold">Automation Playbooks — Fully Interactive</p>
+            </div>
+            <div id="rf-canvas-playbooks" style="height: clamp(300px, 50vh, 480px)"></div>
+          </div>
+          <script type="module" src="/assets/react-playbooks-flow.js"></script>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appointments & Confirmations -->
+    <section class="section">
+      <div class="container grid md:grid-cols-2 gap-10 items-start">
+        <div class="flex flex-col gap-4">
+          <h2 class="font-montserrat text-3xl font-bold">Scheduling & Confirmations <span class="block text-teal-a400">Google Calendar • Gmail</span></h2>
+          <p>Capture availability from users via chat or forms and convert it into confirmed appointments.</p>
+          <p>Automatically create events in Google Calendar and avoid double‑booking.</p>
+          <p>Send email confirmations and reminders using Gmail to keep everyone aligned.</p>
+        </div>
+        <div id="rf-embed-appointments" class="w-full">
+          <div class="relative w-full rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            <div class="p-3 border-b border-slate-700/50 bg-slate-900/85 text-center">
+              <p class="text-slate-300 text-base font-semibold">Scheduling Flow — Fully Interactive</p>
+            </div>
+            <div id="rf-canvas-appointments" style="height: clamp(300px, 50vh, 480px)"></div>
+          </div>
+          <script type="module" src="/assets/react-appointments-flow.js"></script>
+        </div>
+      </div>
+    </section>
+        <!-- Capabilities -->
+        <section class="section relative">
+            <div class="container text-center flex flex-col items-center gap-6">
+                <h2 class="font-montserrat text-3xl font-bold">Capabilities</h2>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+                    <!-- Example capability cards (icons from images/logos) -->
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/websocket.svg" alt="WebSocket"/>
+                        <h6 class="text-teal-a400 font-semibold">Send Instant Emails</h6>
+                    </div>
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/rabbitmq.svg" alt="RabbitMQ"/>
+                        <h6 class="text-teal-a400 font-semibold">Queue Messages</h6>
+                    </div>
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/typebot.svg" alt="Typebot"/>
+                        <h6 class="text-teal-a400 font-semibold">Lead Capture Forms</h6>
+                    </div>
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/openai.svg" alt="OpenAI"/>
+                        <h6 class="text-teal-a400 font-semibold">Smart Replies</h6>
+                    </div>
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/dify.svg" alt="Dify"/>
+                        <h6 class="text-teal-a400 font-semibold">Payment Links</h6>
+                    </div>
+                    <div class="p-5 border border-gray-700 bg-gray-900 rounded-3xl">
+                        <img class="h-8 w-auto mx-auto mb-3" src="/images/logos/flowise.svg" alt="Flowise"/>
+                        <h6 class="text-teal-a400 font-semibold">Integrations</h6>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer -->
+        <footer class="section border-t border-gray-800">
+            <div class="container flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <img class="h-8 w-32 object-contain" src="/images/img_footer_logo.svg" alt="Pengaa"/>
+                <div class="flex gap-4 items-center"><a href="https://evolution-api.com/discord" target="_blank" rel="noopener noreferrer"><img class="h-6" src="/images/img_meteor_icons_discord.svg" alt="Discord"/></a><a href="https://evolution-api.com/instagram" target="_blank" rel="noopener noreferrer"><img class="h-6" src="/images/img_mdi_instagram.svg" alt="Instagram"/></a><a href="https://evolution-api.com/youtube" target="_blank" rel="noopener noreferrer"><img class="h-6" src="/images/img_ri_youtube_line.svg" alt="YouTube"/></a><a href="https://evolution-api.com/whatsapp" target="_blank" rel="noopener noreferrer"><img class="h-6" src="/images/img_ic_baseline_whatsapp.svg" alt="WhatsApp"/></a>
+                </div>
+                <div class="text-sm text-gray-400">©2025 Pengaa — All rights reserved</div>
+            </div>
+        </footer>
+        <script>
+      (function(){
+        function ready(fn){ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',fn);} else { fn(); } }
+        ready(function(){
+          var btn = document.getElementById('menu-toggle');
+          var nav = document.getElementById('mobile-nav');
+          if(!btn || !nav) return;
+          btn.addEventListener('click', function(){
+            var isHidden = nav.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', String(!isHidden));
+          });
+        });
+      })();
+    </script>
+    </body>
+</html>

@@ -7,7 +7,6 @@ from core.sitemaps import generate_sitemap
 
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
-    path("__debug__/", include("debug_toolbar.urls")),
     path('oldadmin/', admin.site.urls),
     path('admin/' , RedirectView.as_view(pattern_name="adminHome"), name='adminRedirect'),
     path('dashboard/' , RedirectView.as_view(pattern_name="adminHome"), name='adminRedirect2'),
@@ -22,6 +21,7 @@ urlpatterns = [
     path('', include('project.urls')),
     path('', include('legal.urls')),
     path('', include('marketing.urls')),
+    path('', include('workflows.urls')),
     path('', include('custompage.urls')),
     path('sitemap.xml', generate_sitemap, name='generate_sitemap'),
 ]

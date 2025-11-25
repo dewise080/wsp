@@ -1,0 +1,340 @@
+{% extends 'front/base.html' %}
+{% load static %}
+
+{% block title1 %}{{ workflow.name }}{% endblock title1 %}
+{% block title2 %}{{ workflow.name }}{% endblock title2 %}
+{% block title %}{{ workflow.name }} - {{ settings.name }}{% endblock title %}
+
+{% block content %}
+<main class="creasoft-wrap">
+    <div class="line_wrap">
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+        <div class="line_item"></div>
+    </div>
+
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-wrapper">
+                        <div class="breadcrumb-cnt">
+                            <h1>{{ workflow.name }}</h1>
+                            <span>
+                                <a href="{% url "homePageFront" %}">Home</a>
+                                <i class="bi bi-arrow-right"></i>
+                                <a href="{% url "workflowList" %}">Workflows</a>
+                                <i class="bi bi-arrow-right"></i>{{ workflow.name }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- React Flow CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12.8.4/dist/style.css" />
+<link rel="stylesheet" href="{% static 'workflows/react-hero-flow.css' %}" />
+
+<style>
+  #workflow-canvas {
+    width: 100%;
+    height: 600px;
+    background: #0b1220;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  /* Node styles */
+  .node { min-width: 180px; }
+  .node.emerald { background: linear-gradient(135deg, #065f46, #047857); border-color: #10b981; }
+  .node.purple { background: linear-gradient(135deg, #581c87, #7c3aed); border-color: #a78bfa; }
+  .node.blue { background: linear-gradient(135deg, #1e3a5f, #3b82f6); border-color: #60a5fa; }
+  .node.pink { background: linear-gradient(135deg, #831843, #db2777); border-color: #f472b6; }
+  .node.orange { background: linear-gradient(135deg, #7c2d12, #ea580c); border-color: #fb923c; }
+  
+  @media (max-width: 768px) {
+    #workflow-canvas {
+      height: 500px;
+    }
+  }
+</style>
+
+    <!-- Workflow Visualization Section -->
+    <section class="section-padding" style="margin-top:150px; margin-bottom:150px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow">
+                        <div class="card-header bg-dark text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-diagram-3"></i> Workflow Visualization
+                                </h5>
+                                <div>
+                                    <span class="badge bg-info me-2">{{ workflow.nodes.count }} Nodes</span>
+                                    <span class="badge bg-secondary">{{ workflow.edges.count }} Connections</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="workflow-canvas"></div>
+                            <div class="p-2 bg-light text-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-arrows-move"></i> Drag nodes to explore the workflow. Changes are not saved.
+                                    <button id="btn-reset-view" class="btn btn-sm btn-outline-secondary ms-2">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reset View
+                                    </button>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Workflow Info -->
+            <div class="row mt-4">
+                <div class="col-lg-6 col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="bi bi-info-circle"></i> Workflow Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Name:</strong> {{ workflow.name }}</p>
+                            {% if workflow.description %}
+                            <p><strong>Description:</strong> {{ workflow.description }}</p>
+                            {% endif %}
+                            <p><strong>Created:</strong> {{ workflow.created_at|date:"F d, Y" }}</p>
+                            <p><strong>Last Updated:</strong> {{ workflow.updated_at|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="bi bi-list-ul"></i> Node Types</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                {% for node in workflow.nodes.all %}
+                                <li class="mb-2">
+                                    <span class="badge 
+                                        {% if node.node_type == 'eventNode' %}bg-success
+                                        {% elif node.node_type == 'agentNode' %}bg-purple
+                                        {% elif node.node_type == 'connectorNode' %}bg-primary
+                                        {% elif node.node_type == 'actionNode' %}bg-danger
+                                        {% elif node.node_type == 'logicNode' %}bg-warning
+                                        {% else %}bg-secondary{% endif %}
+                                    ">
+                                        {{ node.get_node_type_display }}
+                                    </span>
+                                    {{ node.label }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Back to List -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <a href="{% url 'workflowList' %}" class="btn btn-outline-primary" style="color: #75dab4; background-color: #fff; border-color: #75dab4"> 
+                        <i class="bi bi-arrow-left"></i> Back to All Workflows
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Hidden workflow data -->
+<script id="workflow-data" type="application/json">{{ flow_data|safe }}</script>
+
+<!-- React Flow -->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/client": "https://esm.sh/react-dom@18/client",
+    "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+    "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime",
+    "@xyflow/react": "https://esm.sh/@xyflow/react@12.8.4?external=react,react-dom"
+  }
+}
+</script>
+
+<script type="module">
+import React, { useCallback, useEffect, useRef } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  Handle,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
+  ReactFlowProvider,
+} from "@xyflow/react";
+
+const h = React.createElement;
+
+// Load workflow data from the page
+function loadWorkflowData() {
+  const dataEl = document.getElementById('workflow-data');
+  if (dataEl) {
+    try {
+      return JSON.parse(dataEl.textContent);
+    } catch (e) {
+      console.error('Failed to parse workflow data:', e);
+    }
+  }
+  return { nodes: [], edges: [] };
+}
+
+function Handles() {
+  return h(React.Fragment, null,
+    h(Handle, { type: "target", position: "top" }),
+    h(Handle, { type: "source", position: "bottom" }),
+    h(Handle, { type: "target", position: "left" }),
+    h(Handle, { type: "source", position: "right" }),
+  );
+}
+
+function NodeCard({ data }) {
+  const typeToColor = { eventNode: "emerald", agentNode: "purple", connectorNode: "blue", actionNode: "pink", logicNode: "orange" };
+  const color = typeToColor[data.type] || "blue";
+  
+  return h("div", { className: `node ${color} relative px-4 py-3 rounded-xl border-2`, style: { minWidth: '180px', cursor: 'grab' } },
+    h(Handles),
+    h("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+      h("div", { style: { width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+        data.iconSlug ? h("img", { src: `https://cdn.simpleicons.org/${data.iconSlug}${data.iconColor?"/"+data.iconColor:""}`, style: { width: '20px', height: '20px' }, alt: data.iconAlt || data.iconSlug }) : h("span", { style: { fontSize: '14px', color: '#fff' } }, "•")
+      ),
+      h("div", null,
+        h("div", { style: { fontSize: '14px', fontWeight: '600', color: '#fff' } }, data.label || "Unnamed"),
+        data.description ? h("div", { style: { fontSize: '12px', color: 'rgba(255,255,255,0.7)' } }, data.description) : null,
+        Array.isArray(data.items) && data.items.length ? h("ul", { style: { marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0, margin: 0 } }, ...data.items.map((it, i) => h("li", { key: i, style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h("span", { style: { width: '16px', height: '16px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h("img", { src: `https://cdn.simpleicons.org/${it.slug}${it.color?"/"+it.color:""}`, style: { width: '12px', height: '12px' }, alt: it.name })), h("span", { style: { fontSize: '12px', color: '#fff' } }, it.name)))) : null
+      )
+    )
+  );
+}
+
+const nodeTypes = {
+  eventNode: (p) => h(NodeCard, p),
+  agentNode: (p) => h(NodeCard, p),
+  connectorNode: (p) => h(NodeCard, p),
+  actionNode: (p) => h(NodeCard, p),
+  logicNode: (p) => h(NodeCard, p),
+};
+
+// Store original data for reset
+let originalNodes = [];
+let originalEdges = [];
+
+function WorkflowViewerInner() {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges] = useEdgesState([]);
+  const { fitView } = useReactFlow();
+  const initialized = useRef(false);
+
+  const loadNodes = useCallback(() => {
+    const data = loadWorkflowData();
+    
+    // Check if mobile
+    const isMobile = window.innerWidth < 768;
+    const posKey = isMobile ? "posMobile" : "posDesktop";
+    
+    const flowNodes = (data.nodes || []).map((n) => ({
+      id: n.id,
+      type: n.type,
+      position: n[posKey] || n.posDesktop || { x: 140, y: 140 },
+      data: {
+        type: n.type,
+        label: n.label || "",
+        description: n.description || "",
+        iconSlug: n.iconSlug || "",
+        iconColor: n.iconColor || "",
+        iconAlt: n.iconAlt || n.label || "",
+        items: n.items || [],
+      },
+      draggable: true, // Interactive - users can drag
+    }));
+    
+    const flowEdges = (data.edges || []).map(e => ({
+      ...e,
+      animated: true,
+      style: { stroke: "#3b82f6", strokeWidth: 3 }
+    }));
+    
+    // Store originals for reset
+    originalNodes = JSON.parse(JSON.stringify(flowNodes));
+    originalEdges = JSON.parse(JSON.stringify(flowEdges));
+    
+    setNodes(flowNodes);
+    setEdges(flowEdges);
+    
+    // Fit view after a short delay
+    setTimeout(() => fitView({ padding: 0.2 }), 100);
+  }, [setNodes, setEdges, fitView]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      loadNodes();
+      initialized.current = true;
+    }
+  }, [loadNodes]);
+
+  // Reset button handler
+  useEffect(() => {
+    const resetBtn = document.getElementById('btn-reset-view');
+    if (resetBtn) {
+      resetBtn.onclick = () => {
+        setNodes(JSON.parse(JSON.stringify(originalNodes)));
+        setEdges(JSON.parse(JSON.stringify(originalEdges)));
+        setTimeout(() => fitView({ padding: 0.2 }), 100);
+      };
+    }
+  }, [setNodes, setEdges, fitView]);
+
+  return h(ReactFlow, {
+    nodes,
+    edges,
+    onNodesChange, // Enable node position changes
+    nodeTypes,
+    fitView: true,
+    nodesDraggable: true, // Allow dragging
+    nodesConnectable: false, // Can't create new connections
+    elementsSelectable: true, // Can select nodes
+    zoomOnScroll: true,
+    panOnScroll: true,
+    panOnDrag: true,
+    selectionOnDrag: false,
+    defaultEdgeOptions: { animated: true, style: { stroke: "#3b82f6", strokeWidth: 3 } },
+  },
+    h(Background, { color: "#334155", gap: 20 }),
+    h(Controls, {})
+  );
+}
+
+// Wrapper with ReactFlowProvider
+function WorkflowViewer() {
+  return h(ReactFlowProvider, null,
+    h(WorkflowViewerInner)
+  );
+}
+
+// Mount the React app
+const container = document.getElementById("workflow-canvas");
+if (container) {
+  const root = createRoot(container);
+  root.render(h(WorkflowViewer));
+}
+</script>
+{% endblock content %}

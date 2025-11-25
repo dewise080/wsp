@@ -1,0 +1,8 @@
+id,type,x,y,label,description,iconSlug,iconColor,iconAlt
+1,eventNode,80,120,WhatsApp Incoming Message,Starts when a message arrives,whatsapp,25D366,WhatsApp
+2,agentNode,320,200,AI Agent,,openai,ffffff,OpenAI
+6,agentNode,540,280,Multi-Agent,Orchestrated AI,openai,ffffff,OpenAI
+4,logicNode,540,140,Business Logic,,,
+3,connectorNode,760,500,Integrations,Popular services,,,
+5,actionNode,800,220,Execute Action,,,
+7,eventNode,1000,220,Reply to message,,whatsapp,25D366,WhatsApp

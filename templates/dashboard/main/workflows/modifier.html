@@ -1,0 +1,429 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }} - {{ seo_settings.meta_title }}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12.8.4/dist/style.css" />
+<link rel="stylesheet" href="{% static 'workflows/react-hero-flow.css' %}" />
+<style>
+  .flow-wrap { max-width: 100%; margin: 0; padding: 0 }
+  .flow-panel { display:flex; gap:16px; align-items:center; margin-bottom: 12px; flex-wrap: wrap; }
+  .flow-panel input, .flow-panel select, .flow-panel button, .flow-panel textarea { 
+    border:1px solid #334155; 
+    background:#111827; 
+    color:#e5e7eb; 
+    padding:6px 10px; 
+    border-radius:8px;
+  }
+  .flow-panel button { cursor:pointer }
+  .flow-grid { display:grid; grid-template-columns: 1fr 320px; gap:16px }
+  #rf-canvas-modifier { 
+    height: 600px; 
+    border:1px solid #334155; 
+    border-radius:12px; 
+    overflow:hidden;
+    background: #0b1220;
+  }
+  .flow-sidebar { 
+    padding:12px; 
+    border:1px solid #334155; 
+    border-radius:12px; 
+    background:#0f172a;
+    color: #e5e7eb;
+  }
+  .flow-sidebar h3 { margin: 0 0 8px 0; font-size: 14px; color:#cbd5e1 }
+  .flow-row { display:flex; gap:8px; margin-bottom:8px }
+  .flow-row label { width:110px; font-size:12px; color:#94a3b8 }
+  .flow-row input, .flow-row select { flex:1; background:#111827; border:1px solid #334155; color:#e5e7eb; padding:4px 8px; border-radius:4px; }
+  .flow-row textarea { width:100%; height:90px; background:#111827; border:1px solid #334155; color:#e5e7eb; padding:4px 8px; border-radius:4px; }
+  .flow-muted { color:#94a3b8; font-size:12px }
+  
+  /* React Flow node styles */
+  .node { min-width: 180px; }
+  .node.emerald { background: linear-gradient(135deg, #065f46, #047857); border-color: #10b981; }
+  .node.purple { background: linear-gradient(135deg, #581c87, #7c3aed); border-color: #a78bfa; }
+  .node.blue { background: linear-gradient(135deg, #1e3a5f, #3b82f6); border-color: #60a5fa; }
+  .node.pink { background: linear-gradient(135deg, #831843, #db2777); border-color: #f472b6; }
+  .node.orange { background: linear-gradient(135deg, #7c2d12, #ea580c); border-color: #fb923c; }
+  
+  @media (max-width: 992px) {
+    .flow-grid { grid-template-columns: 1fr; }
+    #rf-canvas-modifier { height: 400px; }
+  }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="page-body">
+   <div class="container-fluid">
+      <div class="page-title">
+         <div class="row">
+            <div class="col-6">
+               <h3>Visual Editor: {{ workflow.name }}</h3>
+            </div>
+            <div class="col-6">
+               <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                     <a href="{% url 'adminHome' %}">
+                        <svg class="stroke-icon">
+                           <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                        </svg>
+                     </a>
+                  </li>
+                  <li class="breadcrumb-item"><a href="{% url 'adminWorkflowList' %}">Workflows</a></li>
+                  <li class="breadcrumb-item active">Visual Editor</li>
+               </ol>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   <div class="container-fluid">
+      <div class="flow-wrap">
+         <p class="flow-muted mb-3">Edit nodes, connections, and metadata. Click "Save to Database" to persist changes.</p>
+         <div class="flow-panel">
+            <button id="btn-add" class="btn btn-outline-primary btn-sm">Add Node</button>
+            <button id="btn-del" class="btn btn-outline-danger btn-sm">Delete Selected</button>
+            <button id="btn-save-db" class="btn btn-success btn-sm">Save to Database</button>
+            <button id="btn-download-json" class="btn btn-outline-info btn-sm">Download JSON</button>
+            <a href="{% url 'adminWorkflowEdit' workflow.slug %}" class="btn btn-secondary btn-sm">Back to Edit</a>
+            <a href="{% url 'adminWorkflowList' %}" class="btn btn-outline-secondary btn-sm">Back to List</a>
+         </div>
+         <div class="flow-grid">
+            <div id="rf-embed-hero">
+               <div class="p-3 border-b border-slate-700/50 bg-slate-900/85 backdrop-blur-sm text-center" style="background:#1e293b; border-radius:12px 12px 0 0;">
+                  <p class="text-slate-300 text-base font-semibold m-0" style="color:#e5e7eb;">Flow Editor Preview</p>
+               </div>
+               <div id="rf-canvas-modifier"></div>
+            </div>
+            <div class="flow-sidebar" id="inspector">
+               <h3>Inspector</h3>
+               <div class="flow-row"><label>ID</label><input id="f-id" readonly /></div>
+               <div class="flow-row"><label>Mode</label>
+                  <select id="f-mode">
+                     <option value="desktop">Desktop layout</option>
+                     <option value="mobile">Mobile layout</option>
+                  </select>
+               </div>
+               <div class="flow-row"><label>Type</label>
+                  <select id="f-type">
+                     <option value="eventNode">Event Node</option>
+                     <option value="agentNode">Agent Node</option>
+                     <option value="connectorNode">Connector Node</option>
+                     <option value="logicNode">Logic Node</option>
+                     <option value="actionNode">Action Node</option>
+                  </select>
+               </div>
+               <div class="flow-row"><label>Label</label><input id="f-label" /></div>
+               <div class="flow-row"><label>Description</label><input id="f-desc" /></div>
+               <div class="flow-row"><label>Icon Slug</label><input id="f-islug" placeholder="e.g. whatsapp" /></div>
+               <div class="flow-row"><label>Icon Color</label><input id="f-icolor" placeholder="hex like 25D366" /></div>
+               <div class="flow-row"><label>Icon Alt</label><input id="f-ialt" /></div>
+               <div class="flow-row"><label>Items (slug,name,color per line)</label></div>
+               <div class="flow-row"><textarea id="f-items" placeholder="googlecalendar,Google Calendar,1A73E8"></textarea></div>
+               <div class="flow-muted">Select a node to edit its properties. Drag to reposition.</div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Hidden data -->
+<script id="workflow-data" type="application/json">{{ flow_data|safe }}</script>
+<script id="workflow-slug" type="text/plain">{{ workflow.slug }}</script>
+<script id="save-url" type="text/plain">{% url 'adminWorkflowSaveJson' workflow.slug %}</script>
+<script id="csrf-token" type="text/plain">{{ csrf_token }}</script>
+{% endblock content %}
+
+{% block extra_js %}
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/client": "https://esm.sh/react-dom@18/client",
+    "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+    "react/jsx-dev-runtime": "https://esm.sh/react@18/jsx-dev-runtime",
+    "@xyflow/react": "https://esm.sh/@xyflow/react@12.8.4?external=react,react-dom"
+  }
+}
+</script>
+<script type="module">
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  Handle,
+  addEdge,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
+
+const h = React.createElement;
+
+// Load initial data from the page
+function loadInitialData() {
+  const dataEl = document.getElementById('workflow-data');
+  if (dataEl) {
+    try {
+      return JSON.parse(dataEl.textContent);
+    } catch (e) {
+      console.error('Failed to parse workflow data:', e);
+    }
+  }
+  return { nodes: [], edges: [] };
+}
+
+function download(name, content, type = "text/plain") {
+  const blob = new Blob([content], { type });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function Handles({ data }) {
+  return h(React.Fragment, null,
+    h(Handle, { type: "target", position: "top" }),
+    h(Handle, { type: "source", position: "bottom" }),
+    h(Handle, { type: "target", position: "left" }),
+    h(Handle, { type: "source", position: "right" }),
+  );
+}
+
+function NodeCard({ data }) {
+  const typeToColor = { eventNode: "emerald", agentNode: "purple", connectorNode: "blue", actionNode: "pink", logicNode: "orange" };
+  const color = typeToColor[data.type] || "blue";
+  return h("div", { className: `node ${color} relative px-4 py-3 rounded-xl border-2`, style: { minWidth: '180px' } },
+    h(Handles, { data }),
+    h("div", { className: "flex items-center gap-2", style: { display: 'flex', alignItems: 'center', gap: '8px' } },
+      h("div", { style: { width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+        data.iconSlug ? h("img", { src: `https://cdn.simpleicons.org/${data.iconSlug}${data.iconColor?"/"+data.iconColor:""}`, style: { width: '20px', height: '20px' }, alt: data.iconAlt || data.iconSlug }) : h("span", { style: { fontSize: '14px', color: '#fff' } }, "•")
+      ),
+      h("div", null,
+        h("div", { style: { fontSize: '14px', fontWeight: '600', color: '#fff' } }, data.label || "Unnamed"),
+        data.description ? h("div", { style: { fontSize: '12px', color: 'rgba(255,255,255,0.7)' } }, data.description) : null,
+        Array.isArray(data.items) && data.items.length ? h("ul", { style: { marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0, margin: 0 } }, ...data.items.map((it, i) => h("li", { key: i, style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h("span", { style: { width: '16px', height: '16px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h("img", { src: `https://cdn.simpleicons.org/${it.slug}${it.color?"/"+it.color:""}`, style: { width: '12px', height: '12px' }, alt: it.name })), h("span", { style: { fontSize: '12px', color: '#fff' } }, it.name)))) : null
+      )
+    )
+  );
+}
+
+const nodeTypes = {
+  eventNode: (p) => h(NodeCard, p),
+  agentNode: (p) => h(NodeCard, p),
+  connectorNode: (p) => h(NodeCard, p),
+  actionNode: (p) => h(NodeCard, p),
+  logicNode: (p) => h(NodeCard, p),
+};
+
+function Editor() {
+  const [graph, setGraph] = useState({ nodes: [], edges: [] });
+  const [mode, setMode] = useState("desktop");
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [selection, setSelection] = useState({ nodes: [], edges: [] });
+
+  useEffect(() => {
+    const data = loadInitialData();
+    setGraph(data);
+    const posKey = mode === "mobile" ? "posMobile" : "posDesktop";
+    const gnodes = (data.nodes || []).map((n) => ({
+      id: n.id,
+      type: n.type,
+      position: n[posKey] || n.posDesktop || { x: 140, y: 140 },
+      data: {
+        type: n.type,
+        label: n.label || "",
+        description: n.description || "",
+        iconSlug: n.iconSlug || "",
+        iconColor: n.iconColor || "",
+        iconAlt: n.iconAlt || n.label || "",
+        items: n.items || [],
+      },
+    }));
+    setNodes(gnodes);
+    setEdges(data.edges || []);
+  }, [mode, setNodes, setEdges]);
+
+  useEffect(() => {
+    const n = selection.nodes?.[0];
+    const node = nodes.find((x) => x.id === n);
+    const $ = (id) => document.getElementById(id);
+    if (!node) {
+      $("f-id").value = "";
+      $("f-type").value = "connectorNode";
+      $("f-label").value = "";
+      $("f-desc").value = "";
+      $("f-islug").value = "";
+      $("f-icolor").value = "";
+      $("f-ialt").value = "";
+      $("f-items").value = "";
+      return;
+    }
+    $("f-id").value = node.id;
+    $("f-type").value = node.type;
+    $("f-label").value = node.data.label || "";
+    $("f-desc").value = node.data.description || "";
+    $("f-islug").value = node.data.iconSlug || "";
+    $("f-icolor").value = node.data.iconColor || "";
+    $("f-ialt").value = node.data.iconAlt || "";
+    $("f-items").value = (node.data.items || []).map((it) => `${it.slug},${it.name},${it.color||""}`).join("\n");
+  }, [selection, nodes]);
+
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge({ ...params, id: `e${params.source}-${params.target}`, animated: true, style: { stroke: "#3b82f6", strokeWidth: 3 } }, eds)), [setEdges]);
+
+  const onSelectionChange = useCallback(({ nodes: ns, edges: es }) => setSelection({ nodes: ns.map((n) => n.id), edges: es.map((e) => e.id) }), []);
+
+  // Hook up inspector inputs
+  useEffect(() => {
+    const $ = (id) => document.getElementById(id);
+    function bind(id, handler) { const el = $(id); if (el) el.oninput = handler; }
+    const modeSel = $("f-mode"); if (modeSel) modeSel.oninput = (e) => setMode(e.target.value);
+    function updateSelected(mut) {
+      setNodes((nds) => nds.map((n) => (selection.nodes.includes(n.id) ? mut({ ...n, data: { ...n.data } }) : n)));
+    }
+    bind("f-type", (e) => updateSelected((n) => (n.type = e.target.value, n.data.type = n.type, n)));
+    bind("f-label", (e) => updateSelected((n) => (n.data.label = e.target.value, n)));
+    bind("f-desc", (e) => updateSelected((n) => (n.data.description = e.target.value, n)));
+    bind("f-islug", (e) => updateSelected((n) => (n.data.iconSlug = e.target.value, n)));
+    bind("f-icolor", (e) => updateSelected((n) => (n.data.iconColor = e.target.value, n)));
+    bind("f-ialt", (e) => updateSelected((n) => (n.data.iconAlt = e.target.value, n)));
+    bind("f-items", (e) => updateSelected((n) => {
+      const lines = e.target.value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      n.data.items = lines.map((l) => { const [slug,name,color] = l.split(','); return { slug: slug||"", name: name||"", color: color||"" }; });
+      return n;
+    }));
+  }, [selection, setNodes]);
+
+  // Build JSON from current state
+  const buildJsonData = useCallback(() => {
+    const mergedNodes = nodes.map((n) => {
+      const old = graph.nodes?.find((gn) => gn.id === n.id) || {};
+      const base = {
+        id: n.id,
+        type: n.type || "connectorNode",
+        label: n.data.label ?? "",
+        description: n.data.description ?? "",
+        iconSlug: n.data.iconSlug ?? "",
+        iconColor: n.data.iconColor ?? "",
+        iconAlt: n.data.iconAlt ?? "",
+        items: n.data.items ?? [],
+        posDesktop: old.posDesktop || { x: 140, y: 140 },
+        posMobile: old.posMobile || { x: 140, y: 140 },
+      };
+      if (mode === "mobile") {
+        base.posMobile = { x: Math.round(n.position.x), y: Math.round(n.position.y) };
+      } else {
+        base.posDesktop = { x: Math.round(n.position.x), y: Math.round(n.position.y) };
+      }
+      return base;
+    });
+    return {
+      nodes: mergedNodes,
+      edges: edges.map((e) => ({ id: e.id, source: e.source, target: e.target }))
+    };
+  }, [nodes, edges, graph, mode]);
+
+  // Buttons
+  useEffect(() => {
+    const $ = (id) => document.getElementById(id);
+    
+    $("btn-add").onclick = () => {
+      const nextId = String(Math.max(0, ...nodes.map((n) => Number(n.id) || 0)) + 1);
+      const nn = {
+        id: nextId,
+        type: "connectorNode",
+        position: { x: 140, y: 140 },
+        data: { type: "connectorNode", label: "New Node", description: "", iconSlug: "", iconColor: "", iconAlt: "", items: [] },
+      };
+      setNodes((nds) => nds.concat(nn));
+    };
+    
+    $("btn-del").onclick = () => {
+      const ids = new Set(selection.nodes);
+      setNodes((nds) => nds.filter((n) => !ids.has(n.id)));
+      setEdges((eds) => eds.filter((e) => !(ids.has(e.source) || ids.has(e.target) || selection.edges.includes(e.id))));
+    };
+    
+    $("btn-download-json").onclick = () => {
+      const data = buildJsonData();
+      const slug = document.getElementById('workflow-slug')?.textContent || 'workflow';
+      download(`${slug}-flow-data.json`, JSON.stringify(data, null, 2), "application/json");
+    };
+    
+    $("btn-save-db").onclick = async () => {
+      const data = buildJsonData();
+      const saveUrl = document.getElementById('save-url')?.textContent;
+      const csrfToken = document.getElementById('csrf-token')?.textContent;
+      
+      try {
+        const response = await fetch(saveUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify(data),
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          // Show success message
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              title: 'Saved!',
+              text: 'Workflow saved to database successfully.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            alert('Workflow saved successfully!');
+          }
+        } else {
+          throw new Error(result.error || 'Failed to save');
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            title: 'Error!',
+            text: error.message || 'Failed to save workflow.',
+            icon: 'error'
+          });
+        } else {
+          alert('Error saving workflow: ' + error.message);
+        }
+      }
+    };
+  }, [nodes, edges, selection, setNodes, setEdges, buildJsonData]);
+
+  return h(ReactFlow, {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    onSelectionChange,
+    nodeTypes,
+    fitView: true,
+    defaultEdgeOptions: { animated: true, style: { stroke: "#3b82f6", strokeWidth: 3 } },
+  },
+    h(Background, { color: "#334155", gap: 20 }),
+    h(Controls, {})
+  );
+}
+
+// Mount the React app
+const container = document.getElementById("rf-canvas-modifier");
+if (container) {
+  const root = createRoot(container);
+  root.render(h(Editor));
+}
+</script>
+{% endblock extra_js %}

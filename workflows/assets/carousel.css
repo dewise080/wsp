@@ -1,0 +1,40 @@
+/* Lightweight carousel styles for the .alice-carousel markup */
+.alice-carousel {
+  position: relative;
+}
+.alice-carousel__wrapper {
+  overflow: hidden;
+}
+.alice-carousel__stage {
+  display: flex;
+  gap: 0; /* gutter is handled by inner px-2 on items */
+  will-change: transform;
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.alice-carousel__stage-item {
+  flex: 0 0 calc(100% / 3);
+}
+@media (max-width: 1024px) {
+  .alice-carousel__stage-item {
+    flex: 0 0 50%;
+  }
+}
+@media (max-width: 640px) {
+  .alice-carousel__stage-item {
+    flex: 0 0 100%;
+  }
+}
+
+/* Optional arrows (hidden for now; can be enabled later) */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+.carousel-prev {
+  left: 8px;
+}
+.carousel-next {
+  right: 8px;
+}

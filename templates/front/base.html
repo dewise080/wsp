@@ -137,6 +137,9 @@
                         <li class="has-child {% if request.path == '/projects/' %}active{% endif %}">
                             <a href="{% url "projectPageFront" %}">Projects</a>
                         </li>
+                        <li class="has-child {% if '/workflows' in request.path %}active{% endif %}">
+                            <a href="{% url "workflowList" %}">Workflows</a>
+                        </li>
                         <li class="has-child {% if request.path == '/pricing/' %}active{% endif %}">
                             <a href="{% url "pricingPageFront" %}">Pricing</a>
                         </li>

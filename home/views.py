@@ -340,7 +340,12 @@ def openapi_json(request):
         server_url = origin.rstrip("/")
     else:
         host = request.get_host()
-        scheme = "https" if host == "wsp.lotfinity.tech" else request.scheme
+        forwarded_proto = request.headers.get("X-Forwarded-Proto", "").split(",")[0].strip().lower()
+        # Force https for known deployments and when a proxy tells us the original scheme
+        if forwarded_proto == "https" or request.is_secure() or host in ("wsp.lotfinity.tech", "automate.beyondclinic.online", "www.automate.beyondclinic.online"):
+            scheme = "https"
+        else:
+            scheme = request.scheme
         server_url = f"{scheme}://{host}"
     schema = {
         "openapi": "3.1.0",

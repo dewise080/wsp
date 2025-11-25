@@ -48,6 +48,10 @@ class Blogs(models.Model):
                 counter += 1
 
             self.slug = slug
+        if not self.category:
+            default_cat = blogCategory.objects.filter(title__iexact="Miscellaneous").first()
+            if default_cat:
+                self.category = default_cat
         super().save(*args, **kwargs)
         
     def getTHumb(self):

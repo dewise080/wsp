@@ -57,7 +57,9 @@ INSTALLED_APPS = [
     'debug_toolbar',
     "ninja",
     'django_extensions',
+    "storages",
 ]
+
 
 
 
@@ -201,3 +203,5 @@ if os.getenv('WHITENOISE_CONFIG') == 'True':
               "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
          },
     }
+
+

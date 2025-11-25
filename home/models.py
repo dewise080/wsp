@@ -126,6 +126,10 @@ class projectSection(models.Model):
                 counter += 1
 
             self.slug = slug
+        if not self.category:
+            default_cat = projectCategory.objects.filter(name__iexact="Miscellaneous").first()
+            if default_cat:
+                self.category = default_cat
         super().save(*args, **kwargs)
         
     def getProjectImage(self):

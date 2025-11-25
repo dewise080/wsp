@@ -51,12 +51,13 @@
                      <div class="card">
                         <div class="card-body">
                             {% if project.image %}
-                                <img class="mb-2" style="border-radius:5px;" src="{{ project.getProjectImage }}" width="100" alt="Current Image">
+                                <img id="project-image-preview" class="mb-2" style="border-radius:5px;" src="{{ project.getProjectImage }}" width="100" alt="Current Image">
                             {% endif %}
                             <br>
                            <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
                            <br>
                            {{ form.image }}
+                           <button type="button" id="edit-project-image" class="btn btn-outline-secondary btn-sm mt-2">Edit image</button>
                         </div>
                      </div>
                   </div>
@@ -133,4 +134,15 @@
    </div>
 </div>
 <!-- Container-fluid Ends-->
+{% include 'dashboard/main/partial/image-editor-toast.html' %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initTuiImageEditor({
+      trigger_id: 'edit-project-image',
+      input_id: '{{ form.image.id_for_label }}',
+      preview_id: 'project-image-preview',
+      image_url: '{% if project.image %}{{ project.getProjectImage }}{% endif %}'
+    });
+  });
+</script>
 {% endblock %}

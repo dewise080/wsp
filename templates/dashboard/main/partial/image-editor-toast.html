@@ -1,0 +1,152 @@
+{% comment %}
+Reusable Toast UI Image Editor overlay. Call initTuiImageEditor with IDs:
+- trigger_id: button to open editor
+- input_id: file input to replace
+- preview_id: (optional) img tag to update preview
+- image_url: (optional) fallback URL when no file is selected
+{% endcomment %}
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+<style>
+  #tui-image-editor-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 20px;
+  }
+  #tui-image-editor-wrapper {
+    width: min(1100px, 100%);
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  #tui-image-editor-controls {
+    padding: 10px 12px;
+    text-align: right;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+  }
+</style>
+<div id="tui-image-editor-backdrop">
+  <div id="tui-image-editor-wrapper">
+    <div id="tui-image-editor"></div>
+    <div id="tui-image-editor-controls">
+      <button type="button" id="tui-image-editor-save" class="btn btn-primary btn-sm">Save edited image</button>
+      <button type="button" id="tui-image-editor-cancel" class="btn btn-outline-secondary btn-sm ms-2">Cancel</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+<script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+<script src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+<script>
+  (function() {
+    if (window.__tuiEditorConfigured) return;
+    window.__tuiEditorConfigured = true;
+
+    const backdrop = document.getElementById('tui-image-editor-backdrop');
+    const editorHolder = document.getElementById('tui-image-editor');
+    const saveBtn = document.getElementById('tui-image-editor-save');
+    const cancelBtn = document.getElementById('tui-image-editor-cancel');
+    let editor = null;
+    let activeInput = null;
+    let activePreview = null;
+
+    function closeEditor() {
+      if (editor) {
+        editor.destroy();
+        editor = null;
+      }
+      backdrop.style.display = 'none';
+      activeInput = null;
+      activePreview = null;
+    }
+
+    cancelBtn.addEventListener('click', closeEditor);
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) closeEditor();
+    });
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function openEditor(dataUrl, inputEl, previewEl) {
+      backdrop.style.display = 'flex';
+      activeInput = inputEl;
+      activePreview = previewEl || null;
+      if (editor) editor.destroy();
+      editor = new tui.ImageEditor(editorHolder, {
+        includeUI: {
+          loadImage: { path: dataUrl, name: 'image' },
+          theme: {},
+          menu: ['crop', 'flip', 'rotate', 'draw', 'shape', 'icon', 'text', 'filter'],
+          initMenu: 'filter',
+          uiSize: { width: '100%', height: '600px' },
+          menuBarPosition: 'bottom'
+        },
+        cssMaxWidth: 1000,
+        cssMaxHeight: 700,
+        selectionStyle: {
+          cornerSize: 20,
+          rotatingPointOffset: 70
+        }
+      });
+    }
+
+    async function dataUrlFromInput(inputEl, fallbackUrl) {
+      if (inputEl && inputEl.files && inputEl.files.length) {
+        return await readFileAsDataURL(inputEl.files[0]);
+      }
+      if (fallbackUrl) {
+        try {
+          const res = await fetch(fallbackUrl, { mode: 'cors' });
+          const blob = await res.blob();
+          return await readFileAsDataURL(blob);
+        } catch (e) {
+          console.warn('Failed to fetch fallback image', e);
+        }
+      }
+      return null;
+    }
+
+    saveBtn.addEventListener('click', async () => {
+      if (!editor || !activeInput) return;
+      const dataURL = editor.toDataURL();
+      const blob = await (await fetch(dataURL)).blob();
+      const file = new File([blob], 'edited.png', { type: blob.type || 'image/png' });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      activeInput.files = dt.files;
+      if (activePreview) {
+        activePreview.src = dataURL;
+      }
+      closeEditor();
+    });
+
+    window.initTuiImageEditor = function({ trigger_id, input_id, preview_id, image_url }) {
+      const trigger = document.getElementById(trigger_id);
+      const inputEl = document.getElementById(input_id);
+      const previewEl = preview_id ? document.getElementById(preview_id) : null;
+      if (!trigger || !inputEl) return;
+      trigger.addEventListener('click', async () => {
+        const source = await dataUrlFromInput(inputEl, image_url);
+        if (!source) {
+          alert('No image available. Upload one first.');
+          return;
+        }
+        openEditor(source, inputEl, previewEl);
+      });
+    };
+  })();
+</script>

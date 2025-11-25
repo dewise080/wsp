@@ -63,12 +63,13 @@
                      <div class="card">
                         <div class="card-body">
                             {% if service.detail_page_image %}
-                                <img class="mb-2" style="border-radius:5px;" src="{{ service.detail_page_image.url }}" width="100" alt="Current Image">
+                                <img id="service-image-preview" class="mb-2" style="border-radius:5px;" src="{{ service.detail_page_image.url }}" width="100" alt="Current Image">
                             {% endif %}
                             <br>
                            <label for="{{ form.detail_page_image.id_for_label }}" class="form-label">Service Detail Page Image</label>
                            <br>
                            {{ form.detail_page_image }}
+                           <button type="button" id="edit-service-image" class="btn btn-outline-secondary btn-sm mt-2">Edit image</button>
                         </div>
                      </div>
                   </div>
@@ -141,4 +142,15 @@
    </div>
 </div>
 <!-- Container-fluid Ends-->
+{% include 'dashboard/main/partial/image-editor-toast.html' %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initTuiImageEditor({
+      trigger_id: 'edit-service-image',
+      input_id: '{{ form.detail_page_image.id_for_label }}',
+      preview_id: 'service-image-preview',
+      image_url: '{% if service.detail_page_image %}{{ service.detail_page_image.url }}{% endif %}'
+    });
+  });
+</script>
 {% endblock %}

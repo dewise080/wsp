@@ -18,6 +18,15 @@ function checkTime(i) {
     return i;
 }
 
+// Render Apex chart only when the target element exists
+function renderApexChart(selector, options) {
+    var el = document.querySelector(selector);
+    if (!el || typeof ApexCharts === "undefined") return null;
+    var chart = new ApexCharts(el, options);
+    chart.render();
+    return chart;
+}
+
 // order chart
 var options2 = {
   series: [{
@@ -208,11 +217,7 @@ var options2 = {
       ]
 };
 
-var chart2 = new ApexCharts(document.querySelector("#orderchart"),
-  options2
-);
-
-chart2.render();
+renderApexChart("#orderchart", options2);
 
 // profit chart
 var options3 = {
@@ -374,8 +379,7 @@ var options3 = {
         ]
 };
 
-    var chart3 = new ApexCharts(document.querySelector("#profitchart"), options3);
-        chart3.render();
+    renderApexChart("#profitchart", options3);
 
 // currently sale
 var options = {
@@ -525,10 +529,9 @@ var options = {
           }
         },
       ]    
-  };
+};
 
-var chart = new ApexCharts(document.querySelector("#chart-currently"), options);
-chart.render();
+renderApexChart("#chart-currently", options);
 
 // recent chart
 var recentoptions = {
@@ -706,8 +709,7 @@ var recentoptions = {
       ]  
   };
 
-  var recentchart = new ApexCharts(document.querySelector("#recentchart"), recentoptions);
-  recentchart.render();
+  renderApexChart("#recentchart", recentoptions);
 
 
   // schedule chart
@@ -826,8 +828,7 @@ var recentoptions = {
   ] 
   };
 
-  var schedulechart = new ApexCharts(document.querySelector("#schedulechart"), scheduleoptions);
-  schedulechart.render();
+  renderApexChart("#schedulechart", scheduleoptions);
 
  // growth chart
  var growthoptions = {
@@ -913,7 +914,6 @@ var recentoptions = {
       show: false
     }
   }
-  };
+};
 
-var growthchart = new ApexCharts(document.querySelector("#growthchart"), growthoptions);
-growthchart.render();
+renderApexChart("#growthchart", growthoptions);

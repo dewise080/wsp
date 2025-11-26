@@ -15,4 +15,5 @@ urlpatterns = [
     path('workflows/', views.workflowList, name='workflowList'),
     path('workflows/<slug:slug>/', views.workflowDetail, name='workflowDetail'),
     path('api/workflows/<slug:slug>/json/', views.workflowJsonApi, name='workflowJsonApi'),
+    path('api/workflows/', views.api_workflows, name='api_workflows'),
 ]

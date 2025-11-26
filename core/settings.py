@@ -180,7 +180,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Media served from remote URL, stored on provided server path.
-MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
+MEDIA_URL = os.environ.get('MEDIA_URL', 'https://automate.beyondclinic.online//media/')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/media')
 
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

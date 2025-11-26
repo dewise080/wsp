@@ -485,6 +485,100 @@ def openapi_json(request):
                 }
             }
             ,
+            "/api/workflows/": {
+                "post": {
+                    "operationId": "createWorkflow",
+                    "summary": "Create a workflow",
+                    "description": "Creates a workflow with optional nodes and edges payload (React Flow compatible).",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/WorkflowCreateRequest"}
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Workflow created",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/WorkflowResponse"}
+                                }
+                            },
+                        },
+                        "400": {"description": "Invalid input"},
+                        "405": {"description": "Method not allowed"},
+                    },
+                },
+                "patch": {
+                    "operationId": "updateWorkflow",
+                    "summary": "Update a workflow",
+                    "description": "Partial update of a workflow by ID (query param). If nodes/edges are supplied, they replace the existing graph.",
+                    "parameters": [
+                        {
+                            "in": "query",
+                            "name": "id",
+                            "required": True,
+                            "schema": {"type": "integer"},
+                            "description": "Workflow ID to update"
+                        }
+                    ],
+                    "requestBody": {
+                        "required": False,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/WorkflowUpdateRequest"}
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {"description": "Workflow updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkflowResponse"}}}},
+                        "400": {"description": "Invalid input"},
+                        "404": {"description": "Workflow not found"},
+                        "405": {"description": "Method not allowed"},
+                    },
+                },
+                "get": {
+                    "operationId": "listWorkflows",
+                    "summary": "List or retrieve workflows",
+                    "description": "Retrieve all workflows (with nodes/edges), search by name/description, or fetch a single workflow by id.",
+                    "parameters": [
+                        {
+                            "in": "query",
+                            "name": "id",
+                            "required": False,
+                            "schema": {"type": "integer"},
+                            "description": "If provided, return a single workflow by ID."
+                        },
+                        {
+                            "in": "query",
+                            "name": "search",
+                            "required": False,
+                            "schema": {"type": "string"},
+                            "description": "Case-insensitive search in workflow name or description."
+                        },
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Workflows found",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "oneOf": [
+                                            {"$ref": "#/components/schemas/WorkflowResponse"},
+                                            {"$ref": "#/components/schemas/WorkflowListResponse"}
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "404": {"description": "Workflow not found"},
+                        "405": {"description": "Method not allowed"},
+                    },
+                }
+            }
+            ,
             "/api/project-categories/": {
                 "post": {
                     "operationId": "createProjectCategory",
@@ -961,6 +1055,121 @@ def openapi_json(request):
                         "items": {
                             "type": "array",
                             "items": {"$ref": "#/components/schemas/ServiceResponse"}
+                        }
+                    }
+                },
+                "WorkflowNodeItem": {
+                    "type": "object",
+                    "properties": {
+                        "slug": {"type": "string"},
+                        "name": {"type": "string"},
+                        "color": {"type": ["string", "null"], "description": "Hex color without # (e.g., 25D366)"}
+                    }
+                },
+                "WorkflowNode": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string", "description": "Unique node id within a workflow"},
+                        "type": {
+                            "type": "string",
+                            "enum": ["eventNode", "agentNode", "connectorNode", "actionNode", "logicNode"],
+                            "description": "Node type"
+                        },
+                        "label": {"type": "string"},
+                        "description": {"type": "string"},
+                        "iconSlug": {"type": "string", "description": "SimpleIcons slug"},
+                        "iconColor": {"type": ["string", "null"], "description": "Hex color without #"},
+                        "iconAlt": {"type": "string"},
+                        "items": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowNodeItem"}
+                        },
+                        "posDesktop": {
+                            "type": "object",
+                            "properties": {
+                                "x": {"type": "integer"},
+                                "y": {"type": "integer"}
+                            }
+                        },
+                        "posMobile": {
+                            "type": "object",
+                            "properties": {
+                                "x": {"type": "integer"},
+                                "y": {"type": "integer"}
+                            }
+                        }
+                    }
+                },
+                "WorkflowEdge": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string", "description": "Edge id (e.g., e1-2)"},
+                        "source": {"type": "string", "description": "Source node id"},
+                        "target": {"type": "string", "description": "Target node id"}
+                    }
+                },
+                "WorkflowCreateRequest": {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": {"type": "string", "maxLength": 255},
+                        "description": {"type": "string"},
+                        "is_active": {"type": "boolean", "default": True},
+                        "nodes": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowNode"}
+                        },
+                        "edges": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowEdge"}
+                        }
+                    }
+                },
+                "WorkflowUpdateRequest": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string", "maxLength": 255},
+                        "description": {"type": "string"},
+                        "is_active": {"type": "boolean"},
+                        "nodes": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowNode"},
+                            "description": "If provided, replaces all nodes."
+                        },
+                        "edges": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowEdge"},
+                            "description": "If provided, replaces all edges."
+                        }
+                    }
+                },
+                "WorkflowResponse": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "name": {"type": "string"},
+                        "slug": {"type": "string"},
+                        "description": {"type": ["string", "null"]},
+                        "is_active": {"type": "boolean"},
+                        "created_at": {"type": "string", "format": "date-time"},
+                        "updated_at": {"type": "string", "format": "date-time"},
+                        "nodes": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowNode"}
+                        },
+                        "edges": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowEdge"}
+                        }
+                    }
+                },
+                "WorkflowListResponse": {
+                    "type": "object",
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "items": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/WorkflowResponse"}
                         }
                     }
                 },

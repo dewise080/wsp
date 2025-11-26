@@ -1,10 +1,12 @@
+import mimetypes
+
 from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 
 # Sliders Model
 class sliderSection(models.Model):
-    image = models.ImageField(upload_to='Home/', blank=True, null=True)
+    image = models.FileField(upload_to='Home/', blank=True, null=True)
     title = models.CharField(max_length=200, blank=True, null=True)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -14,7 +16,22 @@ class sliderSection(models.Model):
     button2_url = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or "Slider"
+
+    @property
+    def media_mime_type(self):
+        if not self.image:
+            return ""
+        mime_type, _ = mimetypes.guess_type(self.image.name)
+        return mime_type or ""
+
+    @property
+    def is_video(self):
+        return self.media_mime_type.startswith("video")
+
+    @property
+    def is_image(self):
+        return self.media_mime_type.startswith("image")
 
     class Meta:
         verbose_name_plural = "1. Slider Section"

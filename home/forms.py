@@ -13,8 +13,10 @@ class sliderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Add Bootstrap classes to form fields
-        for field in self.fields.values():
+        for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+            if name == 'image':
+                field.widget.attrs['accept'] = 'image/*,video/*'
 
 # Services Form
 class serviceForm(forms.ModelForm):

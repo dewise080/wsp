@@ -51,12 +51,17 @@
                      <div class="card">
                         <div class="card-body">
                             {% if slider.image %}
-                                <img class="mb-2" src="{{ slider.image.url }}" style="border-radius:5px;" width="100" alt="Current Image">
+                                <div class="mb-3">
+                                    {% if slider.is_video %}
+                                        <video class="w-100 rounded" src="{{ slider.image.url }}" muted loop playsinline controls style="max-width:200px;background:transparent;"></video>
+                                    {% else %}
+                                        <img class="mb-2" src="{{ slider.image.url }}" style="border-radius:5px;" width="100" alt="Current Image">
+                                    {% endif %}
+                                </div>
                             {% endif %}
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Image / Video (transparent video supported)</label>
                             <br>
-                           <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
-                           <br>
-                           {{ form.image }}
+                            {{ form.image }}
                         </div>
                      </div>
                   </div>

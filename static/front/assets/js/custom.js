@@ -213,7 +213,23 @@
             }
         }
     });
-    var swiper = new Swiper(".hero-slide", {
+    const syncHeroSlideMedia = (swiperInstance) => {
+        if (!swiperInstance || !swiperInstance.slides) return;
+        swiperInstance.slides.forEach((slide, index) => {
+            const videos = slide.querySelectorAll('video.hero-video');
+            videos.forEach((videoEl) => {
+                if (index === swiperInstance.activeIndex) {
+                    videoEl.muted = true;
+                    videoEl.play().catch(() => {});
+                } else {
+                    videoEl.pause();
+                    videoEl.currentTime = 0;
+                }
+            });
+        });
+    };
+
+    var heroSwiper = new Swiper(".hero-slide", {
         loop: false,
         slidesPerView: 1,
         spaceBetween: 30,
@@ -239,8 +255,17 @@
             992: {
                 slidesPerView: 1,
             }
+        },
+        on: {
+            init: function() {
+                syncHeroSlideMedia(this);
+            },
+            slideChangeTransitionEnd: function() {
+                syncHeroSlideMedia(this);
+            }
         }
     });
+    syncHeroSlideMedia(heroSwiper);
     jQuery(window).on('load', function() {
         new WOW().init();
         window.wow = new WOW({
@@ -309,7 +334,6 @@ counters.forEach(counter => {
     // Start the updateCount function
     updateCount();
 });
-
 
 
 

@@ -69,9 +69,15 @@
                     <tr>
                       <td>{{ forloop.counter }}</td>
                       {% if slider.image %}
-                        <td><img src="{{ slider.image.url }}" width="50" alt="sliderImage"></td>
+                        <td>
+                          {% if slider.is_video %}
+                            <video src="{{ slider.image.url }}" width="50" muted loop playsinline style="background:transparent;"></video>
+                          {% else %}
+                            <img src="{{ slider.image.url }}" width="50" alt="sliderImage">
+                          {% endif %}
+                        </td>
                       {% else %}
-                        <td>No image</td>
+                        <td>No media</td>
                       {% endif %}
                       <td><a href="{% url 'adminSliderElementEdit' slider.id %}">{{ slider.title }}</a></td>
                       <td>{{ slider.subtitle }}</td>

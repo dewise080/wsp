@@ -43,9 +43,14 @@
               </div>
               <div class="col-lg-6">
                   {% if slider.image %}
-                  <div class="hero-img">
-                      <img src="{{ slider.image.url }}" class="slider_img"
-                          alt>
+                  <div class="hero-img hero-media">
+                      {% if slider.is_video %}
+                          <video class="slider_media slider_img hero-video" autoplay loop muted playsinline preload="auto" data-hero-video>
+                              <source src="{{ slider.image.url }}" type="{{ slider.media_mime_type|default:'video/mp4' }}">
+                          </video>
+                      {% else %}
+                          <img src="{{ slider.image.url }}" class="slider_media slider_img" alt>
+                      {% endif %}
                   </div>
                   {% endif %}
               </div>

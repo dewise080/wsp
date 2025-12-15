@@ -121,5 +121,5 @@ function initializeParticlesForSliders(sliderCount) {
     }
 }
 
-// Initialize particles for each slider
-initializeParticlesForSliders(sliderCounting);
+// Initialize particles for each slider; fall back to zero when not defined on a page
+initializeParticlesForSliders(typeof sliderCounting !== "undefined" ? sliderCounting : 0);

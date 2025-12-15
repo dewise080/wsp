@@ -1,0 +1,791 @@
+/*Reset Styles  */
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    
+    background-color: #dfdfdf;
+    background-image: linear-gradient(to bottom, #dddbd1, #d2dbdc);
+    font-family: 'Roboto', sans-serif;
+    color: #4b4b4b;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern";
+    -webkit-font-feature-settings: "kern";
+    -moz-font-feature-settings: "kern";
+    -moz-font-feature-settings: "kern=1";
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+body.native.darwin {
+    font-family: system, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande"
+}
+
+html[dir="rtl"] {
+    direction: rtl
+}
+
+em {
+    font-style: italic
+}
+
+code {
+    font-family: Consolas, Menlo, Monaco, "Lucida Console", Liberation Mono,DejaVu Sans Mono, Bitstream Vera Sans Mono, "Courier New", Courier, monospace
+}
+
+input {
+    margin: 0;
+    font-family: 'Roboto', sans-serif
+}
+
+button {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit
+}
+
+button:disabled {
+  opacity: 0.65; 
+  cursor: not-allowed !important;
+}
+
+pre {
+    white-space: pre-wrap
+}
+
+ul,ol {
+    padding: 0;
+    margin: 0
+}
+
+a {
+    text-decoration: none;
+    color: #039be5
+}
+
+textarea {
+    width: 100%;
+    border: 1px solid #eaeaea;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+textarea:focus, textarea:active {
+    border-color: #148d7f;
+    outline: none;
+}
+
+input[type=file] {
+    border: 1px solid #eaeaea;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+select {
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border: 1px solid #eaeaea;
+    outline: none;
+}
+
+select:focus {
+    border-color: #148d7f;
+}
+
+.center {
+    text-align: center;
+    justify-content: center;
+}
+
+/*Message Styles  */
+.msg {
+    padding-left: 9%;
+    padding-right: 9%;
+    margin-bottom: 12px;
+    animation: chat-pop 0.2s ease-out;
+}
+.msg::after {
+    content: "";
+    clear: both;
+    display: block;
+}
+.msg-system {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+.message-system {
+    -webkit-flex: none;
+    flex: none;
+    max-width: 100% !important;
+    text-align: center;
+    font-size: 12.5px;
+    line-height: 21px;
+    display: inline-block;
+    border-radius: 7.5px;
+    color: rgba(69,90,100,0.95);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    background-color: rgba(225,245,254,0.92);
+    padding: 5px 12px 6px 12px;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+}
+@media (max-width: 1024px) {
+    .msg {
+        padding-left:7%;
+        padding-right: 7%
+    }
+}
+
+@media (max-width: 968px) {
+    .msg {
+        padding-left:6.5%;
+        padding-right: 6.5%
+    }
+}
+
+@media (max-width: 912px) {
+    .msg {
+        padding-left:6%;
+        padding-right: 6%
+    }
+}
+
+@media (max-width: 856px) {
+    .msg {
+        padding-left:5.5%;
+        padding-right: 5.5%
+    }
+}
+
+@media (max-width: 800px) {
+    .msg {
+        padding-left:5%;
+        padding-right: 5%
+    }
+}
+.bubble {
+    padding: 6px 0 8px 0;
+    padding-left: 9px;
+    padding-right: 7px;
+}
+
+.message-in, .message-out {
+    border-radius: 7.5px;
+    position: relative;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+}
+
+.message-in {
+    background-color: #fff;
+    float: left;
+}
+
+.message-out {
+    background-color: #dcf8c6;
+    float: right;
+}
+
+.message-text, .media-caption, .document-body {
+    font-size: 13.6px;
+    line-height: 19px;
+    word-wrap: break-word;
+    color: #262626;
+    cursor: text;
+    white-space: pre-wrap;
+}
+
+.message-text::after {
+    content: " \00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0";
+    display: inline;
+}
+
+.pane-chat-tile {
+    background-color: #e5ddd5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-repeat: repeat repeat;
+    z-index: -1;
+}
+
+.pane-chat-tile::after {
+    background-image: url(images/wallpaper.png);
+    background-size: 366.5px 666px;
+    opacity: 0.06;
+    content: "";
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.message-meta {
+    position: absolute;
+    bottom: 3px;
+    right: 7px;
+    font-size: 11px;
+    color: rgba(0,0,0,0.45);
+    line-height: 15px;
+    height: 15px;
+}
+
+.msg.msg-continuation {
+    margin-bottom: 2px;
+}
+
+.tail.message-in {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 7.5px;
+}
+.tail.message-out {
+    border-top-left-radius: 7.5px;
+    border-top-right-radius: 0px;
+}
+.tail.message-in .tail-container {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 0px;
+    width: 12px;
+    height: 19px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.tail.message-out .tail-container {
+    content: '';
+    position: absolute;
+    right: -12px;
+    top: 0px;
+    width: 12px;
+    height: 19px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.message-in .tail-container {
+    background-image: url(images/tail-in.png);
+}
+.message-out .tail-container {
+     background-image: url(images/tail-out.png); 
+}
+
+.author {
+    color: #74cff8;
+    font-size: 12.5px;
+    font-weight: 600;
+    height: 21px;
+    line-height: 21px;
+}
+
+
+.color-1 {
+    color: #35cd96 !important
+}
+
+.color-2 {
+    color: #6bcbef !important
+}
+
+.color-3 {
+    color: #e542a3 !important
+}
+
+.color-4 {
+    color: #91ab01 !important
+}
+
+.color-5 {
+    color: #ffa97a !important
+}
+
+.color-6 {
+    color: #1f7aec !important
+}
+
+.color-7 {
+    color: #dfb610 !important
+}
+
+.color-8 {
+    color: #029d00 !important
+}
+
+.color-9 {
+    color: #8b7add !important
+}
+
+.color-10 {
+    color: #fe7c7f !important
+}
+
+.color-11 {
+    color: #ba33dc !important
+}
+
+.color-12 {
+    color: #59d368 !important
+}
+
+.color-13 {
+    color: #b04632 !important
+}
+
+.color-14 {
+    color: #fd85d4 !important
+}
+
+.color-15 {
+    color: #8393ca !important
+}
+
+.color-16 {
+    color: #ff8f2c !important
+}
+
+.color-17 {
+    color: #a3e2cb !important
+}
+
+.color-18 {
+    color: #b4876e !important
+}
+
+.color-19 {
+    color: #c90379 !important
+}
+
+.color-20 {
+    color: #ef4b4f !important
+}
+
+@keyframes chat-pop {
+    0% {
+        transform: translateY(10px);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+/*Whatsapp panes  */
+@media screen and (max-width: 648px) {
+    .two .pane-one {
+        position: fixed;
+        width: 80%;
+        z-index: 1;
+        transform: translateX(-100%);
+        -webkit-transition: transform 0.2s ease-in-out;
+        -moz-transition: transform 0.2s ease-in-out;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .two .pane-one.open {
+        transform: translateX(0)
+    }
+
+    .two .pane-two {
+        width: 100%
+    }
+}
+
+@media screen and (min-width: 649px) and (max-width: 900px) {
+    .two .pane-one {
+        width:40%
+    }
+
+    .two .pane-two {
+        width: 60%
+    }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1024px) {
+    .two .pane-one {
+        width:35%
+    }
+
+    .two .pane-two {
+        width: 65%
+    }
+}
+
+@media screen and (min-width: 1025px) and (max-width: 1300px) {
+    .two .pane-one {
+        width:35%
+    }
+
+    .two .pane-two {
+        width: 65%
+    }
+}
+
+@media screen and (min-width: 1301px) {
+    .two .pane-one {
+        width:30%
+    }
+
+    .two .pane-two {
+        width: 70%
+    }
+}
+
+
+@media screen and (max-width: 900px) {
+    .three .pane-one {
+        width:40%
+    }
+
+    .three .pane-two {
+        width: 60%
+    }
+
+    .three .pane-three {
+        position: absolute;
+        left: 40%;
+        width: 60%
+    }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1024px) {
+    .three .pane-one {
+        width:35%
+    }
+
+    .three .pane-two {
+        width: 65%
+    }
+
+    .three .pane-three {
+        position: absolute;
+        left: 35%;
+        width: 65%
+    }
+}
+
+@media screen and (min-width: 1025px) and (max-width: 1300px) {
+    .three .pane-one {
+        width:30%
+    }
+
+    .three .pane-two {
+        width: 40%
+    }
+
+    .three .pane-three {
+        width: 30%
+    }
+}
+
+@media screen and (min-width: 1301px) {
+    .three .pane-one {
+        width:25%
+    }
+
+    .three .pane-two {
+        width: 45%
+    }
+
+    .three .pane-three {
+        width: 30%
+    }
+}
+
+.pane {
+    height: 100vh;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative
+}
+
+.pane-header {
+    -webkit-flex: none;
+    flex: none;
+    height: 59px;
+    width: 100%;
+    background-color: #eee;
+    box-sizing: border-box;
+    padding: 10px 15px 10px 16px;
+    position: relative;
+    z-index: 1000;
+}
+
+.pane-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 21px;
+    color: #000;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    display: -webkit-flex;
+    display: flex;
+    flex: 1;
+}
+
+.pane-controls {
+    -webkit-flex: none;
+    flex: none;
+    font-size: 24px;
+    color: #777777;
+}
+
+.pane-controls .typcn {
+    padding: 8px;
+}
+
+.pane-body {
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    z-index: 1;
+
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+
+    background-color: #f7f7f7;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    pointer-events: auto;
+
+    overflow-y: auto;
+    z-index: 1;
+}
+
+.chat.pane-body {
+    z-index: 100;
+    box-sizing: border-box;
+    border-left: 1px solid rgba(0,0,0,0.03);
+    transition: background .3s ease-out .1s;
+    background-color: transparent;
+    padding: 20px 0;
+}
+
+.compose-filler {
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-order: 2;
+    order: 2;
+}
+
+.pane-footer {
+    padding: 0;
+    background-color: rgba(255,255,255,0.6);
+    box-sizing: border-box;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    min-height: 62px;
+    -webkit-order: 3;
+    order: 3;
+    position: relative;
+}
+
+.pane-footer .column {
+    display: flex;
+}
+
+.pane-footer .media-btns button,
+.pane-footer .aux-btns button {
+    height: 40px;
+    width: 40px;
+    font-size: 21px;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 0 10px;
+    color: #525150;
+}
+
+.pane-footer .media-btns button.is-primary {
+    background: white;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.pane-footer .aux-btns button {
+    background: #2196F3;
+    border-radius: 50%;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.12);
+    color: #ffffff;
+}
+
+.pane-footer .aux-btns #whatsapp-share {
+    background: #029d00;
+    background-size: contain;
+    display: none;
+    background-image: url("images/social.png");
+}
+
+.pane-footer button .typcn {
+    position: relative;
+}
+
+.pane-footer button .typcn.left {
+    left: 1px;
+}
+
+.pane-footer button .typcn.top {
+    top: -1px;
+}
+
+.pane-footer button:disabled {
+    opacity: 0.3;
+}
+
+/*Wells  */
+.well, .well-simple {
+    background-color: #FFF;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-top: 10px;
+}
+.well {
+    padding-top: 14px;
+    padding-bottom: 19px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.well-simple .row {
+    padding-left: 30px;
+}
+
+.row-body {
+    border-bottom: 1px solid #f2f2f2;
+    padding-right: 30px;
+    padding-top: 19px;
+    padding-bottom: 19px;
+}
+
+.well .title, .row .title  {
+    -webkit-flex: none;
+    flex: none;
+    font-size: 14px;
+    line-height: normal;
+    color: #128C7E;
+    font-weight: 300;
+    padding-right: 30px;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+}
+
+.row .title {
+    padding-top: 14px;
+}
+
+.well button, .well-simple button {
+    padding: 15px;
+    width: 100%;
+    border-radius: 5px;
+    background: linear-gradient(#138c7f, #0f756a);
+    color: white;
+}
+
+
+
+/*Align anything vertically in the center  */
+.pane-header, .pane-footer {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+/*Pane management  */
+.app {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    top: 0;
+    position: relative;
+    overflow: hidden;
+    -webkit-transform-origin: center;
+    transform-origin: center;
+    -webkit-animation: app-enter 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+    animation: app-enter 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+    background-position: top left;
+    background-repeat: repeat-x;
+    background-color: #f7f7f7;
+    display: -webkit-flex;
+    display: flex;
+}
+
+@-webkit-keyframes app-enter {
+    from {
+        -webkit-transform: scale(1.4);
+        transform: scale(1.4);
+        opacity: 0
+    }
+
+    to {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+@keyframes app-enter {
+    from {
+        -webkit-transform: scale(1.4);
+        transform: scale(1.4);
+        opacity: 0
+    }
+
+    to {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+/*Side menu styles  */
+#hamburger, #close-menu {
+    display: none;
+}
+
+@media screen and (max-width: 648px) {
+    #close-menu {
+        display: inline-block;
+    }
+    #hamburger {
+        display: block;
+        position: fixed;
+        padding: 8px;
+        font-size: 24px;
+        z-index: 1;
+    }
+
+    .pane-footer .aux-btns #whatsapp-share {
+        display: block;
+    }
+}

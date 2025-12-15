@@ -1,0 +1,68 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+
+<div class="page-body">
+    <div class="container-fluid">
+      <div class="page-title">
+        <div class="row">
+          <div class="col-6">
+            <h3>WSP Log Stream</h3>
+            <p class="text-muted small mb-0">Tail of {{ log_path }}</p>
+          </div>
+          <div class="col-6">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'adminHome' %}">
+                  <svg class="stroke-icon">
+                    <use href="{% static 'admin/assets/svg/icon-sprite.svg' %}#stroke-home"></use>
+                  </svg></a></li>
+              <li class="breadcrumb-item">Logs</li>
+              <li class="breadcrumb-item active">WSP Output</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-0">Latest Entries</h5>
+                <span class="text-muted small">Auto-refreshing every 10s</span>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="window.location.reload()">Refresh now</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleAutoscroll()">Toggle autoscroll</button>
+              </div>
+            </div>
+            <div class="card-body">
+              {% if log_error %}
+                <div class="alert alert-danger">{{ log_error }}</div>
+              {% else %}
+                <pre id="log-stream" class="p-3 bg-dark text-light rounded" style="height: 70vh; overflow:auto; font-size:13px; line-height:1.4; white-space:pre-wrap;">{{ log_text }}</pre>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+  const logBox = document.getElementById('log-stream');
+  let autoscroll = true;
+  function scrollToBottom() {
+    if (logBox && autoscroll) {
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+  }
+  function toggleAutoscroll() {
+    autoscroll = !autoscroll;
+  }
+  scrollToBottom();
+  setInterval(() => window.location.reload(), 10000);
+</script>
+{% endblock content %}

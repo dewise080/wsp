@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'modeltranslation',
+    'django_components',
+    'core',
     'accounts',
     'home',
     'about',
@@ -56,9 +61,11 @@ INSTALLED_APPS = [
     'workflows',
     'ckeditor',
     'debug_toolbar',
+    'rosetta',
     "ninja",
     'django_extensions',
     "storages",
+    'sampleconversations',
 ]
 
 
@@ -68,6 +75,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -93,6 +101,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.website_settings_context',
@@ -124,6 +133,11 @@ if os.getenv('MYSQL_DB') == 'True':
             'PASSWORD': os.getenv('DB_PASSWORD'),
             'HOST': os.getenv('DB_HOST'),
             'PORT': os.getenv('DB_PORT'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'use_unicode': True,
+                'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+            },
         }
     }
 else:
@@ -134,12 +148,14 @@ else:
             }
     }
 # Email Setup
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER') 
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "info@whatsynaptic.com"
+EMAIL_HOST_PASSWORD = "wout jhnb vnyt aahr"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -163,7 +179,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('tr', _('Turkish')),
+)
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'en'
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 TIME_ZONE = os.getenv('TIME_ZONE')
 
@@ -178,10 +206,68 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+# Use the bundled CKEditor base path (default package assets)
+# CKEDITOR_BASEPATH = STATIC_URL + 'ckeditor/ckeditor/'
+
+# Configurable AI prompt presets for the Enrich Text CKEditor plugin.
+CKEDITOR_ENRICH_PROMPTS = [
+    {
+        "key": "clarity",
+        "title": "Improve clarity",
+        "instruction": "Improve clarity, correctness, and tone. Keep the original meaning.",
+    },
+    {
+        "key": "emphasize",
+        "title": "Emphasize key idea",
+        "instruction": "Emphasize the main idea and streamline supporting sentences while keeping facts intact.",
+    },
+    {
+        "key": "blog",
+        "title": "Blog-style intro",
+        "instruction": "Draft a short, engaging blog-style introduction for this topic.",
+    },
+    {
+        "key": "paraphrase",
+        "title": "Paraphrase",
+        "instruction": "Paraphrase the text in different words while preserving meaning and length.",
+    },
+    {
+        "key": "summary",
+        "title": "Summarize",
+        "instruction": "Summarize the text concisely, keeping key facts and takeaways.",
+    },
+    {
+        "key": "bulletize",
+        "title": "Convert to bullets",
+        "instruction": "Convert the content into a short, clear bullet list.",
+    },
+]
+
+# CKEditor styling: load frontend styles so inline editors match site look.
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": [
+            ['Format', 'Bold', 'Italic', 'Underline', 'Strike'],
+            ['NumberedList', 'BulletedList', 'Outdent', 'Indent'],
+            ['Link', 'Unlink', 'Blockquote'],
+            ['RemoveFormat', 'Source'],
+            ['EnrichText'],
+        ],
+        "extraPlugins": 'chat-gpt,enrichtext',
+        "skin": "moono-lisa",
+        "contentsCss": [
+            STATIC_URL + "front/assets/css/bootstrap.min.css",
+            STATIC_URL + "front/assets/css/all.min.css",
+            STATIC_URL + "front/assets/css/style.css",
+        ],
+        "apiKey": "i6G5E9VIsVndlsMX8OMgn0nj",
+        "enrichTextPrompts": CKEDITOR_ENRICH_PROMPTS,
+    }
+}
 
 # Media served from remote URL, stored on provided server path.
-MEDIA_URL = os.environ.get('MEDIA_URL', 'https://automate.beyondclinic.online//media/')
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/media')
+MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', 'media')
 
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -198,6 +284,11 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
 }
 
+ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = True
+ROSETTA_SHOW_AT_ADMIN_PANEL = True
+ROSETTA_MESSAGES_PER_PAGE = 500
+LIBRETRANSLATE_URL = "https://translate.whatsynaptic.tech"
+
 # white noise settings
 if os.getenv('WHITENOISE_CONFIG') == 'True':
     STORAGES = {
@@ -208,6 +299,7 @@ if os.getenv('WHITENOISE_CONFIG') == 'True':
 
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://*.whatsynaptic.tech",
     "https://automate.beyondclinic.online",
     "https://www.automate.beyondclinic.online",
 ]

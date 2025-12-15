@@ -13,7 +13,7 @@ class pricingSection(models.Model):
     featured_text = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or f"Pricing {self.pk}"
     
 # Pricing Page SEO Model
 class pricingPageSEO(models.Model):
@@ -21,4 +21,4 @@ class pricingPageSEO(models.Model):
     meta_description = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
-        return self.meta_title
+        return self.meta_title or f"Pricing SEO {self.pk}"

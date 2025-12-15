@@ -6,7 +6,7 @@ class primaryMenu(models.Model):
     order = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return self.name or f"Primary Menu {self.pk}"
     
 class subMenu(models.Model):
     name = models.CharField(max_length=100)
@@ -14,4 +14,4 @@ class subMenu(models.Model):
     parent_menu = models.ForeignKey(primaryMenu, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.name
+        return self.name or f"Sub Menu {self.pk}"

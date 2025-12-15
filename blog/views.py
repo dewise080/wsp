@@ -1,11 +1,17 @@
 import json
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from blog.models import *
+
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import get_language
+
+from blog.models import *
+from core.translation_hooks import trigger_auto_translate
 from home.utils import download_image_to_field
+from sampleconversations.models import BlogSampleConversation
+from sampleconversations.utils import build_whatsapp_text
 
 def blogPageFront(request):
     categories = blogCategory.objects.all().order_by('?')
@@ -32,10 +38,35 @@ def blogDetails(request, slug):
     blog = get_object_or_404(Blogs, slug=slug)
     blogs = Blogs.objects.all().order_by('-created_at')
     categories = blogCategory.objects.all().order_by('?')
+    sample_conversation = BlogSampleConversation.objects.filter(blog=blog).first()
+    sample_conversation_entries = []
+    if sample_conversation:
+        lang = (get_language() or "").lower()
+        if lang.startswith("tr") and sample_conversation.conversations_tr:
+            sample_conversation_entries = sample_conversation.conversations_tr
+        elif lang.startswith("en") and sample_conversation.conversations_en:
+            sample_conversation_entries = sample_conversation.conversations_en
+        elif sample_conversation.conversations:
+            sample_conversation_entries = sample_conversation.conversations
+        elif sample_conversation.conversations_en:
+            # Fallback to English if default is empty.
+            sample_conversation_entries = sample_conversation.conversations_en
+    sample_conversation_whatsapp = None
+    if sample_conversation_entries:
+        author_name = blog.author or "Author"
+        sample_conversation_whatsapp = build_whatsapp_text(
+            sample_conversation_entries,
+            user_name=author_name,
+            assistant_name="Assistant",
+        )
+
     context = {
         'blog': blog,
         'blogs' : blogs,
         'categories' : categories,
+        'blog_sample_conversation': sample_conversation,
+        'blog_sample_conversation_entries': sample_conversation_entries,
+        'blog_sample_conversation_whatsapp': sample_conversation_whatsapp,
     }
     return render(request, 'front/main/partial/blog-details.html', context)
 
@@ -122,6 +153,7 @@ def api_blog_categories(request):
 
         cat = blogCategory(title=title)
         cat.save()
+        trigger_auto_translate('blog.blogcategory', cat.id)
         return JsonResponse(serialize_blog_category(cat), status=201)
 
     cat_id = request.GET.get('id')
@@ -136,6 +168,7 @@ def api_blog_categories(request):
         cat.title = payload.get('title')
 
     cat.save()
+    trigger_auto_translate('blog.blogcategory', cat.id)
     return JsonResponse(serialize_blog_category(cat), status=200)
 
 
@@ -206,6 +239,7 @@ def api_blogs(request):
                     return JsonResponse({'detail': msg}, status=400)
 
         blog.save()
+        trigger_auto_translate('blog.blogs', blog.id)
         return JsonResponse(serialize_blog(blog), status=201)
 
     blog_id = request.GET.get('id')
@@ -240,4 +274,5 @@ def api_blogs(request):
                 return JsonResponse({'detail': msg}, status=400)
 
     blog.save()
+    trigger_auto_translate('blog.blogs', blog.id)
     return JsonResponse(serialize_blog(blog), status=200)

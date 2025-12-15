@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from core.decorators import admin_role_required, both_role_required
+from core.translation_hooks import trigger_auto_translate
 from .models import Workflow, WorkflowNode, WorkflowNodeItem, WorkflowEdge, WorkflowPageSEO
 from .forms import WorkflowForm, WorkflowNodeForm, WorkflowEdgeForm, WorkflowPageSEOForm
 import json
@@ -306,7 +307,7 @@ def api_workflows(request):
         nodes = payload.get('nodes', [])
         edges = payload.get('edges', [])
         persist_workflow_graph(workflow, nodes, edges)
-
+        trigger_auto_translate('workflows.workflow', workflow.id)
         return JsonResponse(serialize_workflow(workflow), status=201)
 
     if request.method in ['PATCH', 'PUT']:
@@ -329,7 +330,7 @@ def api_workflows(request):
 
         if 'nodes' in payload or 'edges' in payload:
             persist_workflow_graph(workflow, payload.get('nodes', []), payload.get('edges', []))
-
+        trigger_auto_translate('workflows.workflow', workflow.id)
         return JsonResponse(serialize_workflow(workflow), status=200)
 
     return JsonResponse({'detail': 'Method not allowed'}, status=405)

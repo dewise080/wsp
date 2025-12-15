@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n component_tags %}
 {% block title %} {{meta.meta_title}} - {{meta.meta_description}} {% endblock title %}
 {% block title1 %} {{meta.meta_title}} - {{seo_settings.tag_line}} {% endblock title1 %}
 {% block title2 %} {{meta.meta_title}} - {{seo_settings.tag_line}} {% endblock title2 %}
@@ -86,8 +86,8 @@
     <div class="container">
         <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
             <div class="sec-title white">
-                <span>Our Solutions</span>
-                <h2>Services</h2>
+                <span>{% trans "Our Solutions" %}</span>
+                <h2>{% trans "Services" %}</h2>
 
             </div>
         </div>
@@ -99,17 +99,17 @@
                             <span>0{{ forloop.counter }}</span>
                             {% if service.fontawesome_icon_class %}
                                 <div class="icon">
-                                    <i class="{{ service.fontawesome_icon_class }} service-ico"></i>
+                                    <i class="{{ service.fontawesome_icon_class }} service-ico" data-inline-field="fontawesome_icon_class" data-inline-api="/api/services/" data-inline-id="{{ service.id }}"></i>
                                 </div>
                             {% endif %}
                             {% if service.name %}
-                                <h4>{{ service.name }}</h4>
+                                <h4 data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</h4>
                             {% endif %}
                             {% if service.short_description %}
-                                <p>{{ service.short_description }}</p>
+                                <p data-inline-field="short_description" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.short_description }}</p>
                             {% endif %}
                             <div class="read-btn">
-                                <a href="{% url "serviceDetail" service.slug %}">Read More</a>
+                                <a href="{% url "serviceDetail" service.slug %}">{% trans "Read More" %}</a>
                             </div>
                         </div>
                     </div>
@@ -131,18 +131,18 @@
             <div class="col-lg-6 or-2 wow animate fadeIn" data-wow-delay="200ms" data-wow-duration="1500ms">
                 <div class="sec-title white layout2">
                     {% if about.subtitle %}
-                        <span>{{ about.subtitle }}</span>
+                        <span data-inline-field="subtitle" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.subtitle }}</span>
                     {% endif %}
                     {% if about.title %}
-                        <h2>{{ about.title }}</h2>
+                        <h2 data-inline-field="title" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.title }}</h2>
                     {% endif %}
                 </div>
                 <div class="about-left layout2">
                     {% if about.short_description %}
-                        <h3>{{ about.short_description }}</h3>
+                        <h3 data-inline-field="short_description" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.short_description }}</h3>
                     {% endif %}
                     {% if about.long_description %}
-                        <p>{{ about.long_description|safe }}</p>
+                        <p data-inline-rich="true" data-inline-field="long_description" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.long_description|safe }}</p>
                     {% endif %}
                     <div class="company-since layout2">
                         {% if settings.logo_light %}
@@ -151,9 +151,12 @@
                             </div>
                         {% endif %}
                         {% if about.ranking_number %}
-                            <strong>#{{ about.ranking_number }}</strong>
+                            <strong>#<span data-inline-field="ranking_number" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.ranking_number }}</span></strong>
                         {% endif %}
-                        <h4>{% if about.tag_line %}{{ about.tag_line }}{% endif %} <span>{% if about.experience %}{{ about.experience }}{% endif %}</span></h4>
+                        <h4>
+                            {% if about.tag_line %}<span data-inline-field="tag_line" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.tag_line }}</span>{% endif %}
+                            <span>{% if about.experience %}<span data-inline-field="experience" data-inline-api="/api/about/" data-inline-id="{{ about.id }}">{{ about.experience }}</span>{% endif %}</span>
+                        </h4>
                     </div>
                 </div>
             </div>
@@ -189,8 +192,8 @@
     <div class="container">
         <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
             <div class="sec-title white">
-                <span>Care Study</span>
-                <h2>Fun Facts</h2>
+                <span>{% trans "Care Study" %}</span>
+                <h2>{% trans "Fun Facts" %}</h2>
             </div>
         </div>
         <div class="row g-4">
@@ -200,17 +203,17 @@
                         <div class="feature-inner">
                             {% if funfact.fontawesome_icon_class %}
                                 <div class="icon">
-                                    <i class="{{ funfact.fontawesome_icon_class }} service-ico"></i>
+                                    <i class="{{ funfact.fontawesome_icon_class }} service-ico" data-inline-field="fontawesome_icon_class" data-inline-api="/api/funfacts/" data-inline-id="{{ funfact.id }}"></i>
                                 </div>
                             {% endif %}
                             {% if funfact.count %}
-                                <span class="counter" data-target="{{ funfact.count }}">0</span>
+                                <span class="counter" data-target="{{ funfact.count }}" data-inline-field="count" data-inline-api="/api/funfacts/" data-inline-id="{{ funfact.id }}">{{ funfact.count }}</span>
                             {% endif %}
                             {% if funfact.count_after %}
-                                <sup>{{ funfact.count_after }}</sup>
+                                <sup data-inline-field="count_after" data-inline-api="/api/funfacts/" data-inline-id="{{ funfact.id }}">{{ funfact.count_after }}</sup>
                             {% endif %}
                             {% if funfact.title %}
-                                <h4>{{ funfact.title }}</h4>
+                                <h4 data-inline-field="title" data-inline-api="/api/funfacts/" data-inline-id="{{ funfact.id }}">{{ funfact.title }}</h4>
                             {% endif %}
                         </div>
                     </div>
@@ -226,17 +229,17 @@
     <div class="container">
         <div class="title-wrap">
             <div class="sec-title white">
-                <span>Most Popular</span>
-                <h2>Projects</h2>
+                <span>{% trans "Most Popular" %}</span>
+                <h2>{% trans "Projects" %}</h2>
 
             </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <ul class="isotope-menu layout2">
-                    <li class="active" data-filter="*">All</li>
+                    <li class="active" data-filter="*">{% trans "All" %}</li>
                     {% for category in project_categories  %}
-                    <li data-filter=".{{category.slug}}">{% if category.name %}{{category.name}}{% endif %}</li>
+                    <li data-filter=".{{category.slug}}">{% if category.name %}<span data-inline-field="name" data-inline-api="/api/project-categories/" data-inline-id="{{ category.id }}">{{category.name}}</span>{% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -246,18 +249,18 @@
                 <div class="col-md-6 col-lg-4 single-item {{ project.category.slug }}">
                         <div class="item-img">
                             <a href="{% url "projectDetails" project.slug %}">
-                                <img src="{{ project.getProjectImage }}" alt="Project image">
-                            </a>
-                        </div>
-                    <div class="item-inner-cnt">
-                        {% if project.category %}
-                            <span>{{ project.category }}</span>
-                        {% endif %}
-                        {% if project.title %}
-                            <h4>{{ project.title }}</h4>
-                        {% endif %}
+                        <img src="{{ project.getProjectImage }}" alt="Project image">
+                    </a>
+                </div>
+            <div class="item-inner-cnt">
+                {% if project.category %}
+                    <span data-inline-field="name" data-inline-api="/api/project-categories/" data-inline-id="{{ project.category.id }}">{{ project.category }}</span>
+                {% endif %}
+                {% if project.title %}
+                    <h4 data-inline-field="title" data-inline-api="/api/projects/" data-inline-id="{{ project.id }}">{{ project.title }}</h4>
+                {% endif %}
                         <div class="view-btn">
-                            <a href="{% url "projectDetails" project.slug %}">view details</a>
+                            <a href="{% url "projectDetails" project.slug %}">{% trans "view details" %}</a>
                         </div>
                     </div>
                 </div>
@@ -273,8 +276,8 @@
         <div class="row align-items-center">
             <div class="col-lg-3">
                 <div class="sec-title white layout2">
-                    <span>Satisfied Client</span>
-                    <h2>Our Partner</h2>
+                    <span>{% trans "Satisfied Client" %}</span>
+                    <h2>{% trans "Our Partner" %}</h2>
                     <div class="-partnerslider-navigator">
                         <div class="swiper-button-prev-c"><i class="bi bi-chevron-left"></i></div>
                         <div class="swiper-button-next-c"><i class="bi bi-chevron-right"></i></div>
@@ -287,8 +290,11 @@
                         {% for client in clients %}
                             {% if client.image %}
                                 <div class="swiper-slide">
-                                        <div class="single-partner">
-                                                <img src="{{ client.image.url }}" alt="{{ client.name }}">
+                                        <div class="single-partner text-center">
+                                                <img src="{{ client.image.url }}" alt="{{ client.client_name }}">
+                                                {% if client.client_name %}
+                                                <div class="client-name mt-2" data-inline-field="client_name" data-inline-api="/api/clients/" data-inline-id="{{ client.id }}">{{ client.client_name }}</div>
+                                                {% endif %}
                                         </div>
                                 </div>
                             {% endif %}
@@ -306,8 +312,8 @@
     <div class="container">
         <div class="title-wrap">
             <div class="sec-title white">
-                <span>Getting Start</span>
-                <h2>Pricing Plan</h2>
+                <span>{% trans "Getting Start" %}</span>
+                <h2>{% trans "Pricing Plan" %}</h2>
             </div>
         </div>
 
@@ -321,29 +327,33 @@
                                 {% if pricing.is_featured %}
                                     {% if pricing.featured_text %}
                                         <div class="plan-ribbon-wrapper">
-                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                            <div class="plan-ribbon" data-inline-field="featured_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.featured_text }}</div>
                                         </div>
                                     {% endif %}
                                 {% endif %}
                                 {% if pricing.title %}
-                                    <h3>{{ pricing.title }}</h3>
+                                    <h3 data-inline-field="title" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.title }}</h3>
                                 {% endif %}
                                 {% if pricing.subtitle %}
-                                    <span>{{ pricing.subtitle }}</span>
+                                    <span data-inline-field="subtitle" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.subtitle }}</span>
                                 {% endif %}
                                 {% if pricing.price %}
-                                    <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                    <strong>{{ settings.currency_symbol }} <span data-inline-field="price" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.price }}</span></strong>
                                 {% endif %}
                                 {% if pricing.description %}
                                     <div class="item-list">
-                                        {{ pricing.description|safe }}
+                                        <div data-inline-rich="true" data-inline-field="description" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                            {{ pricing.description|safe }}
+                                        </div>
                                     </div>
                                 {% endif %}
                                 {% if pricing.button_text or pricing.button_url %}
                                     <div class="price-btn">
                                         <div class="line-1"></div>
                                         <div class="line-2"></div>
-                                        <a href="{% if pricing.button_url %}{{ pricing.button_url }}{% endif %}">{% if pricing.button_text %}{{ pricing.button_text }}{% endif %}</a>
+                                        <a href="{% if pricing.button_url %}{{ pricing.button_url }}{% endif %}" data-inline-field="button_url" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                            <span data-inline-field="button_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{% if pricing.button_text %}{{ pricing.button_text }}{% endif %}</span>
+                                        </a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -362,38 +372,38 @@
     <div class="container-fluid p-0">
         <div class="title-wrap">
             <div class="sec-title white">
-                <span>Testimonial</span>
-                <h2>Client Say About Us</h2>
+                <span>{% trans "Testimonial" %}</span>
+                <h2>{% trans "Client Say About Us" %}</h2>
             </div>
         </div>
-        <div class="swiper testimonial-slider">
-            <div class="swiper-wrapper">
-                {% for testimonial in testimonials %}
-                    <div class="swiper-slide">
-                        <div class="single-testimonial">
-                            <div class="quote">
-                                <i class="fas fa-quote-right"></i>
-                            </div>
-                            {% if testimonial.name %}
-                                <h5>{{ testimonial.name }}</h5>
-                            {% endif %}
-                            {% if testimonial.position %}
-                                <span>{{ testimonial.position }}</span>
-                            {% endif %}
-                            {% if testimonial.star %}
-                                <div class="stars">
-                                    {% for i in "x"|rjust:testimonial.star %}
-                                        <a href="#"><i class="fas fa-star"></i></a>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                            {% if testimonial.description %}
-                                <p>{{ testimonial.description }}</p>
-                            {% endif %}
-                            {% if testimonial.image %}
-                                <div class="reviewer">
-                                    <img src="{{ testimonial.image.url }}" alt>
-                                </div>
+                <div class="swiper testimonial-slider">
+                    <div class="swiper-wrapper">
+                        {% for testimonial in testimonials %}
+                            <div class="swiper-slide">
+                                <div class="single-testimonial">
+                                    <div class="quote">
+                                        <i class="fas fa-quote-right"></i>
+                                    </div>
+                                    {% if testimonial.name %}
+                                        <h5 data-inline-field="name" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.name }}</h5>
+                                    {% endif %}
+                                    {% if testimonial.position %}
+                                        <span data-inline-field="position" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.position }}</span>
+                                    {% endif %}
+                                    {% if testimonial.star %}
+                                        <div class="stars">
+                                            {% for i in "x"|rjust:testimonial.star %}
+                                                <a href="#"><i class="fas fa-star"></i></a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if testimonial.description %}
+                                        <p data-inline-field="description" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.description }}</p>
+                                    {% endif %}
+                                    {% if testimonial.image %}
+                                        <div class="reviewer">
+                                            <img src="{{ testimonial.image.url }}" alt>
+                                        </div>
                             {% endif %}
                         </div>
                     </div>
@@ -471,8 +481,8 @@
     <div class="container">
         <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
             <div class="sec-title white">
-                <span>All Blog</span>
-                <h2>Latest Post</h2>
+                <span>{% trans "All Blog" %}</span>
+                <h2>{% trans "Latest Post" %}</h2>
             </div>
         </div>
         <div class="row gy-4">
@@ -483,19 +493,19 @@
                             <div class="blog-thumb">
                                 <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
                                 <div class="tag">
-                                    <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                    <a href="{% url "blogsByCategory" blog.category.slug %}"><span data-inline-field="title" data-inline-api="/api/blog-categories/" data-inline-id="{{ blog.category.id }}">{{ blog.category }}</span></a>
                                 </div>
                             </div>
                         {% endif %}
                         <div class="blog-inner">
                             <div class="author-date">
                                 {% if blog.author %}
-                                    <a href="#">By, {{ blog.author }}</a>
+                                    <a href="#">By, <span data-inline-field="author" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.author }}</span></a>
                                 {% endif %}
                                 <a href="#">{{ blog.created_at }}</a>
                             </div>
                             {% if blog.title %}
-                                <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                                <h4><a href="{% url "blogDetails" blog.slug %}"><span data-inline-field="title" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.title }}</span></a></h4>
                             {% endif %}
                         </div>
                     </div>
@@ -505,6 +515,30 @@
     </div>
 </section>
 {% endif %}
+
+<section class="sec-mar-top">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>{% trans "AI Ready" %}</span>
+                <h2>{% trans "Sample Conversations" %}</h2>
+            </div>
+        </div>
+        {% component "sample_conversation" title=_("AI conversation starters") subtitle=_("Copy a prompt or tweak the component as you like.") %}{% endcomponent %}
+    </div>
+</section>
+
+<section class="sec-mar-top">
+    <div class="container">
+        <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
+            <div class="sec-title white">
+                <span>{% trans "Live Demo" %}</span>
+                <h2>{% trans "WhatsApp Chat Replay" %}</h2>
+            </div>
+        </div>
+        {% component "whatsapp_sim" title=_("WhatsApp-style chat replay") subtitle=_("Static demo powered by the bundled simulator.") %}{% endcomponent %}
+    </div>
+</section>
 
 <script>
     const sliderCounting = {{sliders.count}}

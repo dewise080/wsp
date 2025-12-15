@@ -20,5 +20,5 @@ class customPage(models.Model):
         self.slug = slug
         
     def __str__(self):
-        return self.title
+        return self.title or f"Custom Page {self.pk}"
     

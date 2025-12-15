@@ -1,0 +1,30 @@
+<section class="sc-card">
+    <div class="sc-card__header">
+        <div>
+            <p class="sc-eyebrow">{{ subtitle }}</p>
+            <h3 class="sc-title">{{ title }}</h3>
+        </div>
+        <span class="sc-badge">Components</span>
+    </div>
+    <div class="sc-grid">
+        {% for convo in conversations %}
+            <article class="sc-item" data-tone="{{ convo.tone }}">
+                <div class="sc-item__header">
+                    <span class="sc-pill">{{ convo.tone }}</span>
+                    <h4>{{ convo.topic }}</h4>
+                </div>
+                <div class="sc-item__body">
+                    <p class="sc-label">Prompt</p>
+                    <p class="sc-message">{{ convo.user_message }}</p>
+                    <p class="sc-label">AI Reply</p>
+                    <p class="sc-reply">{{ convo.assistant_message }}</p>
+                </div>
+                <button class="sc-copy" type="button" data-message="{{ convo.user_message|escape }}">
+                    Copy prompt
+                </button>
+            </article>
+        {% empty %}
+            <p class="sc-empty">No conversations available.</p>
+        {% endfor %}
+    </div>
+</section>

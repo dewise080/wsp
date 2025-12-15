@@ -1,0 +1,35 @@
+{% extends 'front/base.html' %}
+{% load static i18n component_tags %}
+
+{% block title %}{% trans "Sample Conversations" %}{% endblock title %}
+{% block title1 %}{% trans "Sample Conversations" %}{% endblock title1 %}
+{% block title2 %}{% trans "Sample Conversations" %}{% endblock title2 %}
+
+{% block content %}
+<main class="creasoft-wrap layout2 sc-demo">
+    <section class="hero-area sec-mar">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content layout2">
+                        <h1>{% trans "Reusable sample conversations" %}</h1>
+                        <p>{% trans "A small demo showing how django-components keeps markup, styles, and scripts bundled with the widget." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sec-mar-top">
+        <div class="container">
+            {% component "sample_conversation" conversations=conversations title=_("AI conversation starters") subtitle=_("Copy a prompt or adjust the component to your needs.") %}{% endcomponent %}
+        </div>
+    </section>
+
+    <section class="sec-mar-top">
+        <div class="container">
+            {% component "whatsapp_sim" title=_("WhatsApp-style chat replay") subtitle=_("Static demo powered by the bundled simulator.") %}{% endcomponent %}
+        </div>
+    </section>
+</main>
+{% endblock content %}

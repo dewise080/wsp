@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
 {% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
@@ -22,8 +22,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>Projects</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Projects</span>
+                                <h1>{% trans "Projects" %}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Projects" %}</span>
                             </div>
                         </div>
                     </div>
@@ -36,16 +36,16 @@
             <div class="container">
                 <div class="title-wrap">
                     <div class="sec-title">
-                        <span>Case Study</span>
-                        <h2>Project</h2>
+                        <span>{% trans "Case Study" %}</span>
+                        <h2>{% trans "Project" %}</h2>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <ul class="isotope-menu">
-                            <li class="active" data-filter="*">All</li>
+                            <li class="active" data-filter="*">{% trans "All" %}</li>
                             {% for category in project_categories  %}
-                                <li data-filter=".{{category.slug}}">{{category.name}}</li>
+                                <li data-filter=".{{category.slug}}"><span data-inline-field="name" data-inline-api="/api/project-categories/" data-inline-id="{{ category.id }}">{{category.name}}</span></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -59,11 +59,11 @@
                             </div>
                             <div class="item-inner-cnt">
                                 {% if project.category %}
-                                    <span>{{ project.category }}</span>
+                                    <span data-inline-field="name" data-inline-api="/api/project-categories/" data-inline-id="{{ project.category.id }}">{{ project.category }}</span>
                                 {% endif %}
-                                <h4>{{ project.title }}</h4>
+                                <h4 data-inline-field="title" data-inline-api="/api/projects/" data-inline-id="{{ project.id }}">{{ project.title }}</h4>
                                 <div class="view-btn">
-                                    <a href="{% url "projectDetails" project.slug %}">view details</a>
+                                    <a href="{% url "projectDetails" project.slug %}">{% trans "view details" %}</a>
                                 </div>
                             </div>
                         </div>
@@ -94,30 +94,30 @@
             <div class="container">
                 <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
                     <div class="sec-title">
-                        <span>All Blog</span>
-                        <h2>Latest Post</h2>
+                        <span>{% trans "All Blog" %}</span>
+                        <h2>{% trans "Latest Post" %}</h2>
                     </div>
                 </div>
                 <div class="row gy-4">
                     {% for blog in blogs|slice:":3" %}
                         <div class="col-md-6 col-lg-4 wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
                             <div class="single-blog">
-                                <div class="blog-thumb">
-                                    <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
-                                    <div class="tag">
-                                        <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                    <div class="blog-thumb">
+                                        <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
+                                        <div class="tag">
+                                            <a href="{% url "blogsByCategory" blog.category.slug %}"><span data-inline-field="title" data-inline-api="/api/blog-categories/" data-inline-id="{{ blog.category.id }}">{{ blog.category }}</span></a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="blog-inner">
-                                    <div class="author-date">
-                                        <a href="#">By, {{ blog.author }}</a>
-                                        <a href="#">{{ blog.created_at }}</a>
+                                    <div class="blog-inner">
+                                        <div class="author-date">
+                                            <a href="#">By, <span data-inline-field="author" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.author }}</span></a>
+                                            <a href="#">{{ blog.created_at }}</a>
+                                        </div>
+                                        <h4><a href="{% url "blogDetails" blog.slug %}"><span data-inline-field="title" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.title }}</span></a></h4>
                                     </div>
-                                    <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
                 </div>
             </div>
         </section>

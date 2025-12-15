@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{service.name}} - {{seo_settings.meta_title}} {% endblock title %}
 {% block title1 %} {{service.name}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{service.name}} - {{seo_settings.meta_title}}{% endblock title2 %}
@@ -22,8 +22,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>{{ service.name }}</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Service<i class="bi bi-arrow-right"></i>{{ service.name }}</span>
+                                <h1 data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Service" %}<i class="bi bi-arrow-right"></i><span data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</span></span>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                                    data-inline-field="fontawesome_icon_class"
                                    data-inline-api="/api/services/"
                                    data-inline-id="{{ service.id }}"></i>
-                                <span>{{ service.name }}</span>
+                                <span data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</span>
                             </h3>
                             <div id="service-desc-{{ service.id }}" data-inline-rich="true" data-inline-field="detail_page_description" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">
                                 {{ service.detail_page_description|safe }}
@@ -54,10 +54,10 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="sidebar-widget">
-                            <h4>Other Services</h4>
+                            <h4>{% trans "Other Services" %}</h4>
                             <ul class="category">
                                 {% for service in services %}
-                                    <li><a href="{% url "serviceDetail" service.slug %}">{{ service.name }}<i class="bi bi-arrow-right"></i></a></li>
+                                    <li><a href="{% url "serviceDetail" service.slug %}"><span data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</span><i class="bi bi-arrow-right"></i></a></li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -66,7 +66,7 @@
                                 <div class="sidebar-banner">
                                     <img src="{% static 'front/assets/img/widget-banner-bg.jpg' %}" alt>
                                     <div class="banner-inner">
-                                        <h3>Any Project <span>Call Now.</span>
+                                        <h3>{% trans "Any Project" %} <span>{% trans "Call Now." %}</span>
                                             <img class="angle" src="{% static 'front/assets/img/arrow-angle.png' %}" alt>
                                         </h3>
                                         <a href="tel:{{settings.phone}}">{{settings.phone}}</a>
@@ -80,7 +80,3 @@
             </div>
         </section>
 {% endblock %}
-
-{% block inline_edit_toolbar %}
-  {% include 'front/inline_edit_toolbar.html' %}
-{% endblock inline_edit_toolbar %}

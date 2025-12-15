@@ -6076,6 +6076,21 @@ scrollbar-track {
     -webkit-animation: action 3s infinite alternate;
     animation: action 3s infinite alternate;
 }
+.hero-media{
+    position: relative;
+    isolation: isolate;
+}
+.hero-media .slider_media{
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    background: transparent;
+}
+.hero-media video.slider_media{
+    object-fit: contain;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.15));
+}
 @-webkit-keyframes action {
     0% { transform: translateY(0); }
     100% { transform: translateY(20px); }

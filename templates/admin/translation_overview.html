@@ -1,0 +1,58 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Translation Overview" %}{% endblock %}
+
+{% block content %}
+<h1>{% trans "Translation Overview" %}</h1>
+<p class="help">{% trans "All translatable fields across registered models." %}</p>
+
+<div style="margin-bottom: 1rem;">
+  <form method="get" class="form-inline">
+    <label for="per_page">{% trans "Per page" %}:</label>
+    <input type="number" name="per_page" id="per_page" value="{{ per_page }}" min="1" style="width: 5rem;">
+    <button type="submit" class="button default">{% trans "Apply" %}</button>
+  </form>
+</div>
+
+<table class="listing">
+  <thead>
+    <tr>
+      <th>{% trans "Model" %}</th>
+      <th>{% trans "PK" %}</th>
+      <th>{% trans "Object" %}</th>
+      <th>{% trans "Field" %}</th>
+      {% for lang in langs %}
+        <th>{{ lang|upper }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in page_obj.object_list %}
+      <tr>
+        <td>{{ row.model }}</td>
+        <td>{{ row.pk }}</td>
+        <td><a href="{{ row.admin_url }}">{{ row.repr }}</a></td>
+        <td>{{ row.field }}</td>
+        {% for val in row.values_list %}
+          <td>{{ val }}</td>
+        {% endfor %}
+      </tr>
+    {% empty %}
+      <tr><td colspan="{{ 4|add:langs|length }}">{{ _("No data") }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="paginator">
+  {% if page_obj.has_previous %}
+    <a class="button" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}">{% trans "Previous" %}</a>
+  {% endif %}
+  <span class="step-links">
+    {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+  </span>
+  {% if page_obj.has_next %}
+    <a class="button" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}">{% trans "Next" %}</a>
+  {% endif %}
+</div>
+{% endblock %}

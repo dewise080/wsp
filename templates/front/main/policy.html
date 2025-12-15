@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{title}} - {{seo_settings.meta_title}} {% endblock title %}
 {% block title1 %} {{title}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{title}} - {{seo_settings.meta_title}} {% endblock title2 %}
@@ -22,8 +22,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>Privacy Policy</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Privacy Policy</span>
+                                <h1>{% trans "Privacy Policy" %}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Privacy Policy" %}</span>
                             </div>
                         </div>
                     </div>

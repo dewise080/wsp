@@ -23,6 +23,10 @@ from project.forms import *
 from legal.models import *
 from legal.forms import *
 from analytics.views import analyticsData
+from sampleconversations.forms import BlogSampleConversationForm
+from sampleconversations.models import BlogSampleConversation
+from pathlib import Path
+from collections import deque
 
 # # # # # # # # # # # # # # # # # #
         # Admin Home Page #
@@ -54,6 +58,34 @@ def adminHome(request):
         'analytics' : analyticsData(request)
     }
     return render(request, 'dashboard/main/index.html', context)
+
+
+@login_required(login_url='logIn')
+@both_role_required
+def adminWspLogStream(request):
+    """
+    Stream the wsp.out.log file in the admin panel (tail of last 400 lines).
+    Auto-refresh is handled client-side in the template.
+    """
+    log_path = Path("/var/log/wsp.out.log")
+    log_lines = []
+    error = None
+
+    try:
+        with log_path.open("r") as fh:
+            log_lines = list(deque(fh, maxlen=400))
+    except FileNotFoundError:
+        error = f"{log_path} not found."
+    except Exception as exc:
+        error = str(exc)
+
+    context = {
+        "title": "WSP Log Stream",
+        "log_path": str(log_path),
+        "log_text": "".join(log_lines),
+        "log_error": error,
+    }
+    return render(request, "dashboard/main/logs/wsp_log.html", context)
 
 # # # # # # # # # # # # # # # # # #
         # Admin Blog #
@@ -89,18 +121,27 @@ def adminBlogCreate(request):
 @both_role_required
 def adminBlogEdit(request, slug):
     blog = get_object_or_404(Blogs, slug=slug)
+    sample_convo = BlogSampleConversation.objects.filter(blog=blog).first()
+
     if request.method == 'POST':
         form = blogFrom(request.POST, request.FILES, instance=blog)
+        convo_form = BlogSampleConversationForm(request.POST, instance=sample_convo)
         if form.is_valid():
             form.save()
+            if convo_form.is_valid():
+                obj = convo_form.save(commit=False)
+                obj.blog = blog
+                obj.save()
             messages.success(request, 'Blog updated successfully!')
             return redirect('adminBlogList')
     else:
         form = blogFrom(instance=blog)
+        convo_form = BlogSampleConversationForm(instance=sample_convo)
     context = {
         'title' : 'Edit Blog',
         'blog' : blog,
         'form' : form,
+        'sample_convo_form': convo_form,
     }
     return render(request, 'dashboard/main/blog/edit.html', context)
 
@@ -1134,5 +1175,3 @@ def error_500(request):
 
     
         
-
-

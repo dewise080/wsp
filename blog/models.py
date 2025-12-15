@@ -7,7 +7,7 @@ class blogCategory(models.Model):
     slug = models.SlugField(blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or f"Blog {self.pk}"
         
     def save(self, *args, **kwargs):
         if self.title:
@@ -65,4 +65,4 @@ class blogPageSEO(models.Model):
     meta_description = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
-        return self.meta_title
+        return self.meta_title or f"Blog SEO {self.pk}"

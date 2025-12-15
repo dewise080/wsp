@@ -1,0 +1,16 @@
+<section class="wsim" data-wsim data-wsim-primary="{{ primary_author }}" data-wsim-replay-type="{{ replay_type }}" data-wsim-sample-id="wsim-data-{{ component_id }}">
+    <div class="wsim__header">
+        <div>
+            <p class="wsim__eyebrow">{{ subtitle }}</p>
+            <h3 class="wsim__title">{{ title }}</h3>
+        </div>
+        <span class="wsim__badge">Demo</span>
+    </div>
+    <div class="wsim__body">
+        <div class="wsim__wallpaper">
+            <div class="wsim__output" data-wsim-output></div>
+        </div>
+        <p class="wsim__status" data-wsim-status>Loading sample chat…</p>
+    </div>
+    <script type="application/json" id="wsim-data-{{ component_id }}">{{ sample_text_json|safe }}</script>
+</section>

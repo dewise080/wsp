@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
 {% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
@@ -33,8 +33,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>Pricing Plan</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Pricing</span>
+                                <h1>{% trans "Pricing Plan" %}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Pricing" %}</span>
                             </div>
                         </div>
                     </div>
@@ -49,8 +49,8 @@
             <div class="container">
                 <div class="title-wrap">
                     <div class="sec-title">
-                        <span>Getting Start</span>
-                        <h2>Pricing Plan</h2>
+                        <span>{% trans "Getting Start" %}</span>
+                        <h2>{% trans "Pricing Plan" %}</h2>
                     </div>
                 </div>
 
@@ -63,19 +63,23 @@
                                         <!-- Featured Badge -->
                                         {% if pricing.is_featured %}
                                         <div class="plan-ribbon-wrapper">
-                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                            <div class="plan-ribbon" data-inline-field="featured_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.featured_text }}</div>
                                         </div>
                                         {% endif %}
-                                        <h3>{{ pricing.title }}</h3>
-                                        <span>{{ pricing.subtitle }}</span>
-                                        <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                        <h3 data-inline-field="title" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.title }}</h3>
+                                        <span data-inline-field="subtitle" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.subtitle }}</span>
+                                        <strong>{{ settings.currency_symbol }} <span data-inline-field="price" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.price }}</span></strong>
                                         <div class="item-list">
-                                            {{ pricing.description|safe }}
+                                            <div data-inline-rich="true" data-inline-field="description" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                                {{ pricing.description|safe }}
+                                            </div>
                                         </div>
                                         <div class="price-btn">
                                             <div class="line-1"></div>
                                             <div class="line-2"></div>
-                                            <a href="{{ pricing.button_url }}">{{ pricing.button_text }}</a>
+                                            <a href="{% if pricing.button_url %}{{ pricing.button_url }}{% endif %}" data-inline-field="button_url" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                                <span data-inline-field="button_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.button_text }}</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -93,8 +97,8 @@
             <div class="container">
                 <div class="title-wrap wow animate fadeInUp" data-wow-delay="200ms" data-wow-duration="1500ms">
                     <div class="sec-title">
-                        <span>All Blog</span>
-                        <h2>Latest Post</h2>
+                        <span>{% trans "All Blog" %}</span>
+                        <h2>{% trans "Latest Post" %}</h2>
                     </div>
                 </div>
                 <div class="row gy-4">
@@ -104,15 +108,15 @@
                                 <div class="blog-thumb">
                                     <a href="{% url "blogDetails" blog.slug %}"><img src="{{ blog.getTHumb }}" alt></a>
                                     <div class="tag">
-                                        <a href="{% url "blogsByCategory" blog.category.slug %}">{{ blog.category }}</a>
+                                        <a href="{% url "blogsByCategory" blog.category.slug %}"><span data-inline-field="title" data-inline-api="/api/blog-categories/" data-inline-id="{{ blog.category.id }}">{{ blog.category }}</span></a>
                                     </div>
                                 </div>
                                 <div class="blog-inner">
                                     <div class="author-date">
-                                        <a href="#">By, {{ blog.author }}</a>
+                                        <a href="#">{% trans "By" %}, <span data-inline-field="author" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.author }}</span></a>
                                         <a href="#">{{ blog.created_at }}</a>
                                     </div>
-                                    <h4><a href="{% url "blogDetails" blog.slug %}">{{ blog.title }}</a></h4>
+                                    <h4><a href="{% url "blogDetails" blog.slug %}"><span data-inline-field="title" data-inline-api="/api/blogs/" data-inline-id="{{ blog.id }}">{{ blog.title }}</span></a></h4>
                                 </div>
                             </div>
                         </div>

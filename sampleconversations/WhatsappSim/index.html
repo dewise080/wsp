@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WhatsappSim</title>
+
+    <!--Styles  -->
+    <link rel="stylesheet" href="./dependencies/WhatsappSim/WhatsappSim.css?v=4">
+    <link rel="stylesheet" href="./dependencies/toast/toast.css">
+    <link rel="stylesheet" href="./dependencies/modal/modal.css">
+    <link rel="stylesheet" href="./dependencies/typicons/typicons.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="manifest" href="./manifest.json">
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#FFFFFF">
+</head>
+
+<body class="app two">
+
+    <!--Wallpaper  -->
+    <div class="pane-chat-tile"></div>
+
+    <!--Hamburger  -->
+    <div id="hamburger">
+        <span class="typcn typcn-th-menu"></span>
+    </div>
+
+    <!--Config  -->
+    <div class="pane pane-one">
+
+        <header class="pane-header">
+            <h2 class="pane-title">Menu</h2>
+            <div class="pane-controls">
+                <a href="https://github.com/ashwin-pc/WhatsappSim" target="_blank"><span class="typcn typcn-social-github"></span></a>
+                <span class="typcn typcn-times" id="close-menu"></span>
+            </div>
+        </header>
+
+        <div class="pane-body">
+
+            <!--Controls  -->
+            <div class="well-simple">
+                <div class="row">
+                    <div class="title">Load file / Paste Chat</div>
+                </div>
+                <div class="row">
+                    <div class="row-body">
+                        <input class="file-input" type="file" name="file">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-body">
+                        <textarea class="textarea" rows="7" placeholder="e.g. Paste your Whatsapp Chat in Here"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="well">
+                <div class="title">Select Primary Author</div>
+                <select id="authors">
+                    <option>Select Author</option>
+                </select>
+            </div>
+
+            <div class="well">
+                <div class="title">Select Replay Format</div>
+                <select data-key="replayType">
+                    <option value="auto">Auto</option>
+                    <option value="random">Random</option>
+                    <option value="time">Time Based</option>
+                    <option value="word">Word Based</option>
+                    <option value="all" selected>All at once</option>
+                </select>
+            </div>
+
+            <div class="well-simple">
+                <div class="row">
+                    <div class="row-body">
+                        <button type="button" class="start-btn reset button media-btn" disabled="disabled">Start</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="well">
+                <div class="title">FAQ's</div>
+                <select id="faqs">
+                    <option value="" disabled="disabled" selected>Select FAQ</option>
+                </select>
+            </div>
+
+            <div class="well">
+                <div class="title">Designed by Ashwin</div>
+                <div class="row">
+                    <div class="row-body">
+                        <button type="button" class="install-btn button" disabled="disabled">Install App</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-body">
+                        Your feedback would be really appreciated!
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-body">
+                        <a href="http://designedbyashw.in">www.designedbyashw.in</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-body">
+                        <a href="mailto:reachme@designedbyashw.in?subject=Whatsapp%20Simulation%20Query">reachme@designedbyashw.in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Chat  -->
+    <div class="pane pane-two">
+        <div class="pane-body chat" style="display:none;" id="output"></div>
+
+        <!--Controls  -->
+        <div class="compose-filler"></div>
+        <footer class="pane-footer center">
+            <div class="media-btns column">
+                <button type="button" class="button is-primary media-btn play" disabled="true"><span class="typcn typcn-media-play left top"></span></button>
+                <button type="button" class="button is-primary media-btn pause" disabled="true"><span class="typcn typcn-media-pause top"></button>
+                <button type="button" class="button is-primary media-btn stop" disabled="true"><span class="typcn typcn-media-stop top"></button>
+                <button type="button" class="button is-primary media-btn reset" disabled="true"><span class="typcn typcn-refresh left top"></button>
+            </div>
+            <div class="aux-btns column">
+                <button type="button" class="button media-btn share right" disabled="true"><span class="typcn typcn-export left top"></button>
+                <button type="button" class="button media-btn right" id="whatsapp-share" disabled="true"></button>
+            </div>
+        </footer>
+    </div>
+
+    <!--Scripts  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+    <script src="./dependencies/toast/toast.js?v=1"></script>
+    <script src="./dependencies/modal/modal.js?v=1"></script>
+    <script src="./dependencies/WhatsappSim/WhatsappSimClass.js?v=4"></script>
+    <script src="./js/client.js?v=3"></script>
+    <script src="./js/analytics.js"></script>
+
+    <script>
+        // Check that service workers are registered
+        if ('serviceWorker' in navigator) {
+            // Use the window load event to keep the page load performant
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+</body>
+
+</html>

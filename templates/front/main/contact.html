@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
 {% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
@@ -21,8 +21,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>Contact us</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Contact us</span>
+                                <h1>{% trans "Contact us" %}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Contact us" %}</span>
                             </div>
                         </div>
                     </div>
@@ -36,8 +36,8 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-5">
                         <div class="contact-left">
-                            <div class="sec-title layout2">
-                                <span>Get in touch</span>
+                                <div class="sec-title layout2">
+                                    <span>{% trans "Get in touch" %}</span>
                             </div>
                             <ul class="social-follow">
                                     {% if header_footer.social1_icon %}
@@ -60,7 +60,7 @@
                                         <i class="fas fa-map-marker-alt"></i>
                                     </div>
                                     <div class="info">
-                                        <h3>Location</h3>
+                                        <h3>{% trans "Location" %}</h3>
                                         <p>{{settings.address}}, {% if settings.city %}{{settings.city}}-{% endif %}{% if settings.postal %}{{settings.postal}},{% endif %} {% if settings.state %}{{settings.state}},{% endif %} {% if settings.country %}{{settings.country}}{% endif %}</p>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@
                                         <i class="fas fa-phone-alt"></i>
                                     </div>
                                     <div class="info">
-                                        <h3>Phone</h3>
+                                        <h3>{% trans "Phone" %}</h3>
                                         <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                         <i class="far fa-envelope"></i>
                                     </div>
                                     <div class="info">
-                                        <h3>Email</h3>
+                                        <h3>{% trans "Email" %}</h3>
                                         <a href="mailto:{{ settings.email_address }}"><span>{{ settings.email_address }}</span></a>
                                     </div>
                                 </div>
@@ -94,9 +94,9 @@
                         <div class="getin-touch">
                             <div class="contact-form wow animate fadeInUp" data-wow-delay="200ms"
                                 data-wow-duration="1500ms">
-                                <h3>Have Any Questions</h3>
+                                <h3>{% trans "Have Any Questions" %}</h3>
                                 <div id="custom-alert" class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <strong>Success!</strong> Your message has been sent successfully! We will get back to you soon.
+                                    <strong>{% trans "Success!" %}</strong> {% trans "Your message has been sent successfully! We will get back to you soon." %}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                                                               
@@ -104,20 +104,20 @@
                                     {% csrf_token %}
                                     <div class="row">
                                         <div class="col-12">
-                                            <input type="text" name="name" required placeholder="Enter your name">
+                                            <input type="text" name="name" required placeholder="{% trans 'Enter your name' %}">
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="email" name="email" required placeholder="Enter your email">
+                                            <input type="email" name="email" required placeholder="{% trans 'Enter your email' %}">
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="number" name="phone" placeholder="Enter your phone">
+                                            <input type="number" name="phone" placeholder="{% trans 'Enter your phone' %}">
                                         </div>
                                         <div class="col-md-12">
-                                            <input type="text" name="subject" required placeholder="Subject">
+                                            <input type="text" name="subject" required placeholder="{% trans 'Subject' %}">
                                         </div>
                                         <div class="col-12">
                                             <textarea name="message" cols="30" rows="10"
-                                                placeholder="Your message"></textarea>
+                                                placeholder="{% trans 'Your message' %}"></textarea>
                                             <input type="submit" class="contact-btn" value="Send Message">
                                         </div>
                                     </div>

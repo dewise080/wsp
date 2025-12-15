@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 
 {% block title1 %}{{ workflow.name }}{% endblock title1 %}
 {% block title2 %}{{ workflow.name }}{% endblock title2 %}
@@ -19,17 +19,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <div class="breadcrumb-wrapper">
-                        <div class="breadcrumb-cnt">
-                            <h1>{{ workflow.name }}</h1>
-                            <span>
-                                <a href="{% url "homePageFront" %}">Home</a>
-                                <i class="bi bi-arrow-right"></i>
-                                <a href="{% url "workflowList" %}">Workflows</a>
-                                <i class="bi bi-arrow-right"></i>{{ workflow.name }}
-                            </span>
+                        <div class="breadcrumb-wrapper">
+                            <div class="breadcrumb-cnt">
+                                <h1 data-inline-field="name" data-inline-api="/api/workflows/" data-inline-id="{{ workflow.id }}">{{ workflow.name }}</h1>
+                                <span>
+                                    <a href="{% url "homePageFront" %}">{% trans "Home" %}</a>
+                                    <i class="bi bi-arrow-right"></i>
+                                    <a href="{% url "workflowList" %}">{% trans "Workflows" %}</a>
+                                    <i class="bi bi-arrow-right"></i><span data-inline-field="name" data-inline-api="/api/workflows/" data-inline-id="{{ workflow.id }}">{{ workflow.name }}</span>
+                                </span>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -72,11 +72,11 @@
                         <div class="card-header bg-dark text-white">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
-                                    <i class="bi bi-diagram-3"></i> Workflow Visualization
+                                    <i class="bi bi-diagram-3"></i> {% trans "Workflow Visualization" %}
                                 </h5>
                                 <div>
-                                    <span class="badge bg-info me-2">{{ workflow.nodes.count }} Nodes</span>
-                                    <span class="badge bg-secondary">{{ workflow.edges.count }} Connections</span>
+                                    <span class="badge bg-info me-2">{{ workflow.nodes.count }} {% trans "Nodes" %}</span>
+                                    <span class="badge bg-secondary">{{ workflow.edges.count }} {% trans "Connections" %}</span>
                                 </div>
                             </div>
                         </div>
@@ -84,9 +84,9 @@
                             <div id="workflow-canvas"></div>
                             <div class="p-2 bg-light text-center">
                                 <small class="text-muted">
-                                    <i class="bi bi-arrows-move"></i> Drag nodes to explore the workflow. Changes are not saved.
+                                    <i class="bi bi-arrows-move"></i> {% trans "Drag nodes to explore the workflow. Changes are not saved." %}
                                     <button id="btn-reset-view" class="btn btn-sm btn-outline-secondary ms-2">
-                                        <i class="bi bi-arrow-counterclockwise"></i> Reset View
+                                        <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset View" %}
                                     </button>
                                 </small>
                             </div>
@@ -100,22 +100,22 @@
                 <div class="col-lg-6 col-12">
                     <div class="card shadow-sm">
                         <div class="card-header">
-                            <h6 class="mb-0"><i class="bi bi-info-circle"></i> Workflow Details</h6>
+                            <h6 class="mb-0"><i class="bi bi-info-circle"></i> {% trans "Workflow Details" %}</h6>
                         </div>
                         <div class="card-body">
-                            <p><strong>Name:</strong> {{ workflow.name }}</p>
+                            <p><strong>{% trans "Name" %}:</strong> {{ workflow.name }}</p>
                             {% if workflow.description %}
-                            <p><strong>Description:</strong> {{ workflow.description }}</p>
+                            <p><strong>{% trans "Description" %}:</strong> <span data-inline-field="description" data-inline-api="/api/workflows/" data-inline-id="{{ workflow.id }}">{{ workflow.description }}</span></p>
                             {% endif %}
-                            <p><strong>Created:</strong> {{ workflow.created_at|date:"F d, Y" }}</p>
-                            <p><strong>Last Updated:</strong> {{ workflow.updated_at|date:"F d, Y" }}</p>
+                            <p><strong>{% trans "Created" %}:</strong> {{ workflow.created_at|date:"F d, Y" }}</p>
+                            <p><strong>{% trans "Last Updated" %}:</strong> {{ workflow.updated_at|date:"F d, Y" }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-12">
                     <div class="card shadow-sm">
                         <div class="card-header">
-                            <h6 class="mb-0"><i class="bi bi-list-ul"></i> Node Types</h6>
+                            <h6 class="mb-0"><i class="bi bi-list-ul"></i> {% trans "Node Types" %}</h6>
                         </div>
                         <div class="card-body">
                             <ul class="list-unstyled">
@@ -207,6 +207,21 @@ function Handles() {
   );
 }
 
+
+// Helper to render description as a bullet list if it contains bullets or dashes
+function renderDescription(desc) {
+  if (!desc) return null;
+  // Split on bullet or dash, trim, and filter out empty
+  const items = desc.split(/•|- /).map(s => s.trim()).filter(Boolean);
+  if (items.length <= 1) {
+    // Just render as plain text if no bullets/dashes found
+    return h("div", { style: { fontSize: '12px', color: 'rgba(255,255,255,0.7)' } }, desc);
+  }
+  return h("ul", { style: { fontSize: '12px', color: 'rgba(255,255,255,0.7)', margin: 0, paddingLeft: 18 } },
+    ...items.map((item, i) => h("li", { key: i }, item))
+  );
+}
+
 function NodeCard({ data }) {
   const typeToColor = { eventNode: "emerald", agentNode: "purple", connectorNode: "blue", actionNode: "pink", logicNode: "orange" };
   const color = typeToColor[data.type] || "blue";
@@ -219,7 +234,7 @@ function NodeCard({ data }) {
       ),
       h("div", null,
         h("div", { style: { fontSize: '14px', fontWeight: '600', color: '#fff' } }, data.label || "Unnamed"),
-        data.description ? h("div", { style: { fontSize: '12px', color: 'rgba(255,255,255,0.7)' } }, data.description) : null,
+        renderDescription(data.description),
         Array.isArray(data.items) && data.items.length ? h("ul", { style: { marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '4px', listStyle: 'none', padding: 0, margin: 0 } }, ...data.items.map((it, i) => h("li", { key: i, style: { display: 'flex', alignItems: 'center', gap: '8px' } }, h("span", { style: { width: '16px', height: '16px', background: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h("img", { src: `https://cdn.simpleicons.org/${it.slug}${it.color?"/"+it.color:""}`, style: { width: '12px', height: '12px' }, alt: it.name })), h("span", { style: { fontSize: '12px', color: '#fff' } }, it.name)))) : null
       )
     )

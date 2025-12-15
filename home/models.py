@@ -61,7 +61,7 @@ class serviceSection(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name or f"Service {self.pk}"
     
     class Meta:
         verbose_name_plural = "2. Service Section"
@@ -81,7 +81,7 @@ class aboutSection(models.Model):
     video_url = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or f"About {self.pk}"
     
     class Meta:
         verbose_name_plural = "3. About Section"
@@ -94,7 +94,7 @@ class funFactSection(models.Model):
     title = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or f"Fun Fact {self.pk}"
     
     class Meta:
         verbose_name_plural = "4. Fun Fact Section"
@@ -119,7 +119,7 @@ class projectCategory(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name or f"Category {self.pk}"
     
 class projectSection(models.Model):
     image = models.ImageField(upload_to='Projects/', blank=True, null=True)
@@ -156,7 +156,7 @@ class projectSection(models.Model):
             return 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'
 
     def __str__(self):
-        return self.title
+        return self.title or f"Project {self.pk}"
     
     class Meta:
         verbose_name_plural = "5.Project Section"
@@ -167,7 +167,7 @@ class clientSection(models.Model):
     image = models.ImageField(upload_to='Clients/', blank=True, null=True)
 
     def __str__(self):
-        return self.client_name
+        return self.client_name or f"Client {self.pk}"
 
     class Meta:
         verbose_name_plural = "6.Client Section"
@@ -181,7 +181,7 @@ class testimonialsSection(models.Model):
     star = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name or f"Testimonial {self.pk}"
     
     class Meta:
         verbose_name_plural = "7.Testimonial Section"
@@ -192,4 +192,4 @@ class homePageSEO(models.Model):
     meta_description = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
-        return self.meta_title
+        return self.meta_title or f"Home SEO {self.pk}"

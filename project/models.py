@@ -5,4 +5,4 @@ class projectPageSEO(models.Model):
     meta_description = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
-        return self.meta_title
+        return self.meta_title or f"Project SEO {self.pk}"

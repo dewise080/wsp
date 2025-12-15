@@ -1,5 +1,5 @@
 {% extends 'front/base.html' %}
-{% load static %}
+{% load static i18n %}
 {% block title %} {{seo.meta_title}} - {{seo.meta_description}} {% endblock title %}
 {% block title1 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title1 %}
 {% block title2 %} {{seo.meta_title}} - {{seo_settings.meta_title}} {% endblock title2 %}
@@ -33,8 +33,8 @@
                     <div class="col-12">
                         <div class="breadcrumb-wrapper">
                             <div class="breadcrumb-cnt">
-                                <h1>Service</h1>
-                                <span><a href="{% url "homePageFront" %}">Home</a><i class="bi bi-arrow-right"></i>Service</span>
+                                <h1>{% trans "Service" %}</h1>
+                                <span><a href="{% url "homePageFront" %}">{% trans "Home" %}</a><i class="bi bi-arrow-right"></i>{% trans "Service" %}</span>
                                 
                             </div>
                         </div>
@@ -48,8 +48,8 @@
             <div class="container">
                 <div class="title-wrap">
                     <div class="sec-title">
-                        <span>Our Solutions</span>
-                        <h2>Services</h2>
+                        <span>{% trans "Our Solutions" %}</span>
+                        <h2>{% trans "Services" %}</h2>
                     </div>
                 </div>
                 <div class="row g-4">
@@ -60,17 +60,17 @@
                             <span>0{{forloop.counter}}</span>
                             {% if service.fontawesome_icon_class %}
                                 <div class="icon">
-                                    <i class="{{ service.fontawesome_icon_class }} service-ico"></i>
+                                    <i class="{{ service.fontawesome_icon_class }} service-ico" data-inline-field="fontawesome_icon_class" data-inline-api="/api/services/" data-inline-id="{{ service.id }}"></i>
                                 </div>
                             {% endif %}
                             {% if service.name %}
-                            <h4>{{ service.name }}</h4>
+                            <h4 data-inline-field="name" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.name }}</h4>
                             {% endif %}
                             {% if service.short_description %}
-                            <p>{{ service.short_description }}</p>
+                            <p data-inline-field="short_description" data-inline-api="/api/services/" data-inline-id="{{ service.id }}">{{ service.short_description }}</p>
                             {% endif %}
                             <div class="read-btn">
-                                <a href="{% url "serviceDetail" service.slug %}">Read More</a>
+                                <a href="{% url "serviceDetail" service.slug %}">{% trans "Read More" %}</a>
                             </div>
                         </div>
                     </div>
@@ -86,34 +86,34 @@
             <div class="container-fluid p-0">
                 <div class="title-wrap">
                     <div class="sec-title white">
-                        <span>Testimonial</span>
-                        <h2>Client Say About Us</h2>
+                        <span>{% trans "Testimonial" %}</span>
+                        <h2>{% trans "Client Say About Us" %}</h2>
                     </div>
                 </div>
-                <div class="swiper testimonial-slider">
-                    <div class="swiper-wrapper">
-                        {% for testimonial in testimonials %}
-                            <div class="swiper-slide">
-                                <div class="single-testimonial">
-                                    <div class="quote">
-                                        <i class="fas fa-quote-right"></i>
-                                    </div>
-                                    <h5>{{ testimonial.name }}</h5>
-                                    <span>{{ testimonial.position }}</span>
-                                    
-                                    {% if testimonial.star %}
-                                    <div class="stars">
-                                        {% for i in "x"|rjust:testimonial.star %}
-                                            <a href="#"><i class="fas fa-star"></i></a>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                    <p>{{ testimonial.description }}</p>
-                                    {% if testimonial.image %}
-                                    <div class="reviewer">
-                                        <img src="{{ testimonial.image.url }}" alt>
-                                    </div>
-                                    {% endif %}
+                            <div class="swiper testimonial-slider">
+                                <div class="swiper-wrapper">
+                                    {% for testimonial in testimonials %}
+                                        <div class="swiper-slide">
+                                            <div class="single-testimonial">
+                                                <div class="quote">
+                                                    <i class="fas fa-quote-right"></i>
+                                                </div>
+                                                <h5 data-inline-field="name" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.name }}</h5>
+                                                <span data-inline-field="position" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.position }}</span>
+                                                
+                                                {% if testimonial.star %}
+                                                <div class="stars">
+                                                    {% for i in "x"|rjust:testimonial.star %}
+                                                        <a href="#"><i class="fas fa-star"></i></a>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                <p data-inline-field="description" data-inline-api="/api/testimonials/" data-inline-id="{{ testimonial.id }}">{{ testimonial.description }}</p>
+                                                {% if testimonial.image %}
+                                                <div class="reviewer">
+                                                    <img src="{{ testimonial.image.url }}" alt>
+                                                </div>
+                                                {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
@@ -131,8 +131,8 @@
             <div class="container">
                 <div class="title-wrap">
                     <div class="sec-title">
-                        <span>Getting Start</span>
-                        <h2>Pricing Plan</h2>
+                        <span>{% trans "Getting Start" %}</span>
+                        <h2>{% trans "Pricing Plan" %}</h2>
                     </div>
                 </div>
 
@@ -145,27 +145,31 @@
                                         <!-- Featured Badge -->
                                         {% if pricing.is_featured %}
                                         <div class="plan-ribbon-wrapper">
-                                            <div class="plan-ribbon">{{ pricing.featured_text }}</div>
+                                            <div class="plan-ribbon" data-inline-field="featured_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.featured_text }}</div>
                                         </div>
                                         {% endif %}
                                         {% if pricing.title %}
-                                        <h3>{{ pricing.title }}</h3>
+                                        <h3 data-inline-field="title" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.title }}</h3>
                                         {% endif %}
                                         {% if pricing.subtitle %}
-                                        <span>{{ pricing.subtitle }}</span>
+                                        <span data-inline-field="subtitle" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.subtitle }}</span>
                                         {% endif %}
                                         {% if pricing.price %}
-                                        <strong>{{ settings.currency_symbol }} {{ pricing.price }}</strong>
+                                        <strong>{{ settings.currency_symbol }} <span data-inline-field="price" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.price }}</span></strong>
                                         {% endif %}
                                         {% if pricing.description %}
                                         <div class="item-list">
-                                            {{ pricing.description|safe }}
+                                            <div data-inline-rich="true" data-inline-field="description" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                                {{ pricing.description|safe }}
+                                            </div>
                                         </div>
                                         {% endif %}
                                         <div class="price-btn">
                                             <div class="line-1"></div>
                                             <div class="line-2"></div>
-                                            <a href="{{ pricing.button_url }}">{{ pricing.button_text }}</a>
+                                            <a href="{% if pricing.button_url %}{{ pricing.button_url }}{% endif %}" data-inline-field="button_url" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">
+                                                <span data-inline-field="button_text" data-inline-api="/api/pricings/" data-inline-id="{{ pricing.id }}">{{ pricing.button_text }}</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

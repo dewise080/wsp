@@ -1,6 +1,6 @@
 <!doctype html>
-{% load static %}
-<html lang="en">
+{% load static i18n component_tags %}
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
 
 <head>
 
@@ -73,6 +73,41 @@
             font-size: 70px !important;
             color: #5da78b;
         }
+        .header-area { position: relative; }
+        .language-switcher select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: inherit;
+            padding: 6px 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 95px;
+        }
+        .language-switcher select:focus {
+            outline: none;
+            border-color: #5da78b;
+            box-shadow: 0 0 0 0.15rem rgba(93, 167, 139, 0.25);
+        }
+        .language-switcher option {
+            color: #111;
+        }
+        @media (max-width: 991.98px) {
+            .language-switcher {
+                position: fixed;
+                top: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                margin: 0;
+                z-index: 1100;
+            }
+            .language-switcher select {
+                background: rgba(17, 17, 17, 0.9);
+                color: #fff;
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+        }
     </style>
 
     {% if settings.facebook_chat_is_active %}
@@ -101,6 +136,7 @@
         </style>
     {% endif %}
 
+    {% component_css_dependencies %}
 </head>
 
 <body>
@@ -123,33 +159,33 @@
                         <i class="bi bi-plus-lg"></i>
                     </div>
                 </div>
-                {% if settings.default_menu_is_active %}
-                    <ul>
-                        <li class="has-child {% if request.path == '/' %}active{% endif %}">
-                            <a href="{% url "homePageFront" %}">Home</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
-                            <a href="{% url "aboutPageFront" %}">About Us</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/services/' %}active{% endif %}">
-                            <a href="{% url "serviceFrontPage" %}">Services</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/projects/' %}active{% endif %}">
-                            <a href="{% url "projectPageFront" %}">Projects</a>
-                        </li>
-                        <li class="has-child {% if '/workflows' in request.path %}active{% endif %}">
-                            <a href="{% url "workflowList" %}">Workflows</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/pricing/' %}active{% endif %}">
-                            <a href="{% url "pricingPageFront" %}">Pricing</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/blogs/' %}active{% endif %}">
-                            <a href="{% url "blogPageFront" %}">Blogs</a>
-                        </li>
-                        <li class="has-child {% if request.path == '/contact-us/' %}active{% endif %}">
-                            <a href="{% url "contactPageFront" %}">Contact Us</a>
-                        </li>
-                    </ul>
+                        {% if settings.default_menu_is_active %}
+                            <ul>
+                                <li class="has-child {% if request.path == '/' %}active{% endif %}">
+                                    <a href="{% url "homePageFront" %}">{% trans "Home" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/about-us/' %}active{% endif %}">
+                                    <a href="{% url "aboutPageFront" %}">{% trans "About Us" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/services/' %}active{% endif %}">
+                                    <a href="{% url "serviceFrontPage" %}">{% trans "Services" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/projects/' %}active{% endif %}">
+                                    <a href="{% url "projectPageFront" %}">{% trans "Projects" %}</a>
+                                </li>
+                                <li class="has-child {% if '/workflows' in request.path %}active{% endif %}">
+                                    <a href="{% url "workflowList" %}">{% trans "Workflows" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/pricing/' %}active{% endif %}">
+                                    <a href="{% url "pricingPageFront" %}">{% trans "Pricing" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/blogs/' %}active{% endif %}">
+                                    <a href="{% url "blogPageFront" %}">{% trans "Blogs" %}</a>
+                                </li>
+                                <li class="has-child {% if request.path == '/contact-us/' %}active{% endif %}">
+                                    <a href="{% url "contactPageFront" %}">{% trans "Contact Us" %}</a>
+                                </li>
+                            </ul>
                 {% else %}
                     <ul>
                         {% for primary_menu in primary_menus %}
@@ -187,6 +223,22 @@
                     <a href="{{ header_footer.header_button_url }}">{{ header_footer.header_button_text }}</a>
                 </div>
             </div>
+            <div class="language-switcher d-flex align-items-center ms-lg-3">
+                {% get_current_language as CURRENT_LANGUAGE_CODE %}
+                {% get_available_languages as LANG_LIST %}
+                {% get_language_info_list for LANG_LIST as languages %}
+                <form action="{% url 'set_language' %}" method="post" class="mb-0 w-100">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path|default:'/' }}">
+                    <select name="language" onchange="this.form.submit()">
+                        {% for language in languages %}
+                            <option value="{{ language.code }}" {% if language.code == CURRENT_LANGUAGE_CODE %}selected{% endif %}>
+                                {{ language.code|upper }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
             <div class="mobile-menu">
                 <a href="javascript:void(0)" class="cross-btn">
                     <span class="cross-top"></span>
@@ -209,17 +261,17 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6 wow animate fadeInLeft" data-wow-delay="200ms" data-wow-duration="1500ms">
                             <div class="subscribe-cnt">
-                                <span>Get In Touch</span>
-                                <h3>Subscribe Our</h3>
-                                <strong>Newsletter</strong>
+                                <span>{% trans "Get In Touch" %}</span>
+                                <h3>{% trans "Subscribe Our" %}</h3>
+                                <strong>{% trans "Newsletter" %}</strong>
                             </div>
                         </div>
                         <div class="col-lg-6 wow animate fadeInRight" data-wow-delay="200ms" data-wow-duration="1500ms">
                             <div class="subscribe-form">
                                 <form method="post">
                                     {% csrf_token %}
-                                    <input type="email" name="email" class="emailfield" placeholder="Type Your Email">
-                                    <input type="submit" class="subscribe-btn" value="Subscribe">
+                                    <input type="email" name="email" class="emailfield" placeholder="{% trans 'Type Your Email' %}">
+                                    <input type="submit" class="subscribe-btn" value="{% trans 'Subscribe' %}">
                                 </form>
                             </div>
                         </div>
@@ -260,7 +312,7 @@
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3">
                             <div class="footer-widget">
-                                <h4>Our Services</h4>
+                                <h4>{% trans "Our Services" %}</h4>
                                 <ul class="footer-menu">
                                     {% for service in fservices|slice:":6" %}
                                         <li><a href="{% url "serviceDetail" service.slug %}">{{ service.name }}</a></li>
@@ -270,7 +322,7 @@
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3">
                             <div class="footer-widget">
-                                <h4>Recent Projects</h4>
+                                <h4>{% trans "Recent Projects" %}</h4>
                                 <ul class="footer-menu">
                                     {% for project in fprojects|slice:":6" %}
                                         <li><a href="{% url "projectDetails" project.slug %}">{{ project.title }}</a></li>
@@ -280,7 +332,7 @@
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3">
                             <div class="footer-widget">
-                                <h4>Contacts</h4>
+                                <h4>{% trans "Contacts" %}</h4>
                                 <div class="number">
                                     <div class="num-icon">
                                         <i class="fas fa-phone-alt"></i>
@@ -317,8 +369,8 @@
                         </div>
                         <div class="col-12 col-md-8 col-lg-8 col-xl-7">
                             <ul class="footer-bottom-menu">
-                                <li><a href="{% url "policyPageFront" %}">Privacy Policy</a></li>
-                                <li><a href="{% url "termsPageFront" %}">Terms & Conditions</a></li>
+                                <li><a href="{% url "policyPageFront" %}">{% trans "Privacy Policy" %}</a></li>
+                                <li><a href="{% url "termsPageFront" %}">{% trans "Terms & Conditions" %}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -431,7 +483,9 @@
                         if (data.status === 'success') {
                             // Show the Bootstrap success alert
                             $('#custom-alert').removeClass('alert-danger').addClass('alert-success');
-                            $('#custom-alert').html('<strong>Success!</strong> Your message has been sent successfully! We will get back to you soon.');
+                            const successTitle = "{{ _('Success!')|escapejs }}";
+                            const successBody = "{{ _('Your message has been sent successfully! We will get back to you soon.')|escapejs }}";
+                            $('#custom-alert').html(`<strong>${successTitle}</strong> ${successBody}`);
                             $('#custom-alert').show();
     
                             // Manually trigger the alert dismissal after a delay (e.g., 5 seconds)
@@ -447,7 +501,8 @@
                         } else {
                             // Show the Bootstrap error alert
                             $('#custom-alert').removeClass('alert-success').addClass('alert-danger');
-                            $('#custom-alert').html('<strong>Error:</strong> ' + data.message);
+                            const errorTitle = "{{ _('Error:')|escapejs }}";
+                            $('#custom-alert').html(`<strong>${errorTitle}</strong> ${data.message}`);
                             $('#custom-alert').show();
     
                             // Show the toastr error notification
@@ -455,7 +510,7 @@
                         }
                     },
                     error: function() {
-                        toastr.error('An error occurred while submitting the form.');
+                        toastr.error("{{ _('An error occurred while submitting the form.')|escapejs }}");
                     }
                 });
             });
@@ -467,7 +522,10 @@
             {{ settings.custom_js }}
         </script>
     {% endif %}
-    {% block inline_edit_toolbar %}{% endblock inline_edit_toolbar %}
+    {% component_js_dependencies %}
+    {% block inline_edit_toolbar %}
+      {% include 'front/inline_edit_toolbar.html' %}
+    {% endblock inline_edit_toolbar %}
 </body>
 
 </html>

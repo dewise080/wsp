@@ -219,4 +219,4 @@ class WorkflowPageSEO(models.Model):
         verbose_name_plural = 'Workflow Page SEO'
 
     def __str__(self):
-        return self.meta_title or "Workflow Page SEO"
+        return self.meta_title or f"Workflow Page SEO {self.pk}"

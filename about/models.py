@@ -19,7 +19,7 @@ class aboutPage(models.Model):
     image3 = models.ImageField(upload_to='AboutPage/', blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return self.title or f"About Page {self.pk}"
 
 # Team Section Model
 class teamSection(models.Model):
@@ -32,11 +32,11 @@ class teamSection(models.Model):
     whatsapp = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name or f"Team Member {self.pk}"
     
 class aboutPageSEO(models.Model):
     meta_title = models.CharField(max_length=500, blank=True, null=True)
     meta_description = models.CharField(max_length=1000, blank=True, null=True)
     
     def __str__(self):
-        return self.meta_title
+        return self.meta_title or f"About SEO {self.pk}"

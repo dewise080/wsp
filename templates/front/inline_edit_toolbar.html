@@ -4,12 +4,15 @@
 {% if request.user.is_authenticated %}
 <div id="inline-edit-toolbar" style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#111827;color:#e5e7eb;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.25);display:flex;gap:10px;align-items:center;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <button id="toggle-inline-edit" style="background:#10b981;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer;">Enable inline edit</button>
+  <a id="inline-admin-link" href="#" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:14px;text-decoration:none;cursor:not-allowed;opacity:0.6;" aria-disabled="true">Admin edit</a>
   <span id="inline-edit-status" style="font-size:12px;color:#9ca3af;">Toggle to edit elements with <code>data-inline-field</code>.</span>
 </div>
 <script>
   (function() {
+    window.__INLINE_LANG__ = "{{ LANGUAGE_CODE|default:'' }}";
     const btn = document.getElementById('toggle-inline-edit');
     const status = document.getElementById('inline-edit-status');
+    const adminLink = document.getElementById('inline-admin-link');
     let enabled = false;
 
     function getCsrfToken() {
@@ -74,6 +77,42 @@
       status.textContent = enabled ? 'Edit mode active' : 'Edit mode off';
       status.style.color = '#9ca3af';
     });
+
+    // Build admin edit link for the current page based on URL patterns.
+    function buildAdminLink() {
+      const path = window.location.pathname.replace(/\/$/, '');
+      const segments = path.split('/').filter(Boolean);
+      let lang = '';
+      if (segments[0] && segments[0].length === 2) {
+        lang = '/' + segments.shift();
+      }
+
+      let adminPath = '';
+      if (segments[0] === 'project' && segments[1] === 'details' && segments[2]) {
+        adminPath = `/admin/project/edit/${segments[2]}`;
+      } else if (segments[0] === 'service' && segments[1] === 'details' && segments[2]) {
+        adminPath = `/admin/service/edit/${segments[2]}`;
+      } else if (segments[0] === 'blog' && segments[1]) {
+        adminPath = `/admin/blog/edit/${segments[1]}`;
+      } else if (segments[0] === 'workflows' && segments[1]) {
+        adminPath = `/admin/workflows/edit/${segments[1]}`;
+      }
+
+      if (adminPath) {
+        adminLink.href = `${lang}${adminPath}`;
+        adminLink.style.cursor = 'pointer';
+        adminLink.style.opacity = '1';
+        adminLink.removeAttribute('aria-disabled');
+        adminLink.target = '_blank';
+      } else {
+        adminLink.href = '#';
+        adminLink.style.cursor = 'not-allowed';
+        adminLink.style.opacity = '0.6';
+        adminLink.setAttribute('aria-disabled', 'true');
+      }
+    }
+
+    buildAdminLink();
   })();
 </script>
 {% endif %}

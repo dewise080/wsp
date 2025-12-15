@@ -1,0 +1,43 @@
+{% load static %}
+<div class="wsim">
+
+    <video
+        class="wsim-bg-video"
+        autoplay
+        muted
+        loop
+        playsinline
+    >
+        <source src="{% static 'images/1.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="marvel-device iphone-x">
+        <div class="notch">
+            <div class="camera"></div>
+            <div class="speaker"></div>
+        </div>
+        <div class="top-bar"></div>
+        <div class="sleep"></div>
+        <div class="bottom-bar"></div>
+        <div class="volume"></div>
+        <div class="overflow">
+            <div class="shadow shadow--tr"></div>
+            <div class="shadow shadow--tl"></div>
+            <div class="shadow shadow--br"></div>
+            <div class="shadow shadow--bl"></div>
+        </div>
+        <div class="inner-shadow"></div>
+        <div class="screen">
+            <div class="wsim__body" data-wsim data-wsim-primary="{{ primary_author }}" data-wsim-replay-type="{{ replay_type }}" data-wsim-sample-id="wsim-data-{{ component_id }}">
+                <div class="wsim__wallpaper">
+                <div class="msg msg-system">
+                    <span class="message-system">{{ title }} · {{ subtitle }}</span>
+                </div>
+                    <div class="wsim__output" data-wsim-output></div>
+                </div>
+                <p class="wsim__status" data-wsim-status>Loading sample chat…</p>
+            </div>
+        </div>
+    </div>
+    <script type="application/json" id="wsim-data-{{ component_id }}">{{ sample_text_json|safe }}</script>
+</div>

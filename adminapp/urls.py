@@ -105,4 +105,7 @@ urlpatterns = [
     path('admin/pages/contact-page', AdminContactPage, name='AdminContactPage'),
     path('admin/pages/terms-page', AdminTermsPage, name='AdminTermsPage'),
     path('admin/pages/policy-page', AdminPolicyPage, name='AdminPolicyPage'),
+
+    # Admin Logs
+    path('admin/logs/wsp', adminWspLogStream, name='adminWspLogStream'),
 ]

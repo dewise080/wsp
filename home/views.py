@@ -1,8 +1,9 @@
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.urls import reverse
 from home.utils import download_image_to_field
 from home.models import *
 from pricing.models import pricingSection
@@ -10,6 +11,7 @@ from about.models import teamSection
 from blog.models import *
 from settings.models import templateSettings
 from analytics.views import visitor_data
+from core.translation_hooks import trigger_auto_translate
 # ===============> Front Home Page View <===============
 
 def homePageFront(request):
@@ -68,6 +70,47 @@ def serialize_service(service):
         'detail_page_image': service.detail_page_image.url if service.detail_page_image else None,
     }
 
+def serialize_testimonial(testimonial):
+    return {
+        'id': testimonial.id,
+        'name': testimonial.name,
+        'position': testimonial.position,
+        'description': testimonial.description,
+        'star': testimonial.star,
+        'image': testimonial.image.url if getattr(testimonial, "image", None) else None,
+    }
+
+def serialize_about(about):
+    return {
+        'id': about.id,
+        'subtitle': about.subtitle,
+        'title': about.title,
+        'short_description': about.short_description,
+        'long_description': about.long_description,
+        'ranking_number': about.ranking_number,
+        'tag_line': about.tag_line,
+        'experience': about.experience,
+        'video_url': about.video_url,
+        'image': about.image.url if about.image else None,
+        'video_thumbnail': about.video_thumbnail.url if about.video_thumbnail else None,
+    }
+
+def serialize_funfact(fact):
+    return {
+        'id': fact.id,
+        'fontawesome_icon_class': fact.fontawesome_icon_class,
+        'count': fact.count,
+        'count_after': fact.count_after,
+        'title': fact.title,
+    }
+
+def serialize_client(client):
+    return {
+        'id': client.id,
+        'client_name': client.client_name,
+        'image': client.image.url if client.image else None,
+    }
+
 @csrf_exempt
 def api_services(request):
     if request.method == 'GET':
@@ -123,6 +166,7 @@ def api_services(request):
                     return JsonResponse({'detail': msg}, status=400)
 
         service.save()
+        trigger_auto_translate('home.servicesection', service.id)
         return JsonResponse(serialize_service(service), status=201)
 
     # PATCH/PUT update
@@ -148,7 +192,249 @@ def api_services(request):
                 return JsonResponse({'detail': msg}, status=400)
 
     service.save()
+    trigger_auto_translate('home.servicesection', service.id)
     return JsonResponse(serialize_service(service), status=200)
+
+@csrf_exempt
+def api_testimonials(request):
+    if request.method == 'GET':
+        testimonial_id = request.GET.get('id')
+        if testimonial_id:
+            try:
+                testimonial = testimonialsSection.objects.get(pk=int(testimonial_id))
+            except (ValueError, testimonialsSection.DoesNotExist):
+                return JsonResponse({'detail': 'Testimonial not found'}, status=404)
+            return JsonResponse(serialize_testimonial(testimonial), status=200)
+
+        data = [serialize_testimonial(t) for t in testimonialsSection.objects.all()]
+        return JsonResponse({'count': len(data), 'items': data}, status=200)
+
+    if request.method not in ['POST', 'PATCH', 'PUT']:
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
+    payload = {}
+    if request.content_type and 'application/json' in request.content_type:
+        try:
+            payload = json.loads(request.body.decode() or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({'detail': 'Invalid JSON payload'}, status=400)
+    else:
+        payload = request.POST
+
+    if request.method == 'POST':
+        name = payload.get('name')
+        if not name:
+            return JsonResponse({'detail': 'name is required'}, status=400)
+        testimonial = testimonialsSection(
+            name=name,
+            position=payload.get('position'),
+            description=payload.get('description'),
+        )
+        star_val = payload.get('star')
+        if star_val not in [None, '']:
+            try:
+                testimonial.star = int(star_val)
+            except (TypeError, ValueError):
+                return JsonResponse({'detail': 'star must be an integer'}, status=400)
+        testimonial.save()
+        trigger_auto_translate('home.testimonialssection', testimonial.id)
+        return JsonResponse(serialize_testimonial(testimonial), status=201)
+
+    testimonial_id = request.GET.get('id')
+    if not testimonial_id:
+        return JsonResponse({'detail': 'id is required for update'}, status=400)
+    try:
+        testimonial = testimonialsSection.objects.get(pk=int(testimonial_id))
+    except (ValueError, testimonialsSection.DoesNotExist):
+        return JsonResponse({'detail': 'Testimonial not found'}, status=404)
+
+    for field in ['name', 'position', 'description']:
+        if field in payload:
+            setattr(testimonial, field, payload.get(field))
+
+    if 'star' in payload:
+        try:
+            testimonial.star = int(payload.get('star'))
+        except (TypeError, ValueError):
+            return JsonResponse({'detail': 'star must be an integer'}, status=400)
+
+    testimonial.save()
+    trigger_auto_translate('home.testimonialssection', testimonial.id)
+    return JsonResponse(serialize_testimonial(testimonial), status=200)
+
+@csrf_exempt
+def api_about(request):
+    if request.method == 'GET':
+        about_id = request.GET.get('id')
+        if about_id:
+            try:
+                about = aboutSection.objects.get(pk=int(about_id))
+            except (ValueError, aboutSection.DoesNotExist):
+                return JsonResponse({'detail': 'About not found'}, status=404)
+            return JsonResponse(serialize_about(about), status=200)
+
+        data = [serialize_about(a) for a in aboutSection.objects.all()]
+        return JsonResponse({'count': len(data), 'items': data}, status=200)
+
+    if request.method not in ['POST', 'PATCH', 'PUT']:
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
+    payload = {}
+    if request.content_type and 'application/json' in request.content_type:
+        try:
+            payload = json.loads(request.body.decode() or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({'detail': 'Invalid JSON payload'}, status=400)
+    else:
+        payload = request.POST
+
+    if request.method == 'POST':
+        about = aboutSection.objects.create(
+            subtitle=payload.get('subtitle'),
+            title=payload.get('title'),
+            short_description=payload.get('short_description'),
+            long_description=payload.get('long_description'),
+            ranking_number=payload.get('ranking_number'),
+            tag_line=payload.get('tag_line'),
+            experience=payload.get('experience'),
+            video_url=payload.get('video_url'),
+        )
+        trigger_auto_translate('home.aboutsection', about.id)
+        return JsonResponse(serialize_about(about), status=201)
+
+    about_id = request.GET.get('id')
+    if not about_id:
+        return JsonResponse({'detail': 'id is required for update'}, status=400)
+    try:
+        about = aboutSection.objects.get(pk=int(about_id))
+    except (ValueError, aboutSection.DoesNotExist):
+        return JsonResponse({'detail': 'About not found'}, status=404)
+
+    for field in ['subtitle', 'title', 'short_description', 'long_description', 'tag_line', 'experience', 'video_url']:
+        if field in payload:
+            setattr(about, field, payload.get(field))
+
+    if 'ranking_number' in payload:
+        try:
+            about.ranking_number = int(payload.get('ranking_number')) if payload.get('ranking_number') not in (None, '') else None
+        except (TypeError, ValueError):
+            return JsonResponse({'detail': 'ranking_number must be an integer'}, status=400)
+
+    about.save()
+    trigger_auto_translate('home.aboutsection', about.id)
+    return JsonResponse(serialize_about(about), status=200)
+
+@csrf_exempt
+def api_funfacts(request):
+    if request.method == 'GET':
+        fact_id = request.GET.get('id')
+        if fact_id:
+            try:
+                fact = funFactSection.objects.get(pk=int(fact_id))
+            except (ValueError, funFactSection.DoesNotExist):
+                return JsonResponse({'detail': 'Fun fact not found'}, status=404)
+            return JsonResponse(serialize_funfact(fact), status=200)
+
+        data = [serialize_funfact(f) for f in funFactSection.objects.all()]
+        return JsonResponse({'count': len(data), 'items': data}, status=200)
+
+    if request.method not in ['POST', 'PATCH', 'PUT']:
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
+    payload = {}
+    if request.content_type and 'application/json' in request.content_type:
+        try:
+            payload = json.loads(request.body.decode() or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({'detail': 'Invalid JSON payload'}, status=400)
+    else:
+        payload = request.POST
+
+    if request.method == 'POST':
+        fact = funFactSection.objects.create(
+            fontawesome_icon_class=payload.get('fontawesome_icon_class'),
+            count=payload.get('count') or None,
+            count_after=payload.get('count_after'),
+            title=payload.get('title'),
+        )
+        trigger_auto_translate('home.funfactsection', fact.id)
+        return JsonResponse(serialize_funfact(fact), status=201)
+
+    fact_id = request.GET.get('id')
+    if not fact_id:
+        return JsonResponse({'detail': 'id is required for update'}, status=400)
+    try:
+        fact = funFactSection.objects.get(pk=int(fact_id))
+    except (ValueError, funFactSection.DoesNotExist):
+        return JsonResponse({'detail': 'Fun fact not found'}, status=404)
+
+    if 'fontawesome_icon_class' in payload:
+        fact.fontawesome_icon_class = payload.get('fontawesome_icon_class')
+    if 'count' in payload:
+        try:
+            fact.count = int(payload.get('count')) if payload.get('count') not in (None, '') else None
+        except (TypeError, ValueError):
+            return JsonResponse({'detail': 'count must be an integer'}, status=400)
+    if 'count_after' in payload:
+        fact.count_after = payload.get('count_after')
+    if 'title' in payload:
+        fact.title = payload.get('title')
+
+    fact.save()
+    trigger_auto_translate('home.funfactsection', fact.id)
+    return JsonResponse(serialize_funfact(fact), status=200)
+
+@csrf_exempt
+def api_clients(request):
+    if request.method == 'GET':
+        client_id = request.GET.get('id')
+        if client_id:
+            try:
+                client = clientSection.objects.get(pk=int(client_id))
+            except (ValueError, clientSection.DoesNotExist):
+                return JsonResponse({'detail': 'Client not found'}, status=404)
+            return JsonResponse(serialize_client(client), status=200)
+
+        data = [serialize_client(c) for c in clientSection.objects.all()]
+        return JsonResponse({'count': len(data), 'items': data}, status=200)
+
+    if request.method not in ['POST', 'PATCH', 'PUT']:
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
+    payload = {}
+    files = request.FILES
+    if request.content_type and 'application/json' in request.content_type:
+        try:
+            payload = json.loads(request.body.decode() or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({'detail': 'Invalid JSON payload'}, status=400)
+    else:
+        payload = request.POST
+
+    if request.method == 'POST':
+        client = clientSection(client_name=payload.get('client_name'))
+        if files.get('image'):
+            client.image = files['image']
+        client.save()
+        trigger_auto_translate('home.clientsection', client.id)
+        return JsonResponse(serialize_client(client), status=201)
+
+    client_id = request.GET.get('id')
+    if not client_id:
+        return JsonResponse({'detail': 'id is required for update'}, status=400)
+    try:
+        client = clientSection.objects.get(pk=int(client_id))
+    except (ValueError, clientSection.DoesNotExist):
+        return JsonResponse({'detail': 'Client not found'}, status=404)
+
+    if 'client_name' in payload:
+        client.client_name = payload.get('client_name')
+    if files.get('image'):
+        client.image = files['image']
+
+    client.save()
+    trigger_auto_translate('home.clientsection', client.id)
+    return JsonResponse(serialize_client(client), status=200)
 
 def serialize_project_category(cat):
     return {
@@ -209,6 +495,7 @@ def api_project_categories(request):
 
         cat = projectCategory(name=name)
         cat.save()
+        trigger_auto_translate('home.projectcategory', cat.id)
         return JsonResponse(serialize_project_category(cat), status=201)
 
     cat_id = request.GET.get('id')
@@ -223,6 +510,7 @@ def api_project_categories(request):
         cat.name = payload.get('name')
 
     cat.save()
+    trigger_auto_translate('home.projectcategory', cat.id)
     return JsonResponse(serialize_project_category(cat), status=200)
 
 @csrf_exempt
@@ -294,6 +582,7 @@ def api_projects(request):
                     return JsonResponse({'detail': msg}, status=400)
 
         proj.save()
+        trigger_auto_translate('home.projectsection', proj.id)
         return JsonResponse(serialize_project(proj), status=201)
 
     proj_id = request.GET.get('id')
@@ -328,25 +617,66 @@ def api_projects(request):
                 return JsonResponse({'detail': msg}, status=400)
 
     proj.save()
+    trigger_auto_translate('home.projectsection', proj.id)
     return JsonResponse(serialize_project(proj), status=200)
 
 def openapi_json(request):
     """
     Minimal OpenAPI 3.1 schema describing the service creation endpoint.
     """
-    # Prefer Origin header for correct scheme (e.g., https). Fallback forces https for known host if needed.
+    # Prefer Origin header for correct scheme (e.g., https). Also honor proxy headers for host/port/scheme.
     origin = request.headers.get("Origin")
+    forwarded_proto = request.headers.get("X-Forwarded-Proto", "").split(",")[0].strip().lower()
+    forwarded_host = request.headers.get("X-Forwarded-Host", "").split(",")[0].strip()
+    forwarded_port = request.headers.get("X-Forwarded-Port", "").split(",")[0].strip()
+    host = forwarded_host or request.get_host()
+
+    if forwarded_port and ":" not in host and forwarded_port not in ("80", "443"):
+        host = f"{host}:{forwarded_port}"
+
     if origin:
         server_url = origin.rstrip("/")
     else:
-        host = request.get_host()
-        forwarded_proto = request.headers.get("X-Forwarded-Proto", "").split(",")[0].strip().lower()
-        # Force https for known deployments and when a proxy tells us the original scheme
-        if forwarded_proto == "https" or request.is_secure() or host in ("wsp.lotfinity.tech", "automate.beyondclinic.online", "www.automate.beyondclinic.online"):
+        known_https_hosts = {"wsp.whatsynaptic.tech", "automate.beyondclinic.online", "www.automate.beyondclinic.online"}
+        if forwarded_proto:
+            scheme = forwarded_proto
+        elif request.is_secure() or host in known_https_hosts:
             scheme = "https"
         else:
             scheme = request.scheme
         server_url = f"{scheme}://{host}"
+
+    bad_request = {"$ref": "#/components/responses/BadRequest"}
+    not_found = {"$ref": "#/components/responses/NotFound"}
+    method_not_allowed = {"$ref": "#/components/responses/MethodNotAllowed"}
+    id_param = {
+        "in": "query",
+        "name": "id",
+        "schema": {"type": "integer"},
+        "required": False,
+        "description": "Optional primary key used by list endpoints to fetch a single record.",
+    }
+    search_param = {
+        "in": "query",
+        "name": "search",
+        "schema": {"type": "string"},
+        "required": False,
+        "description": "Case-insensitive search term.",
+    }
+    category_param = {
+        "in": "query",
+        "name": "category",
+        "schema": {"type": "integer"},
+        "required": False,
+        "description": "Filter by category ID where supported.",
+    }
+    blog_param = {
+        "in": "query",
+        "name": "blog",
+        "schema": {"type": "integer"},
+        "required": False,
+        "description": "Filter by blog ID where supported.",
+    }
     schema = {
         "openapi": "3.1.0",
         "info": {
@@ -395,8 +725,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 }
                 ,
@@ -440,31 +770,16 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Service updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ServiceResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Service not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listServices",
                     "summary": "List or retrieve services",
                     "description": "Retrieve all services, search by keyword in name/description, or fetch a single service by id.",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "required": False,
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single service by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "required": False,
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in service name and short description."
-                        },
-                    ],
+                    "parameters": [id_param, search_param],
                     "responses": {
                         "200": {
                             "description": "Services found",
@@ -479,8 +794,8 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Service not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 }
             }
@@ -507,8 +822,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 },
                 "patch": {
@@ -534,31 +849,16 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Workflow updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkflowResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Workflow not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listWorkflows",
                     "summary": "List or retrieve workflows",
                     "description": "Retrieve all workflows (with nodes/edges), search by name/description, or fetch a single workflow by id.",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "required": False,
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single workflow by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "required": False,
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in workflow name or description."
-                        },
-                    ],
+                    "parameters": [id_param, search_param],
                     "responses": {
                         "200": {
                             "description": "Workflows found",
@@ -573,8 +873,8 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Workflow not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 }
             }
@@ -603,8 +903,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 },
                 "patch": {
@@ -628,28 +928,15 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Category updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProjectCategoryResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Category not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listProjectCategories",
                     "summary": "List or retrieve project categories",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single category by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in category name."
-                        },
-                    ],
+                    "parameters": [id_param, search_param],
                     "responses": {
                         "200": {
                             "description": "Categories found",
@@ -664,8 +951,8 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Category not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
             },
@@ -707,8 +994,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 },
                 "patch": {
@@ -748,34 +1035,15 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Project updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProjectResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Project not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listProjects",
                     "summary": "List or retrieve projects",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single project by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in project title or description."
-                        },
-                        {
-                            "in": "query",
-                            "name": "category",
-                            "schema": {"type": "integer"},
-                            "description": "Filter by category ID."
-                        },
-                    ],
+                    "parameters": [id_param, search_param, category_param],
                     "responses": {
                         "200": {
                             "description": "Projects found",
@@ -790,8 +1058,8 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Project not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
             },
@@ -819,8 +1087,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 },
                 "patch": {
@@ -838,28 +1106,15 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Category updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BlogCategoryResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Category not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listBlogCategories",
                     "summary": "List or retrieve blog categories",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single category by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in category title."
-                        },
-                    ],
+                    "parameters": [id_param, search_param],
                     "responses": {
                         "200": {
                             "description": "Categories found",
@@ -874,8 +1129,8 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Category not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
             },
@@ -917,8 +1172,8 @@ def openapi_json(request):
                                 }
                             },
                         },
-                        "400": {"description": "Invalid input"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "405": method_not_allowed,
                     },
                 },
                 "patch": {
@@ -952,34 +1207,15 @@ def openapi_json(request):
                     },
                     "responses": {
                         "200": {"description": "Blog updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/BlogResponse"}}}},
-                        "400": {"description": "Invalid input"},
-                        "404": {"description": "Blog not found"},
-                        "405": {"description": "Method not allowed"},
+                        "400": bad_request,
+                        "404": not_found,
+                        "405": method_not_allowed,
                     },
                 },
                 "get": {
                     "operationId": "listBlogs",
                     "summary": "List or retrieve blog posts",
-                    "parameters": [
-                        {
-                            "in": "query",
-                            "name": "id",
-                            "schema": {"type": "integer"},
-                            "description": "If provided, return a single blog by ID."
-                        },
-                        {
-                            "in": "query",
-                            "name": "search",
-                            "schema": {"type": "string"},
-                            "description": "Case-insensitive search in title or description."
-                        },
-                        {
-                            "in": "query",
-                            "name": "category",
-                            "schema": {"type": "integer"},
-                            "description": "Filter by category ID."
-                        },
-                    ],
+                    "parameters": [id_param, search_param, category_param],
                     "responses": {
                         "200": {
                             "description": "Blogs found",
@@ -994,14 +1230,264 @@ def openapi_json(request):
                                 }
                             }
                         },
-                        "404": {"description": "Blog not found"},
-                        "405": {"description": "Method not allowed"},
+                        "404": not_found,
+                        "405": method_not_allowed,
+                    },
+                },
+            },
+            "/api/blog-sample-conversations/": {
+                "get": {
+                    "operationId": "listBlogSampleConversations",
+                    "summary": "List or retrieve blog sample conversations",
+                    "parameters": [id_param, blog_param],
+                    "responses": {
+                        "200": {
+                            "description": "List or single item",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "oneOf": [
+                                            {"$ref": "#/components/schemas/BlogSampleConversation"},
+                                            {"$ref": "#/components/schemas/BlogSampleConversationListResponse"},
+                                        ]
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
+                "post": {
+                    "operationId": "createBlogSampleConversation",
+                    "summary": "Create a blog sample conversation",
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/BlogSampleConversationCreate"}
+                            }
+                        },
+                    },
+                    "responses": {
+                        "201": {
+                            "description": "Created (includes success + translation flags)",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/BlogSampleConversationEnvelope"}
+                                }
+                            },
+                        },
+                        "400": {"description": "Validation error"},
+                    },
+                },
+                "put": {
+                    "operationId": "updateBlogSampleConversation",
+                    "summary": "Update a blog sample conversation",
+                    "parameters": [id_param, blog_param],
+                    "requestBody": {
+                        "required": True,
+                        "content": {
+                            "application/json": {
+                                "schema": {"$ref": "#/components/schemas/BlogSampleConversationUpdate"}
+                            }
+                        },
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Updated (includes success + translation flags)",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/BlogSampleConversationEnvelope"}
+                                }
+                            },
+                        },
+                        "404": not_found,
                     },
                 },
             },
         },
         "components": {
+            "parameters": {
+                "IdParam": {
+                    "in": "query",
+                    "name": "id",
+                    "schema": {"type": "integer"},
+                    "required": False,
+                    "description": "Optional primary key used by list endpoints to fetch a single record."
+                },
+                "SearchParam": {
+                    "in": "query",
+                    "name": "search",
+                    "schema": {"type": "string"},
+                    "required": False,
+                    "description": "Case-insensitive search term."
+                },
+                "CategoryParam": {
+                    "in": "query",
+                    "name": "category",
+                    "schema": {"type": "integer"},
+                    "required": False,
+                    "description": "Filter by category ID where supported."
+                },
+                "BlogParam": {
+                    "in": "query",
+                    "name": "blog",
+                    "schema": {"type": "integer"},
+                    "required": False,
+                    "description": "Filter by blog ID where supported."
+                },
+            },
+            "responses": {
+                "BadRequest": {"description": "Invalid input"},
+                "NotFound": {"description": "Resource not found"},
+                "MethodNotAllowed": {"description": "Method not allowed"},
+            },
             "schemas": {
+                "ConversationEntry": {
+                    "type": "object",
+                    "properties": {
+                        "topic": {"type": "string", "nullable": True},
+                        "user_message": {"type": "string", "nullable": True},
+                        "assistant_message": {"type": "string", "nullable": True},
+                        "tone": {"type": "string", "nullable": True},
+                    },
+                },
+                "BlogSampleConversation": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "blog": {"type": "integer"},
+                        "title": {"type": "string", "nullable": True},
+                        "subtitle": {"type": "string", "nullable": True},
+                        "title_en": {"type": "string", "nullable": True},
+                        "title_tr": {"type": "string", "nullable": True},
+                        "subtitle_en": {"type": "string", "nullable": True},
+                        "subtitle_tr": {"type": "string", "nullable": True},
+                        "conversations": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                            "description": "Default-language conversation entries (max 30).",
+                        },
+                        "conversations_en": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                            "description": "Language-specific entries; used when English is active.",
+                        },
+                        "conversations_tr": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                            "description": "Language-specific entries; used when Turkish is active.",
+                        },
+                        "created_at": {"type": "string", "format": "date-time"},
+                        "updated_at": {"type": "string", "format": "date-time"},
+                    },
+                    "required": ["id", "blog"],
+                },
+                "BlogSampleConversationCreate": {
+                    "type": "object",
+                    "properties": {
+                        "blog": {"type": "integer"},
+                        "title": {"type": "string", "nullable": True},
+                        "subtitle": {"type": "string", "nullable": True},
+                        "title_en": {"type": "string", "nullable": True},
+                        "title_tr": {"type": "string", "nullable": True},
+                        "subtitle_en": {"type": "string", "nullable": True},
+                        "subtitle_tr": {"type": "string", "nullable": True},
+                        "conversations": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                        "conversations_en": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                        "conversations_tr": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                    },
+                    "required": ["blog"],
+                },
+                "BlogSampleConversationUpdate": {
+                    "type": "object",
+                    "properties": {
+                        "blog": {"type": "integer"},
+                        "title": {"type": "string", "nullable": True},
+                        "subtitle": {"type": "string", "nullable": True},
+                        "title_en": {"type": "string", "nullable": True},
+                        "title_tr": {"type": "string", "nullable": True},
+                        "subtitle_en": {"type": "string", "nullable": True},
+                        "subtitle_tr": {"type": "string", "nullable": True},
+                        "conversations": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                        "conversations_en": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                        "conversations_tr": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/ConversationEntry"},
+                            "default": [],
+                            "maxItems": 30,
+                        },
+                    },
+                },
+                "BlogSampleConversationListResponse": {
+                    "type": "object",
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "items": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/BlogSampleConversation"},
+                        },
+                    },
+                },
+                "BlogSampleConversationEnvelope": {
+                    "type": "object",
+                    "properties": {
+                        "success": {"type": "boolean", "description": "True when the operation succeeded."},
+                        "translation_success": {
+                            "type": "boolean",
+                            "description": "Whether auto-translation ran without errors (may be False if the translation backend failed).",
+                        },
+                        "item": {"$ref": "#/components/schemas/BlogSampleConversation"},
+                    },
+                    "required": ["item"],
+                    "example": {
+                        "success": True,
+                        "translation_success": True,
+                        "item": {
+                            "id": 20,
+                            "blog": 17,
+                            "title": "Salon Booking Conversation Example",
+                            "subtitle": "AI-powered WhatsApp assistant handling client booking and loyalty interaction",
+                            "title_tr": "Salon Randevu Sohbet Örneği",
+                            "subtitle_tr": "Müşteri randevusu ve sadakat etkileşimlerini yöneten yapay zeka destekli WhatsApp asistanı",
+                            "conversations": [],
+                            "conversations_en": [],
+                            "conversations_tr": [],
+                            "created_at": "2025-01-10T12:00:00Z",
+                            "updated_at": "2025-01-10T12:00:00Z",
+                        },
+                    },
+                },
                 "ServiceCreateRequest": {
                     "type": "object",
                     "required": ["name"],
@@ -1337,10 +1823,139 @@ def openapi_json(request):
                         }
                     }
                 },
+                "TestimonialCreateRequest": {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": {"type": "string", "maxLength": 200},
+                        "position": {"type": "string", "maxLength": 200, "nullable": True},
+                        "description": {"type": "string", "nullable": True},
+                        "star": {"type": "integer", "minimum": 0, "maximum": 5, "nullable": True},
+                    },
+                },
+                "TestimonialUpdateRequest": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string", "maxLength": 200},
+                        "position": {"type": "string", "maxLength": 200, "nullable": True},
+                        "description": {"type": "string", "nullable": True},
+                        "star": {"type": "integer", "minimum": 0, "maximum": 5, "nullable": True},
+                    },
+                },
+                "TestimonialResponse": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "name": {"type": "string"},
+                        "position": {"type": ["string", "null"]},
+                        "description": {"type": ["string", "null"]},
+                        "star": {"type": ["integer", "null"]},
+                        "image": {"type": ["string", "null"], "format": "uri"},
+                    },
+                },
+                "TestimonialListResponse": {
+                    "type": "object",
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "items": {"type": "array", "items": {"$ref": "#/components/schemas/TestimonialResponse"}}
+                    }
+                },
+                "AboutCreateRequest": {
+                    "type": "object",
+                    "properties": {
+                        "subtitle": {"type": "string", "nullable": True},
+                        "title": {"type": "string", "nullable": True},
+                        "short_description": {"type": "string", "nullable": True},
+                        "long_description": {"type": "string", "nullable": True},
+                        "ranking_number": {"type": "integer", "nullable": True},
+                        "tag_line": {"type": "string", "nullable": True},
+                        "experience": {"type": "string", "nullable": True},
+                        "video_url": {"type": "string", "format": "uri", "nullable": True},
+                    },
+                },
+                "AboutUpdateRequest": {"$ref": "#/components/schemas/AboutCreateRequest"},
+                "AboutResponse": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "subtitle": {"type": ["string", "null"]},
+                        "title": {"type": ["string", "null"]},
+                        "short_description": {"type": ["string", "null"]},
+                        "long_description": {"type": ["string", "null"]},
+                        "ranking_number": {"type": ["integer", "null"]},
+                        "tag_line": {"type": ["string", "null"]},
+                        "experience": {"type": ["string", "null"]},
+                        "video_url": {"type": ["string", "null"], "format": "uri"},
+                        "image": {"type": ["string", "null"], "format": "uri"},
+                        "video_thumbnail": {"type": ["string", "null"], "format": "uri"},
+                    },
+                },
+                "AboutListResponse": {
+                    "type": "object",
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "items": {"type": "array", "items": {"$ref": "#/components/schemas/AboutResponse"}}
+                    }
+                },
             }
         },
     }
     return JsonResponse(schema, json_dumps_params={"indent": 2})
+
+def openapi_docs(request):
+    """
+    Lightweight Swagger UI page that points to the generated openapi.json.
+    """
+    origin = request.headers.get("Origin")
+    forwarded_proto = request.headers.get("X-Forwarded-Proto", "").split(",")[0].strip().lower()
+    forwarded_host = request.headers.get("X-Forwarded-Host", "").split(",")[0].strip()
+    forwarded_port = request.headers.get("X-Forwarded-Port", "").split(",")[0].strip()
+    host = forwarded_host or request.get_host()
+
+    if forwarded_port and ":" not in host and forwarded_port not in ("80", "443"):
+        host = f"{host}:{forwarded_port}"
+
+    if origin:
+        server_url = origin.rstrip("/")
+    else:
+        known_https_hosts = {"wsp.whatsynaptic.tech", "automate.beyondclinic.online", "www.automate.beyondclinic.online"}
+        if forwarded_proto:
+            scheme = forwarded_proto
+        elif request.is_secure() or host in known_https_hosts:
+            scheme = "https"
+        else:
+            scheme = request.scheme
+        server_url = f"{scheme}://{host}"
+
+    spec_url = f"{server_url}{reverse('openapi_json')}"
+    html = f"""
+    <!doctype html>
+    <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>API Docs</title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
+      <style>
+        body {{ margin: 0; padding: 0; }}
+        #swagger-ui {{ min-height: 100vh; }}
+      </style>
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+      <script>
+        window.onload = () => {{
+          SwaggerUIBundle({{
+            url: "{spec_url}",
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis],
+          }});
+        }};
+      </script>
+    </body>
+    </html>
+    """
+    return HttpResponse(html)
 
 def error_404(request, exception):
     return render(request, 'error/404.html', status=404)
